@@ -1,0 +1,82 @@
+﻿@model DiplomaManagement.Entities.Director
+
+@{
+    ViewData["Title"] = "AssignedPromoters";
+    var promoters = Model.Promoters;
+}
+
+<h1>Index</h1>
+
+
+<h3>Change Limit globaly for all promoters</h3>
+<form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
+    <input type="hidden" value="@Model.Id" name="directorId" />
+    <div class="col-3">
+        <div class="row mb-3">
+            <label for="thesisLimit" class="col-sm-4 col-form-label">Thesis Limit:</label>
+            <div class="col-sm-8">
+                <input class="form-control" id="thesisLimit" name="thesisLimit" onkeypress="return isNumberKey(event)">
+            </div>
+            <span class="text-danger" id="thesisLimitError" style="display:none;">Please enter a non-negative integer.</span>
+        </div>
+    </div>
+    <div class="col-3">
+        <button type="submit" class="btn btn-primary mb-3">Submit</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name and Surname
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Thesis Limit
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in promoters)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @($"{item.User.FirstName} {item.User.LastName}")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ThesisLimit)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

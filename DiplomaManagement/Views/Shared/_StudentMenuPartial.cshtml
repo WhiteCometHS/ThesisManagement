@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using DiplomaManagement.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+@if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(user, "Student"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="AvailableTheses">Theses</a>
+    </li>
+}

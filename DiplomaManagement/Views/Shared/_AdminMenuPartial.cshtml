@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using DiplomaManagement.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+@if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(user, "Admin"))
+{
+    <li class="nav-item dropdown show">
+        <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Admin</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" asp-controller="Institute" asp-action="Index">Institutes</a>
+            <a class="dropdown-item" asp-controller="Director" asp-action="Index">Institute Directors</a>
+            <a class="dropdown-item" asp-controller="Promoter" asp-action="Index">Promoters</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Studenci</a>
+        </div>
+    </li>
+}

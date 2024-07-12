@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using DiplomaManagement.Data
+@inject SignInManager<ApplicationUser> SignInManager;
+@inject UserManager<ApplicationUser> UserManager;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    string userName = null;
+    var user = await UserManager.GetUserAsync(User);
+    userName = user?.UserName;
+    <div class="text-center">
+        <h1 class="display-4">Welcome to Diploma Management, @userName</h1>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Not logged in</h1>
+    </div>
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<div class="modal fade" id="UserLoginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <partial name="_UserLoginPartial" />
+</div>
+<div class="modal fade" id="UserRegistrationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <partial name="_UserRegistrationPartial" />
+</div>
+
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_AuthScriptsPartial");
+    }
+}

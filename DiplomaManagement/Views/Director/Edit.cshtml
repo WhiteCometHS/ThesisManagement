@@ -1,0 +1,87 @@
+﻿@model DiplomaManagement.Models.DetailsViewModel<DiplomaManagement.Entities.Director>
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Director</h4>
+<hr />
+@if (TempData[$"SuccessMessage_{User.Identity.Name}"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="info-message">
+        @TempData[$"SuccessMessage_{User.Identity.Name}"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData[$"ErrorMessage_{User.Identity.Name}"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="info-message">
+        @TempData[$"ErrorMessage_{User.Identity.Name}"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Entity.DirectorUserId" />
+            <div class="form-group">
+                <label asp-for="Entity.User.FirstName" class="control-label"></label>
+                <input asp-for="Entity.User.FirstName" class="form-control" />
+                <span asp-validation-for="Entity.User.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.User.LastName" class="control-label"></label>
+                <input asp-for="Entity.User.LastName" class="form-control" />
+                <span asp-validation-for="Entity.User.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.User.Email" class="control-label"></label>
+                <input asp-for="Entity.User.Email" class="form-control" />
+                <span asp-validation-for="Entity.User.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.User.InstituteId" class="control-label"></label>
+                <select asp-for="Entity.User.InstituteId" class="form-control" asp-items="ViewBag.Institutes"></select>
+                <span asp-validation-for="Entity.User.InstituteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<form asp-action="ResetPassword" method="post">
+    <input type="hidden" asp-for="ResetPasswordViewModel.Id" value="@Model.ResetPasswordViewModel.Id" />
+
+    <div class="form-group mb-3">
+        <label asp-for="ResetPasswordViewModel.NewPassword" class="col-md-4 col-form-label"></label>
+        <div class="col-md-3">
+            <input asp-for="ResetPasswordViewModel.NewPassword" class="form-control" />
+            <span asp-validation-for="ResetPasswordViewModel.NewPassword" class="text-danger"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Reset Password</button>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var MessageElement = document.getElementById('info-message');
+            if (MessageElement) {
+                setTimeout(function () {
+                    var alert = new bootstrap.Alert(MessageElement);
+                    alert.close();
+                }, 5000);
+            }
+        });
+    </script>
+}
