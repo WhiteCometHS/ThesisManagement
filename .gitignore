@@ -1,6 +1,7 @@
 ﻿# .NET
-/bin
-/obj
+/DiplomaManagement/bin
+/DiplomaManagement/obj
 
 # Visual Studio
 /.vs
+
