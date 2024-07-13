@@ -25,7 +25,7 @@ namespace DiplomaManagement.Repositories
         {
             return await _context.Institutes
                 .Include(d => d.Users)
-                .Where(i => !i.Users.Any(u => u.UserDirector != null) && !i.Users.Any(u => u.UserPromoter != null))
+                .Where(i => i.Users.Any(u => u.UserDirector != null) && i.Users.Any(u => u.UserPromoter != null))
                 .ToListAsync();
         }
     }

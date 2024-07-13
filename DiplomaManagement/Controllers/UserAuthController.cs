@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using DiplomaManagement.Repositories;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DiplomaManagement.Controllers
 {
@@ -12,13 +14,15 @@ namespace DiplomaManagement.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly InstituteRepository _instituteRepository;
         private readonly ApplicationDbContext _context;
 
-        public UserAuthController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UserAuthController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, InstituteRepository instituteRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _instituteRepository = instituteRepository;
         }
 
         [AllowAnonymous]
@@ -114,6 +118,10 @@ namespace DiplomaManagement.Controllers
 
                 AddErrorsToModelState(result);
             }
+
+            List<Institute> institutes = await _instituteRepository.GetAvailableInstitutes();
+            ViewBag.Institutes = new SelectList(institutes, "Id", "Name");
+
             return PartialView("_UserRegistrationPartial", registrationModel);
         }
 

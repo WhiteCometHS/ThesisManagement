@@ -13,7 +13,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PresentationFile)
+                Promoter
             </th>
             <th></th>
         </tr>
@@ -29,7 +29,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PresentationFile.Id)
+                    @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
