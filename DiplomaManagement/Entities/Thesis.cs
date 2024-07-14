@@ -19,6 +19,8 @@
         public virtual PresentationFile? PresentationFile { get; set; }
 
         public virtual ThesisStatus Status { get; set; }
+
+        public virtual ICollection<Enrollment>? Enrollments { get; set; }
     }
 
     public enum ThesisStatus

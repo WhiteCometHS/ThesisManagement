@@ -1,7 +1,28 @@
 ﻿@using DiplomaManagement.Services
 @model IEnumerable<DiplomaManagement.Entities.Thesis>
+@inject INotificationService NotificationService
+
+@{
+    var enrollmentCreated = NotificationService.GetNotification($"EnrollmentCreated_{User.Identity.Name}");
+    var enrollmentCreationError = NotificationService.GetNotification($"EnrollmentCreationError_{User.Identity.Name}");
+}
 
 <h1>Index</h1>
+
+@if (!string.IsNullOrEmpty(enrollmentCreated))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="info-message">
+        @enrollmentCreated
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+else if (!string.IsNullOrEmpty(enrollmentCreationError))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="info-message">
+        @enrollmentCreationError
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <table class="table">
     <thead>
@@ -32,7 +53,7 @@
                     @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">Enroll in</a>
                 </td>
             </tr>
         }

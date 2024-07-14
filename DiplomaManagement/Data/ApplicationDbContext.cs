@@ -16,8 +16,8 @@ namespace DiplomaManagement.Data
         public int? InstituteId { get; set; }
         public virtual Institute? Institute { get; set; }
         public virtual Director? UserDirector { get; set; }
-
         public virtual Promoter? UserPromoter { get; set; }
+        public virtual Student? UserStudent { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -29,9 +29,12 @@ namespace DiplomaManagement.Data
         public DbSet<Institute> Institutes { get; set; }
         public DbSet<Director> Directors { get; set; }
         public DbSet<Promoter> Promoters { get; set; }
+        public DbSet<Student> Students { get; set; }
         public DbSet<Thesis> Theses { get; set; }
         public DbSet<PdfFile> PdfFiles { get; set; }
         public DbSet<PresentationFile> PresentationFiles { get; set; }
+
+        public DbSet<Enrollment> Enrollments { get; set; }
 
         // TODO check if this is neccessary
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,11 +57,17 @@ namespace DiplomaManagement.Data
                 .HasForeignKey<Promoter>(p => p.PromoterUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-/*            modelBuilder.Entity<Director>()
-                .HasOne(p => p.Institute)
-                .WithOne(u => u.Director)
-                .HasForeignKey<Director>(p => p.InstituteId)
-                .OnDelete(DeleteBehavior.Restrict);*/
+            modelBuilder.Entity<Student>()
+                .HasOne(p => p.User)
+                .WithOne(u => u.UserStudent)
+                .HasForeignKey<Student>(p => p.StudentUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            /*           modelBuilder.Entity<Director>()
+                            .HasOne(p => p.Institute)
+                            .WithOne(u => u.Director)
+                            .HasForeignKey<Director>(p => p.InstituteId)
+                            .OnDelete(DeleteBehavior.Restrict);*/
 
             modelBuilder.Entity<Promoter>()
                 .HasOne(p => p.Director)
@@ -82,6 +91,21 @@ namespace DiplomaManagement.Data
                 .WithOne()
                 .HasForeignKey<Thesis>(t => t.PresentationFileId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+            modelBuilder.Entity<Thesis>()
+                .HasMany(p => p.Enrollments)
+                .WithOne(t => t.Thesis)
+                .HasForeignKey(t => t.ThesisId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Enrollment>()
+                .HasOne(e => e.Thesis)
+                .WithMany(t => t.Enrollments)
+                .HasForeignKey(e => e.ThesisId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             base.OnModelCreating(modelBuilder);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240711182258_InitialCreate")]
+    [Migration("20240714183531_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -123,6 +123,29 @@ namespace DiplomaManagement.Migrations
                         .IsUnique();
 
                     b.ToTable("Directors");
+                });
+
+            modelBuilder.Entity("DiplomaManagement.Entities.Enrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThesisId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("ThesisId");
+
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("DiplomaManagement.Entities.Institute", b =>
@@ -258,6 +281,26 @@ namespace DiplomaManagement.Migrations
                         .IsUnique();
 
                     b.ToTable("Promoters");
+                });
+
+            modelBuilder.Entity("DiplomaManagement.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("StudentUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentUserId")
+                        .IsUnique();
+
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("DiplomaManagement.Entities.Thesis", b =>
@@ -454,6 +497,25 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DiplomaManagement.Entities.Enrollment", b =>
+                {
+                    b.HasOne("DiplomaManagement.Entities.Student", "Student")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaManagement.Entities.Thesis", "Thesis")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("ThesisId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Thesis");
+                });
+
             modelBuilder.Entity("DiplomaManagement.Entities.PdfFile", b =>
                 {
                     b.HasOne("DiplomaManagement.Entities.Thesis", "Thesis")
@@ -480,6 +542,17 @@ namespace DiplomaManagement.Migrations
                         .IsRequired();
 
                     b.Navigation("Director");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DiplomaManagement.Entities.Student", b =>
+                {
+                    b.HasOne("DiplomaManagement.Data.ApplicationUser", "User")
+                        .WithOne("UserStudent")
+                        .HasForeignKey("DiplomaManagement.Entities.Student", "StudentUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -558,6 +631,8 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("UserDirector");
 
                     b.Navigation("UserPromoter");
+
+                    b.Navigation("UserStudent");
                 });
 
             modelBuilder.Entity("DiplomaManagement.Entities.Director", b =>
@@ -575,8 +650,15 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("Theses");
                 });
 
+            modelBuilder.Entity("DiplomaManagement.Entities.Student", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
             modelBuilder.Entity("DiplomaManagement.Entities.Thesis", b =>
                 {
+                    b.Navigation("Enrollments");
+
                     b.Navigation("PdfFiles");
                 });
 #pragma warning restore 612, 618

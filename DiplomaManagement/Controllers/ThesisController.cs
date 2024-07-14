@@ -48,12 +48,15 @@ namespace DiplomaManagement.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AvailableTheses()
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
 
-            var theses = await _context.Theses
+            Student? student = await _context.Students
+            .FirstOrDefaultAsync(p => p.StudentUserId == user.Id);
+
+            List<Thesis> theses = await _context.Theses
                 .Include(t => t.Promoter)
                 .ThenInclude(p => p.User)
-                .Where(t => t.Promoter.User.InstituteId == user.InstituteId)
+                .Where(t => t.Promoter.User.InstituteId == user.InstituteId && !t.Enrollments.Any(u => u.StudentId == student.Id))
                 .ToListAsync();
 
             return View(theses);

@@ -103,11 +103,21 @@ namespace DiplomaManagement.Controllers
                     InstituteId = registrationModel.InstituteId
                 };
 
+
+
                 var result = await _userManager.CreateAsync(user, registrationModel.Password);
 
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "Student");
+
+                    Student student = new Student
+                    {
+                        StudentUserId = user.Id
+                    };
+
+                    _context.Add(student);
+                    await _context.SaveChangesAsync();
 
                     registrationModel.RegistrationInValid = "";
 

@@ -218,6 +218,25 @@ namespace DiplomaManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Students_AspNetUsers_StudentUserId",
+                        column: x => x.StudentUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Promoters",
                 columns: table => new
                 {
@@ -271,6 +290,31 @@ namespace DiplomaManagement.Migrations
                         principalTable: "Promoters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Enrollments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ThesisId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Enrollments_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Enrollments_Theses_ThesisId",
+                        column: x => x.ThesisId,
+                        principalTable: "Theses",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -349,6 +393,16 @@ namespace DiplomaManagement.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_StudentId",
+                table: "Enrollments",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_ThesisId",
+                table: "Enrollments",
+                column: "ThesisId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PdfFiles_ThesisId",
                 table: "PdfFiles",
                 column: "ThesisId");
@@ -362,6 +416,12 @@ namespace DiplomaManagement.Migrations
                 name: "IX_Promoters_PromoterUserId",
                 table: "Promoters",
                 column: "PromoterUserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Students_StudentUserId",
+                table: "Students",
+                column: "StudentUserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -396,10 +456,16 @@ namespace DiplomaManagement.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Enrollments");
+
+            migrationBuilder.DropTable(
                 name: "PdfFiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "Theses");
