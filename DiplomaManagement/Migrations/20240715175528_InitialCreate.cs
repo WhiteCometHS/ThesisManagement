@@ -273,7 +273,8 @@ namespace DiplomaManagement.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PromoterId = table.Column<int>(type: "int", nullable: false),
                     PresentationFileId = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<string>(type: "nvarchar(24)", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -290,6 +291,11 @@ namespace DiplomaManagement.Migrations
                         principalTable: "Promoters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Theses_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -435,6 +441,11 @@ namespace DiplomaManagement.Migrations
                 name: "IX_Theses_PromoterId",
                 table: "Theses",
                 column: "PromoterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Theses_StudentId",
+                table: "Theses",
+                column: "StudentId");
         }
 
         /// <inheritdoc />
@@ -465,9 +476,6 @@ namespace DiplomaManagement.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Students");
-
-            migrationBuilder.DropTable(
                 name: "Theses");
 
             migrationBuilder.DropTable(
@@ -475,6 +483,9 @@ namespace DiplomaManagement.Migrations
 
             migrationBuilder.DropTable(
                 name: "Promoters");
+
+            migrationBuilder.DropTable(
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "Directors");

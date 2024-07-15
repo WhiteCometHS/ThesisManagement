@@ -1,4 +1,6 @@
-﻿namespace DiplomaManagement.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DiplomaManagement.Entities
 {
     public class Thesis
     {
@@ -18,7 +20,12 @@
 
         public virtual PresentationFile? PresentationFile { get; set; }
 
+        [Column(TypeName = "nvarchar(24)")]
         public virtual ThesisStatus Status { get; set; }
+
+        public int? StudentId { get; set; }
+
+        public virtual Student? Student { get; set; }
 
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
     }

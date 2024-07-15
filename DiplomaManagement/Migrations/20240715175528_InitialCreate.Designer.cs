@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240714183531_InitialCreate")]
+    [Migration("20240715175528_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -321,7 +321,11 @@ namespace DiplomaManagement.Migrations
                     b.Property<int>("PromoterId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(24)");
+
+                    b.Property<int?>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -335,6 +339,8 @@ namespace DiplomaManagement.Migrations
                         .HasFilter("[PresentationFileId] IS NOT NULL");
 
                     b.HasIndex("PromoterId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Theses");
                 });
@@ -570,9 +576,15 @@ namespace DiplomaManagement.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DiplomaManagement.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
                     b.Navigation("PresentationFile");
 
                     b.Navigation("Promoter");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

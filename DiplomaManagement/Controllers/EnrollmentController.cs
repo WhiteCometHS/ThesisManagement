@@ -55,5 +55,47 @@ namespace DiplomaManagement.Controllers
 
             return RedirectToAction("AvailableTheses", "Thesis");
         }
+
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> ActiveEnrollments(int thesisId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var enrollments = await _context.Enrollments
+                .Include(e => e.Thesis)
+                    .ThenInclude(t => t.Promoter)
+                .Include(e => e.Student)
+                    .ThenInclude(s => s.User)
+                .Where(e => e.Thesis.Promoter.PromoterUserId == user.Id)
+                .ToListAsync();
+
+            return View(enrollments);
+        }
+
+        [Authorize(Roles = "Promoter")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitEnrollment(int id)
+        {
+            Enrollment? enrollment = await _context.Enrollments
+                .Include(e => e.Thesis)
+                    .ThenInclude(t => t.Enrollments)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (enrollment != null)
+            {
+                enrollment.Thesis.Status = ThesisStatus.InProgress;
+                enrollment.Thesis.StudentId = enrollment.StudentId;
+
+                _context.Enrollments.RemoveRange(enrollment.Thesis.Enrollments);
+
+                _context.Update(enrollment.Thesis);
+
+                await _context.SaveChangesAsync();
+
+            }
+
+            return RedirectToAction("ActiveEnrollments");
+        }
     }
 }
