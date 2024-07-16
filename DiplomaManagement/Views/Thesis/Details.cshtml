@@ -1,4 +1,4 @@
-﻿@model DiplomaManagement.Entities.Thesis
+﻿@model DiplomaManagement.Models.PromoterThesisViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -22,19 +22,48 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PdfFiles)
-        </dt>
-@*         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PdfFile.Id)
-        </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PresentationFile)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PresentationFile.Id)
-        </dd>
     </dl>
+    @if (Model.SystemFiles != null)
+    {
+        var index = 0;
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Nr.</th>
+                    <th>File Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var file in Model.SystemFiles)
+                {
+                    <tr>
+                        <th>@index</th>
+                        <th>
+                            @file.FileName
+                        </th>
+                        <td>
+                            <a asp-action="Download" asp-route-id="@file.Id" class="btn btn-primary">Download</a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            </tbody>
+        </table>
+    }
+
+    <form asp-action="AddOriginal" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="@Model.Id" />
+        
+        <div class="form-group">
+            <label asp-for="PdfFile" class="control-label"></label>
+            <input asp-for="PdfFile" type="file" class="form-control" accept=".pdf" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Add" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

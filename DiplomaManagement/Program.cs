@@ -27,8 +27,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-// repositories registration
+// repositories/services registration
 builder.Services.AddScoped<InstituteRepository>();
+builder.Services.AddScoped<StudentRepository>();
 
 var app = builder.Build();
 

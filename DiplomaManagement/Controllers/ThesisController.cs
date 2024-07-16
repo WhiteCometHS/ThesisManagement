@@ -18,13 +18,15 @@ namespace DiplomaManagement.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
 
-        public ThesisController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration, INotificationService notificationService)
+        public ThesisController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _env = env;
             _configuration = configuration;
             _notificationService = notificationService;
         }
@@ -35,12 +37,12 @@ namespace DiplomaManagement.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var promoter = await _context.Promoters
-            .Include(p => p.Theses)
+            Promoter? promoter = await _context.Promoters
+                .Include(p => p.Theses)
                 .ThenInclude(t => t.PdfFiles)
-            .Include(p => p.Theses)
+                .Include(p => p.Theses)
                 .ThenInclude(t => t.PresentationFile)
-            .FirstOrDefaultAsync(p => p.PromoterUserId == user.Id);
+                .FirstOrDefaultAsync(p => p.PromoterUserId == user.Id);
 
             return View(promoter.Theses);
         }
@@ -51,6 +53,7 @@ namespace DiplomaManagement.Controllers
             ApplicationUser? user = await _userManager.GetUserAsync(User);
 
             Student? student = await _context.Students
+            .Include(s => s.Thesis)
             .FirstOrDefaultAsync(p => p.StudentUserId == user.Id);
 
             List<Thesis> theses = await _context.Theses
@@ -59,28 +62,44 @@ namespace DiplomaManagement.Controllers
                 .Where(t => t.Promoter.User.InstituteId == user.InstituteId && !t.Enrollments.Any(u => u.StudentId == student.Id))
                 .ToListAsync();
 
+            if (student.Thesis != null) 
+            {
+                ViewBag.Thesis = student.Thesis;  
+            }
+
             return View(theses);
         }
 
         // GET: Thesis/Details/5
-        [Authorize(Roles = "Promoter")]
-        public async Task<IActionResult> Details(int? id)
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var thesis = await _context.Theses
                 .Include(t => t.PdfFiles)
                 .Include(t => t.PresentationFile)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (thesis == null)
             {
                 return NotFound();
             }
+            else 
+            {
+                var viewModel = new PromoterThesisViewModel{
+                    Id = id,
+                    Title = thesis.Title,
+                    Description = thesis.Description,
+                    PromoterId = thesis.PromoterId,
+                };
 
-            return View(thesis);
+                List<PdfFile> examplePdfs = thesis.PdfFiles.Where(p => p.PdfType == PdfType.example).ToList();
+                if (examplePdfs != null)
+                {
+                    viewModel.SystemFiles = examplePdfs;
+                }
+
+                return View(viewModel);
+            }
         }
 
         // GET: Thesis/Create
@@ -133,7 +152,7 @@ namespace DiplomaManagement.Controllers
                 var fileExtension = Path.GetExtension(vm.PdfFile.FileName);
                 var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
                 var fileName = $"{originalFileName}_{timeStamp}{fileExtension}";
-                var path = _configuration.GetSection("FileManagement:SystemFileUploads").Value;
+                var path = Path.Combine(_env.WebRootPath, _configuration.GetSection("FileManagement:SystemFileUploads").Value);
                 var filePath = Path.Combine(path, fileName);
 
                 var stream = new FileStream(filePath, FileMode.Create);
@@ -197,13 +216,12 @@ namespace DiplomaManagement.Controllers
             {
                 try
                 {
-                    var thesis = new Thesis
-                    {
-                        Id = (int)vm.Id,
-                        Title = vm.Title,
-                        Description = vm.Description,
-                        PromoterId = vm.PromoterId,
-                    };
+                    Thesis? thesis = await _context.Theses
+                        .Include(p => p.PdfFiles)
+                        .FirstOrDefaultAsync(m => m.Id == (int)vm.Id);
+
+                    thesis.Title = vm.Title;
+                    thesis.Description = vm.Description;
 
                     _context.Update(thesis);
 
@@ -213,7 +231,7 @@ namespace DiplomaManagement.Controllers
                         var fileExtension = Path.GetExtension(vm.PdfFile.FileName);
                         var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
                         var fileName = $"{originalFileName}_{timeStamp}{fileExtension}";
-                        var path = _configuration.GetSection("FileManagement:SystemFileUploads").Value;
+                        var path = Path.Combine(_env.WebRootPath, _configuration.GetSection("FileManagement:SystemFileUploads").Value);
                         var filePath = Path.Combine(path, fileName);
 
                         using (var stream = new FileStream(filePath, FileMode.Create))

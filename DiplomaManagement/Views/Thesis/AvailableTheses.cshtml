@@ -24,6 +24,14 @@ else if (!string.IsNullOrEmpty(enrollmentCreationError))
     </div>
 }
 
+@if (ViewBag.Thesis != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="info-message">
+        You already have assigned thesis. You won't be able to enroll for another one.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -53,7 +61,11 @@ else if (!string.IsNullOrEmpty(enrollmentCreationError))
                     @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
                 </td>
                 <td>
-                    <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">Enroll in</a>
+                    @if (ViewBag.Thesis == null) 
+                    {
+                        <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">Enroll in</a>
+                    }
+                
                 </td>
             </tr>
         }

@@ -11,5 +11,7 @@ namespace DiplomaManagement.Entities
         public virtual ApplicationUser? User { get; set; }
 
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
+
+        public virtual Thesis? Thesis { get; set; }
     }
 }
