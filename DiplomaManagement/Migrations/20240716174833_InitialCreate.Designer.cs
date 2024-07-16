@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240715175528_InitialCreate")]
+    [Migration("20240716174833_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -340,7 +340,9 @@ namespace DiplomaManagement.Migrations
 
                     b.HasIndex("PromoterId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId")
+                        .IsUnique()
+                        .HasFilter("[StudentId] IS NOT NULL");
 
                     b.ToTable("Theses");
                 });
@@ -577,8 +579,8 @@ namespace DiplomaManagement.Migrations
                         .IsRequired();
 
                     b.HasOne("DiplomaManagement.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
+                        .WithOne("Thesis")
+                        .HasForeignKey("DiplomaManagement.Entities.Thesis", "StudentId");
 
                     b.Navigation("PresentationFile");
 
@@ -665,6 +667,8 @@ namespace DiplomaManagement.Migrations
             modelBuilder.Entity("DiplomaManagement.Entities.Student", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Thesis");
                 });
 
             modelBuilder.Entity("DiplomaManagement.Entities.Thesis", b =>

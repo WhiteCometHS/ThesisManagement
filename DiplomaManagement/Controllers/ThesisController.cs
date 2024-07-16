@@ -53,8 +53,8 @@ namespace DiplomaManagement.Controllers
             ApplicationUser? user = await _userManager.GetUserAsync(User);
 
             Student? student = await _context.Students
-            .Include(s => s.Thesis)
-            .FirstOrDefaultAsync(p => p.StudentUserId == user.Id);
+                .Include(s => s.Thesis)
+                .FirstOrDefaultAsync(p => p.StudentUserId == user.Id);
 
             List<Thesis> theses = await _context.Theses
                 .Include(t => t.Promoter)

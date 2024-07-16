@@ -445,7 +445,9 @@ namespace DiplomaManagement.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Theses_StudentId",
                 table: "Theses",
-                column: "StudentId");
+                column: "StudentId",
+                unique: true,
+                filter: "[StudentId] IS NOT NULL");
         }
 
         /// <inheritdoc />
