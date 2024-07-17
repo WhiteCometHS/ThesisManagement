@@ -86,10 +86,10 @@ namespace DiplomaManagement.Data
                 .HasForeignKey(t => t.ThesisId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Thesis>()
-                .HasOne(t => t.PresentationFile)
-                .WithOne()
-                .HasForeignKey<Thesis>(t => t.PresentationFileId)
+            modelBuilder.Entity<PresentationFile>()
+                .HasOne(p => p.Thesis)
+                .WithOne(t => t.PresentationFile)
+                .HasForeignKey<PresentationFile>(p => p.ThesisId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 

@@ -74,7 +74,7 @@ namespace DiplomaManagement.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Details(int id)
         {
-            var thesis = await _context.Theses
+            Thesis? thesis = await _context.Theses
                 .Include(t => t.PdfFiles)
                 .Include(t => t.PresentationFile)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -98,8 +98,76 @@ namespace DiplomaManagement.Controllers
                     viewModel.SystemFiles = examplePdfs;
                 }
 
+                ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
+                ViewBag.PresentationFile = thesis.PresentationFile;
+
                 return View(viewModel);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddStudentFiles(PromoterThesisViewModel vm)
+        {
+            Thesis? thesis = await _context.Theses
+                .FirstOrDefaultAsync(m => m.Id == vm.Id);
+
+            if (vm.PdfFile != null)
+            {
+                var originalFileName = Path.GetFileNameWithoutExtension(vm.PdfFile.FileName);
+                var fileExtension = Path.GetExtension(vm.PdfFile.FileName);
+                var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var fileName = $"{originalFileName}_{timeStamp}{fileExtension}";
+                var path = Path.Combine(_env.WebRootPath, _configuration.GetSection("FileManagement:SystemFileUploads").Value);
+                var filePath = Path.Combine(path, fileName);
+
+                var stream = new FileStream(filePath, FileMode.Create);
+                await vm.PdfFile.CopyToAsync(stream);
+
+                var uploadedFile = new PdfFile
+                {
+                    Uploaded = DateTime.Now,
+                    FileType = vm.PdfFile.ContentType,
+                    FileName = fileName,
+                    PdfType = PdfType.original,
+                    FilePath = filePath,
+                    Extension = fileExtension,
+                    Thesis = thesis,
+                };
+
+                await _context.PdfFiles.AddAsync(uploadedFile);
+            }
+
+            if (vm.PresentationFile != null)
+            {
+                var originalFileName = Path.GetFileNameWithoutExtension(vm.PresentationFile.FileName);
+                var fileExtension = Path.GetExtension(vm.PresentationFile.FileName);
+                var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var fileName = $"{originalFileName}_{timeStamp}{fileExtension}";
+                var path = Path.Combine(_env.WebRootPath, _configuration.GetSection("FileManagement:SystemPresentationUploads").Value);
+                var filePath = Path.Combine(path, fileName);
+
+                var stream = new FileStream(filePath, FileMode.Create);
+                await vm.PresentationFile.CopyToAsync(stream);
+
+                var uploadedFile = new PresentationFile
+                {
+                    Uploaded = DateTime.Now,
+                    FileType = vm.PdfFile.ContentType,
+                    FileName = fileName,
+                    FilePath = filePath,
+                    Extension = fileExtension,
+                    Thesis = thesis,
+                };
+
+                await _context.PresentationFiles.AddAsync(uploadedFile);
+            }
+
+            await _context.SaveChangesAsync();
+
+            _notificationService.AddNotification($"FilesAdded_{User.Identity.Name}", "Your files has been added to the system. Please, wait for promoter to check it.");
+            return RedirectToAction(nameof(Details), new { id = vm.Id });
         }
 
         // GET: Thesis/Create

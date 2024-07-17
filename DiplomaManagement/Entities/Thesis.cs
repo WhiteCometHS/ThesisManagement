@@ -16,8 +16,6 @@ namespace DiplomaManagement.Entities
 
         public virtual ICollection<PdfFile>? PdfFiles { get; set; }
 
-        public int? PresentationFileId { get; set; } 
-
         public virtual PresentationFile? PresentationFile { get; set; }
 
         [Column(TypeName = "nvarchar(24)")]

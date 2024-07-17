@@ -20,7 +20,7 @@ namespace DiplomaManagement.Entities
 
         public int ThesisId { get; set; }
 
-        public virtual Thesis Thesis { get; set; }
+        public virtual Thesis? Thesis { get; set; }
     }
 
     public enum PdfType

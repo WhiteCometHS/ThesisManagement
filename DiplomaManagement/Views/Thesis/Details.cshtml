@@ -1,10 +1,22 @@
-﻿@model DiplomaManagement.Models.PromoterThesisViewModel
+﻿@using DiplomaManagement.Services
+@model DiplomaManagement.Models.PromoterThesisViewModel
+
+@inject INotificationService NotificationService
 
 @{
     ViewData["Title"] = "Details";
+    var notificationMessage = NotificationService.GetNotification($"FilesAdded_{User.Identity.Name}");
 }
 
 <h1>Details</h1>
+@if (!string.IsNullOrEmpty(notificationMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="info-message">
+        @notificationMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 
 <div>
     <h4>Thesis</h4>
@@ -23,6 +35,7 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
     </dl>
+
     @if (Model.SystemFiles != null)
     {
         var index = 0;
@@ -52,18 +65,69 @@
         </table>
     }
 
-    <form asp-action="AddOriginal" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="@Model.Id" />
-        
-        <div class="form-group">
-            <label asp-for="PdfFile" class="control-label"></label>
-            <input asp-for="PdfFile" type="file" class="form-control" accept=".pdf" />
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Add" class="btn btn-primary" />
-        </div>
-    </form>
+    @if (ViewBag.OriginalPdf != null)
+    {
+        var pdf = ViewBag.OriginalPdf;
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <td>
+                        @pdf.FileName
+                    </td>
+                    <td>
+                        <a asp-action="Download" asp-route-id="@pdf.Id" class="btn btn-primary">Download</a>
+                    </td>
+                    <td>Status</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    @if (ViewBag.PresentationFile != null)
+    {
+        var presentation = ViewBag.PresentationFile;
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <td>
+                        @presentation.FileName
+                    </td>
+                    <td>
+                        <a asp-action="Download" asp-route-id="@presentation.Id" class="btn btn-primary">Download</a>
+                    </td>
+                    <td>Status</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    @if (ViewBag.OriginalPdf == null || ViewBag.PresentationFile == null)
+    {
+        <form asp-action="AddStudentFiles" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@Model.Id" />
+
+            @if (ViewBag.OriginalPdf == null)
+            {
+                <div class="form-group">
+                    <label asp-for="PdfFile" class="control-label"></label>
+                    <input asp-for="PdfFile" type="file" class="form-control" accept=".pdf" lang="en" />
+                </div>
+            }
+
+            @if (ViewBag.PresentationFile == null)
+            {
+                <div class="form-group">
+                    <label asp-for="PresentationFile" class="control-label"></label>
+                    <input asp-for="PresentationFile" type="file" class="form-control" accept=".pptx" lang="en" />
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+            </div>
+        </form>
+    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

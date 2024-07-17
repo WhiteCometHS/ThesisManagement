@@ -10,5 +10,7 @@ namespace DiplomaManagement.Models
         public string Description { get; set; }
         public int PromoterId { get; set; }
         public IFormFile? PdfFile { get; set; }
+
+        public IFormFile? PresentationFile { get; set; }
     }
 }

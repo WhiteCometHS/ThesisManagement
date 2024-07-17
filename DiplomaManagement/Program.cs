@@ -3,7 +3,9 @@ using DiplomaManagement.Repositories;
 using DiplomaManagement.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +40,6 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     await Initializer.CreateAdminUser(services);
 }
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

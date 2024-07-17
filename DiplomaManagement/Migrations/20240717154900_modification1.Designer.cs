@@ -4,6 +4,7 @@ using DiplomaManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240717154900_modification1")]
+    partial class modification1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,13 +257,15 @@ namespace DiplomaManagement.Migrations
                     b.Property<int>("ThesisId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ThesisId2")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Uploaded")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThesisId")
-                        .IsUnique();
+                    b.HasIndex("ThesisId2");
 
                     b.ToTable("PresentationFiles");
                 });
@@ -325,6 +330,9 @@ namespace DiplomaManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PresentationFileId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PromoterId")
                         .HasColumnType("int");
 
@@ -340,6 +348,10 @@ namespace DiplomaManagement.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PresentationFileId")
+                        .IsUnique()
+                        .HasFilter("[PresentationFileId] IS NOT NULL");
 
                     b.HasIndex("PromoterId");
 
@@ -541,10 +553,8 @@ namespace DiplomaManagement.Migrations
             modelBuilder.Entity("DiplomaManagement.Entities.PresentationFile", b =>
                 {
                     b.HasOne("DiplomaManagement.Entities.Thesis", "Thesis")
-                        .WithOne("PresentationFile")
-                        .HasForeignKey("DiplomaManagement.Entities.PresentationFile", "ThesisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ThesisId2");
 
                     b.Navigation("Thesis");
                 });
@@ -581,6 +591,11 @@ namespace DiplomaManagement.Migrations
 
             modelBuilder.Entity("DiplomaManagement.Entities.Thesis", b =>
                 {
+                    b.HasOne("DiplomaManagement.Entities.PresentationFile", "PresentationFile")
+                        .WithOne()
+                        .HasForeignKey("DiplomaManagement.Entities.Thesis", "PresentationFileId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("DiplomaManagement.Entities.Promoter", "Promoter")
                         .WithMany("Theses")
                         .HasForeignKey("PromoterId")
@@ -590,6 +605,8 @@ namespace DiplomaManagement.Migrations
                     b.HasOne("DiplomaManagement.Entities.Student", "Student")
                         .WithOne("Thesis")
                         .HasForeignKey("DiplomaManagement.Entities.Thesis", "StudentId");
+
+                    b.Navigation("PresentationFile");
 
                     b.Navigation("Promoter");
 
@@ -683,8 +700,6 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("PdfFiles");
-
-                    b.Navigation("PresentationFile");
                 });
 #pragma warning restore 612, 618
         }
