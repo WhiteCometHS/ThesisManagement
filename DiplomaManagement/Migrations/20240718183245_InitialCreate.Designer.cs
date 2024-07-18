@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240717154900_modification1")]
-    partial class modification1
+    [Migration("20240718183245_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,6 +209,9 @@ namespace DiplomaManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FileStatus")
+                        .HasColumnType("nvarchar(24)");
+
                     b.Property<string>("FileType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -250,6 +253,10 @@ namespace DiplomaManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FileStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(24)");
+
                     b.Property<string>("FileType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -257,15 +264,13 @@ namespace DiplomaManagement.Migrations
                     b.Property<int>("ThesisId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ThesisId2")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Uploaded")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThesisId2");
+                    b.HasIndex("ThesisId")
+                        .IsUnique();
 
                     b.ToTable("PresentationFiles");
                 });
@@ -330,9 +335,6 @@ namespace DiplomaManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PresentationFileId")
-                        .HasColumnType("int");
-
                     b.Property<int>("PromoterId")
                         .HasColumnType("int");
 
@@ -348,10 +350,6 @@ namespace DiplomaManagement.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PresentationFileId")
-                        .IsUnique()
-                        .HasFilter("[PresentationFileId] IS NOT NULL");
 
                     b.HasIndex("PromoterId");
 
@@ -553,8 +551,10 @@ namespace DiplomaManagement.Migrations
             modelBuilder.Entity("DiplomaManagement.Entities.PresentationFile", b =>
                 {
                     b.HasOne("DiplomaManagement.Entities.Thesis", "Thesis")
-                        .WithMany()
-                        .HasForeignKey("ThesisId2");
+                        .WithOne("PresentationFile")
+                        .HasForeignKey("DiplomaManagement.Entities.PresentationFile", "ThesisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Thesis");
                 });
@@ -591,11 +591,6 @@ namespace DiplomaManagement.Migrations
 
             modelBuilder.Entity("DiplomaManagement.Entities.Thesis", b =>
                 {
-                    b.HasOne("DiplomaManagement.Entities.PresentationFile", "PresentationFile")
-                        .WithOne()
-                        .HasForeignKey("DiplomaManagement.Entities.Thesis", "PresentationFileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("DiplomaManagement.Entities.Promoter", "Promoter")
                         .WithMany("Theses")
                         .HasForeignKey("PromoterId")
@@ -605,8 +600,6 @@ namespace DiplomaManagement.Migrations
                     b.HasOne("DiplomaManagement.Entities.Student", "Student")
                         .WithOne("Thesis")
                         .HasForeignKey("DiplomaManagement.Entities.Thesis", "StudentId");
-
-                    b.Navigation("PresentationFile");
 
                     b.Navigation("Promoter");
 
@@ -700,6 +693,8 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("PdfFiles");
+
+                    b.Navigation("PresentationFile");
                 });
 #pragma warning restore 612, 618
         }

@@ -134,6 +134,7 @@ namespace DiplomaManagement.Controllers
                     FilePath = filePath,
                     Extension = fileExtension,
                     Thesis = thesis,
+                    FileStatus = FileStatus.NotVerified
                 };
 
                 await _context.PdfFiles.AddAsync(uploadedFile);
@@ -159,6 +160,7 @@ namespace DiplomaManagement.Controllers
                     FilePath = filePath,
                     Extension = fileExtension,
                     Thesis = thesis,
+                    FileStatus = FileStatus.NotVerified
                 };
 
                 await _context.PresentationFiles.AddAsync(uploadedFile);

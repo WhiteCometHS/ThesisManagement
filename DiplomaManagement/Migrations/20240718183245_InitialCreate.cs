@@ -44,21 +44,6 @@ namespace DiplomaManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PresentationFiles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PresentationFiles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -272,19 +257,12 @@ namespace DiplomaManagement.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PromoterId = table.Column<int>(type: "int", nullable: false),
-                    PresentationFileId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(24)", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Theses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Theses_PresentationFiles_PresentationFileId",
-                        column: x => x.PresentationFileId,
-                        principalTable: "PresentationFiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Theses_Promoters_PromoterId",
                         column: x => x.PromoterId,
@@ -335,13 +313,39 @@ namespace DiplomaManagement.Migrations
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PdfType = table.Column<string>(type: "nvarchar(24)", nullable: false),
-                    ThesisId = table.Column<int>(type: "int", nullable: false)
+                    ThesisId = table.Column<int>(type: "int", nullable: false),
+                    FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PdfFiles", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PdfFiles_Theses_ThesisId",
+                        column: x => x.ThesisId,
+                        principalTable: "Theses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PresentationFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ThesisId = table.Column<int>(type: "int", nullable: false),
+                    FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PresentationFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PresentationFiles_Theses_ThesisId",
                         column: x => x.ThesisId,
                         principalTable: "Theses",
                         principalColumn: "Id",
@@ -414,6 +418,12 @@ namespace DiplomaManagement.Migrations
                 column: "ThesisId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PresentationFiles_ThesisId",
+                table: "PresentationFiles",
+                column: "ThesisId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Promoters_DirectorId",
                 table: "Promoters",
                 column: "DirectorId");
@@ -429,13 +439,6 @@ namespace DiplomaManagement.Migrations
                 table: "Students",
                 column: "StudentUserId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Theses_PresentationFileId",
-                table: "Theses",
-                column: "PresentationFileId",
-                unique: true,
-                filter: "[PresentationFileId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Theses_PromoterId",
@@ -475,13 +478,13 @@ namespace DiplomaManagement.Migrations
                 name: "PdfFiles");
 
             migrationBuilder.DropTable(
+                name: "PresentationFiles");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Theses");
-
-            migrationBuilder.DropTable(
-                name: "PresentationFiles");
 
             migrationBuilder.DropTable(
                 name: "Promoters");
