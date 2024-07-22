@@ -2,3 +2,34 @@
     font-weight: bold;
     margin-bottom: 10px;
 }
+
+.toggle-switch {
+    display: flex;
+}
+
+.state-off,
+.state-none,
+.state-on {
+    width: 33.3333%;
+    transition: 0.5s;
+    display: grid;
+    place-items: center;
+}
+
+.activated-state-off {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.activated-state-none {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.activated-state-on {
+    color: #fff;
+    background-color: #198754;
+    border-color: #198754;
+}

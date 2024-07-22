@@ -86,6 +86,8 @@ namespace DiplomaManagement.Controllers
             if (user != null)
             {
                 List<Thesis> theses = await _context.Theses
+                    .Include(t => t.Student)
+                        .ThenInclude(p => p.User)
                     .Where(t => t.Promoter != null && t.Promoter.User != null && t.Promoter.User.Id == user.Id && t.StudentId != null)
                     .ToListAsync();
 
@@ -124,6 +126,35 @@ namespace DiplomaManagement.Controllers
                 {
                     viewModel.SystemFiles = examplePdfs;
                 }
+
+                ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
+                ViewBag.PresentationFile = thesis.PresentationFile;
+
+                return View(viewModel);
+            }
+        }
+
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> PromoterDetails(int id)
+        {
+            Thesis? thesis = await _context.Theses
+                .Include(t => t.PdfFiles)
+                .Include(t => t.PresentationFile)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (thesis == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var viewModel = new PromoterThesisViewModel
+                {
+                    Id = id,
+                    Title = thesis.Title,
+                    Description = thesis.Description,
+                    PromoterId = thesis.PromoterId,
+                };
 
                 ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
                 ViewBag.PresentationFile = thesis.PresentationFile;
@@ -424,6 +455,37 @@ namespace DiplomaManagement.Controllers
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(fileBytes, file.FileType, file.FileName);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> UpdateFileStatus(int id, string status)
+        {
+            var file = await _context.PdfFiles.FindAsync(id);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            switch (status)
+            {
+                case "Accepted":
+                    file.FileStatus = FileStatus.Accepted;
+                    break;
+                case "NotAccepted":
+                    file.FileStatus = FileStatus.NotAccepted;
+                    break;
+                case "NotVerified":
+                    file.FileStatus = FileStatus.NotVerified;
+                    break;
+            }
+
+            _context.Update(file);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
 
         // POST: Thesis/DeleteExamplePdf/5
         [HttpPost]

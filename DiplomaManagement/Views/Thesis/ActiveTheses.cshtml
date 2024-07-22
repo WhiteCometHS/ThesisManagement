@@ -1,0 +1,71 @@
+﻿@using DiplomaManagement.Services
+@model IEnumerable<DiplomaManagement.Entities.Thesis>
+
+@inject INotificationService NotificationService
+
+@{
+    ViewData["Title"] = "Index";
+    //var notificationMessage = NotificationService.GetNotification($"MaxThesisLimit_{User.Identity.Name}");
+}
+
+<h1>Index</h1>
+@* @if (!string.IsNullOrEmpty(notificationMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="info-message">
+        @notificationMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+} *@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Student
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
+                </td>
+                <td>
+                    <a asp-action="PromoterDetails" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @*     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var MessageElement = document.getElementById('info-message');
+            if (MessageElement) {
+                setTimeout(function () {
+                    var alert = new bootstrap.Alert(MessageElement);
+                    alert.close();
+                }, 5000);
+            }
+        });
+    </script> *@
+}

@@ -41,7 +41,7 @@
         </dd>
     </dl>
 
-    @if (Model.SystemFiles != null)
+    @if (Model.SystemFiles != null && Model.SystemFiles.Count > 0)
     {
         var index = 0;
         <div class="additional-materials text-center">
