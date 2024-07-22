@@ -38,13 +38,21 @@ namespace DiplomaManagement.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             Promoter? promoter = await _context.Promoters
-                .Include(p => p.Theses)
-                .ThenInclude(t => t.PdfFiles)
-                .Include(p => p.Theses)
-                .ThenInclude(t => t.PresentationFile)
+                .Include(p => p.Theses!)
+                    .ThenInclude(t => t.PdfFiles)
+                .Include(p => p.Theses!)
+                    .ThenInclude(t => t.PresentationFile)
                 .FirstOrDefaultAsync(p => p.PromoterUserId == user.Id);
 
-            return View(promoter.Theses);
+            if(promoter != null) 
+            {
+                if (promoter.Theses == null)
+                    return View(new List<Thesis>());
+                else
+                    return View(promoter.Theses);
+            }
+            else 
+                return NotFound();
         }
 
         [Authorize(Roles = "Student")]
@@ -68,6 +76,25 @@ namespace DiplomaManagement.Controllers
             }
 
             return View(theses);
+        }
+
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> ActiveTheses()
+        {
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                List<Thesis> theses = await _context.Theses
+                    .Where(t => t.Promoter != null && t.Promoter.User != null && t.Promoter.User.Id == user.Id && t.StudentId != null)
+                    .ToListAsync();
+
+                return View(theses);
+            }
+            else 
+            {
+                return NotFound();
+            }
         }
 
         // GET: Thesis/Details/5

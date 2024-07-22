@@ -4,19 +4,19 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@inject StudentRepository StudentRepository
+@inject ThesisRepository ThesisRepository
 
 @{
-    var user = await UserManager.GetUserAsync(User);
+    ApplicationUser? user = await UserManager.GetUserAsync(User);
 }
 
-@if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(user, "Student"))
+@if (SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Student"))
 {
     <li class="nav-item">
         <a class="nav-link text-dark" asp-controller="Thesis" asp-action="AvailableTheses">Theses</a>
     </li>
 
-    var thesisId = await StudentRepository.GetStudentThesisAsync(user.Id);
+    var thesisId = await ThesisRepository.GetStudentThesisAsync(user.Id);
     @if (thesisId != null) 
     {
         <li class="nav-item">
