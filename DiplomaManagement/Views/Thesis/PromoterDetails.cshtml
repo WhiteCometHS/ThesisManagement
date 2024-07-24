@@ -174,7 +174,6 @@
 
             document.querySelectorAll('.toggle-switch button').forEach(button => {
                 button.addEventListener('click', function () {
-                    const button = this;
                     const toggleSwitch = button.closest('.toggle-switch');
                     const fileId = toggleSwitch.getAttribute('data-file-id');
                     const status = button.getAttribute('data-status');
@@ -188,9 +187,15 @@
                             status: status
                         },
                         success: function () {
-                            alert("File status updated successfully.");                            
+                            alert("File status updated successfully.");
 
-                            $(".toggle-switch button").removeClass("activated-state-off activated-state-none activated-state-on");
+                            const parentDiv = button.closest('.toggle-switch');
+                            const buttons = parentDiv.querySelectorAll('button');
+
+                            buttons.forEach(btn => {
+                                btn.classList.remove('activated-state-off', 'activated-state-none', 'activated-state-on');
+                            });
+
                             if (status === "NotAccepted") {
                                 $(button).addClass("activated-state-off");
                             } else if (status === "NotVerified") {
