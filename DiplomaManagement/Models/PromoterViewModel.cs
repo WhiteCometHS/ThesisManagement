@@ -31,9 +31,15 @@ namespace DiplomaManagement.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        [Display(Name = "Thesis Limit")]
+        public int? ThesisLimit { get; set; }
+
         [Required]
         public int DirectorId { get; set; }
 
         public Director? Director { get; set; }
+
+        [Display(Name = "Is Seminar Leader?")]
+        public bool isSeminarLeader { get; set; }
     }
 }

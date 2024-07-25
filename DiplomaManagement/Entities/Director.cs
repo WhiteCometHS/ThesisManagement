@@ -15,10 +15,5 @@ namespace DiplomaManagement.Entities
         public virtual Institute? Institute { get; set; }*/
 
         public virtual ICollection<Promoter>? Promoters { get; set; }
-
-        public override string ToString()
-        {
-            return $"{User.FirstName} {User.LastName}";
-        }
     }
 }

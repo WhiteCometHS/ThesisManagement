@@ -70,12 +70,13 @@ namespace DiplomaManagement.Controllers
         {
             List<Director> directorUsers = _context.Directors
                 .Include(d => d.User)
+                    .ThenInclude(u => u.Institute)
                 .ToList();
 
             List<SelectListItem> directorsSelectList = directorUsers.Select(u => new SelectListItem
             {
                 Value = u.Id.ToString(),
-                Text = $"{u.User.FirstName} {u.User.LastName}"
+                Text = $"{u.User.FirstName} {u.User.LastName} ({u.User.Institute.Name})"
             }).ToList();
 
             ViewBag.Directors = new SelectList(directorsSelectList, "Value", "Text");
@@ -111,6 +112,11 @@ namespace DiplomaManagement.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Promoter");
 
+                    if (promoterViewModel.isSeminarLeader)
+                    {
+                        await _userManager.AddToRoleAsync(user, "SeminarLeader");
+                    }
+
                     Promoter promoter = new Promoter
                     {
                         PromoterUserId = user.Id,
@@ -128,7 +134,18 @@ namespace DiplomaManagement.Controllers
                 }
             }
 
-            ViewData["Institutes"] = new SelectList(_context.Institutes, "Id", "Name");
+            List<Director> directorUsers = _context.Directors
+               .Include(d => d.User)
+                   .ThenInclude(u => u.Institute)
+               .ToList();
+
+            List<SelectListItem> directorsSelectList = directorUsers.Select(u => new SelectListItem
+            {
+                Value = u.Id.ToString(),
+                Text = $"{u.User.FirstName} {u.User.LastName} ({u.User.Institute.Name})"
+            }).ToList();
+
+            ViewBag.Directors = new SelectList(directorsSelectList, "Value", "Text");
             return View(promoterViewModel);
         }
 
@@ -150,9 +167,28 @@ namespace DiplomaManagement.Controllers
                 return NotFound();
             }
 
-            DetailsViewModel<Promoter> detailsViewModel = new DetailsViewModel<Promoter>
+            PromoterViewModel promoterViewModel = new PromoterViewModel
             {
-                Entity = promoter,
+                Id = promoter.Id,
+                FirstName = promoter.User.FirstName,
+                LastName = promoter.User.LastName,
+                Email = promoter.User.Email,
+                ThesisLimit = promoter.ThesisLimit,
+                DirectorId = promoter.DirectorId
+            };
+
+            if (await _userManager.IsInRoleAsync(promoter.User, "SeminarLeader"))
+            {
+                promoterViewModel.isSeminarLeader = true;
+            }
+            else
+            {
+                promoterViewModel.isSeminarLeader = false;
+            }
+
+            DetailsViewModel<PromoterViewModel> detailsViewModel = new DetailsViewModel<PromoterViewModel>
+            {
+                Entity = promoterViewModel,
                 ResetPasswordViewModel = new ResetPasswordViewModel
                 {
                     Id = promoter.Id
@@ -161,12 +197,13 @@ namespace DiplomaManagement.Controllers
 
             List<Director> directorUsers = _context.Directors
                 .Include(d => d.User)
+                    .ThenInclude(u => u.Institute)
                 .ToList();
 
             List<SelectListItem> directorsSelectList = directorUsers.Select(u => new SelectListItem
             {
                 Value = u.Id.ToString(),
-                Text = $"{u.User.FirstName} {u.User.LastName}"
+                Text = $"{u.User.FirstName} {u.User.LastName} ({u.User.Institute.Name})"
             }).ToList();
 
             ViewBag.Directors = new SelectList(directorsSelectList, "Value", "Text");
@@ -178,52 +215,57 @@ namespace DiplomaManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Promoter promoter)
+        public async Task<IActionResult> Edit(int id, DetailsViewModel<PromoterViewModel> detailsViewModel)
         {
-            if (id != promoter.Id)
+            if (id != detailsViewModel.Entity.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var existingPromoter = await _context.Promoters
+                    .Include(d => d.User)
+                    .FirstOrDefaultAsync(d => d.Id == id);
+
+                if (existingPromoter == null)
                 {
-                    var existingPromoter = await _context.Promoters
-                        .Include(d => d.User)
-                        .FirstOrDefaultAsync(d => d.Id == id);
-
-                    if (existingPromoter == null)
-                    {
-                        return NotFound();
-                    }
-
-                    existingPromoter.ThesisLimit = promoter.ThesisLimit;
-                    existingPromoter.User.FirstName = promoter.User.FirstName;
-                    existingPromoter.User.LastName = promoter.User.LastName;
-                    existingPromoter.User.Email = promoter.User.Email;
-
-
-                    existingPromoter.DirectorId = promoter.DirectorId;
-
-                    _context.Update(existingPromoter.User);
-                    _context.Update(existingPromoter);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                // basicaly it's not nedded (only if we have more that one administrator)
-                catch (DbUpdateConcurrencyException)
+
+                existingPromoter.ThesisLimit = detailsViewModel.Entity.ThesisLimit ?? 0;
+                existingPromoter.User.FirstName = detailsViewModel.Entity.FirstName;
+                existingPromoter.User.LastName = detailsViewModel.Entity.LastName;
+                existingPromoter.User.Email = detailsViewModel.Entity.Email;
+                existingPromoter.DirectorId = detailsViewModel.Entity.DirectorId;
+
+                if (detailsViewModel.Entity.isSeminarLeader)
                 {
-                    if (!PromoterExists(promoter.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await _userManager.AddToRoleAsync(existingPromoter.User, "SeminarLeader");
                 }
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    await _userManager.RemoveFromRoleAsync(existingPromoter.User, "SeminarLeader");
+                }
+
+                _context.Update(existingPromoter.User);
+                _context.Update(existingPromoter);
+                await _context.SaveChangesAsync();
             }
+            // basicaly it's not nedded (only if we have more that one administrator)
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PromoterExists(detailsViewModel.Entity.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+            
 
             List<Director> directorUsers = _context.Directors
             .Include(d => d.User)
@@ -236,7 +278,7 @@ namespace DiplomaManagement.Controllers
             }).ToList();
 
             ViewBag.Directors = new SelectList(directorsSelectList, "Value", "Text");
-            return View(promoter);
+            return View(detailsViewModel);
         }
 
         // GET: Promoter/Delete/5

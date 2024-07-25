@@ -21,6 +21,7 @@ namespace DiplomaManagement.Data
                 await roleManager.CreateAsync(new IdentityRole("Director"));
                 await roleManager.CreateAsync(new IdentityRole("Promoter"));
                 await roleManager.CreateAsync(new IdentityRole("Student"));
+                await roleManager.CreateAsync(new IdentityRole("SeminarLeader"));
             }
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);

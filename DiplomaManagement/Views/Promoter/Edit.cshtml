@@ -1,4 +1,4 @@
-﻿@model DiplomaManagement.Models.DetailsViewModel<DiplomaManagement.Entities.Promoter>
+﻿@model DiplomaManagement.Models.DetailsViewModel<PromoterViewModel>
 @{
     ViewData["Title"] = "Edit";
 }
@@ -25,21 +25,21 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Entity.PromoterUserId" />
+            <input type="hidden" asp-for="Entity.Id" />
             <div class="form-group">
-                <label asp-for="Entity.User.FirstName" class="control-label"></label>
-                <input asp-for="Entity.User.FirstName" class="form-control" />
-                <span asp-validation-for="Entity.User.FirstName" class="text-danger"></span>
+                <label asp-for="Entity.FirstName" class="control-label"></label>
+                <input asp-for="Entity.FirstName" class="form-control" />
+                <span asp-validation-for="Entity.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.User.LastName" class="control-label"></label>
-                <input asp-for="Entity.User.LastName" class="form-control" />
-                <span asp-validation-for="Entity.User.LastName" class="text-danger"></span>
+                <label asp-for="Entity.LastName" class="control-label"></label>
+                <input asp-for="Entity.LastName" class="form-control" />
+                <span asp-validation-for="Entity.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.User.Email" class="control-label"></label>
-                <input asp-for="Entity.User.Email" class="form-control" />
-                <span asp-validation-for="Entity.User.Email" class="text-danger"></span>
+                <label asp-for="Entity.Email" class="control-label"></label>
+                <input asp-for="Entity.Email" class="form-control" />
+                <span asp-validation-for="Entity.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Entity.ThesisLimit" class="control-label"></label>
@@ -50,6 +50,10 @@
                 <label asp-for="Entity.DirectorId" class="control-label"></label>
                 <select asp-for="Entity.DirectorId" class="form-control" asp-items="ViewBag.Directors"></select>
                 <span asp-validation-for="Entity.DirectorId" class="text-danger"></span>
+            </div>
+            <div class="form-check">
+                <label asp-for="Entity.isSeminarLeader" class="form-check-label"></label>
+                <input asp-for="Entity.isSeminarLeader" class="form-check-input" type="checkbox">
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
