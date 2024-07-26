@@ -10,6 +10,9 @@
 @{
     ViewData["Title"] = "Details";
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
+    bool showTextareaForm = 
+        (ViewBag.OriginalPdf != null && ViewBag.OriginalPdf.FileStatus == FileStatus.NotAccepted) || 
+        (ViewBag.PresentationFile != null && ViewBag.PresentationFile.FileStatus == FileStatus.NotAccepted);
     //var notificationMessage = NotificationService.GetNotification($"FilesAdded_{User.Identity.Name}");
 }
 
@@ -141,6 +144,17 @@
                 </tbody>
             </table>
         }
+
+        <div id="textarea-form" @(showTextareaForm ? "" : "style='display:none;'")>
+            <form id="statusForm" method="post">
+                <div class="form-floating">
+                    <textarea name="comments" class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px">@Model.Comment</textarea>
+                    <label for="floatingTextarea" id="textareaLabel">Comments</label>
+                </div>
+                <input type="hidden" name="id" id="fileId" value="@Model.Id">
+                <button type="submit" class="btn btn-primary mt-2">Submit</button>
+            </form>
+        </div>
     }
 </div>
 <div>
@@ -198,16 +212,42 @@
 
                             if (status === "NotAccepted") {
                                 $(button).addClass("activated-state-off");
+                                $('#textarea-form').show();
+                                $('#statusForm').attr('action', '/Thesis/SetThesisComment');
+                                $('#textareaLabel').text('Leave a comment here:');
                             } else if (status === "NotVerified") {
                                 $(button).addClass("activated-state-none");
+                                $('#textarea-form').hide();
                             } else if (status === "Accepted") {
                                 $(button).addClass("activated-state-on");
+                                $('#textarea-form').show();
+                                $('#statusForm').attr('action', '/Thesis/AcceptedAction');
+                                $('#textareaLabel').text('Enter degree of advancement of the thesis:');
                             }
                         },
                         error: function () {
                             console.error("An error occurred while updating the file status.");
                         }
                     });
+                });
+            });
+
+            $('#statusForm').on('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var actionUrl = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    url: actionUrl,
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        alert("Comment updated successfully.");
+                    },
+                    error: function () {
+                        console.error("An error occurred while submitting the comment.");
+                    }
                 });
             });
         });

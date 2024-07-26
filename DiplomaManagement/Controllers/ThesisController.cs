@@ -154,6 +154,7 @@ namespace DiplomaManagement.Controllers
                     Title = thesis.Title,
                     Description = thesis.Description,
                     PromoterId = thesis.PromoterId,
+                    Comment = thesis.Comment
                 };
 
                 ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
@@ -484,6 +485,27 @@ namespace DiplomaManagement.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> SetThesisComment(int id, string comments)
+        {
+            Thesis? thesis = await _context.Theses.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (thesis == null)
+            {
+                return NotFound();
+            } 
+            else 
+            {
+                thesis.Comment = comments;
+                _context.Update(thesis);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Edit), new { id = id });
         }
 
 

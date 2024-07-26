@@ -12,5 +12,7 @@ namespace DiplomaManagement.Models
         public IFormFile? PdfFile { get; set; }
 
         public IFormFile? PresentationFile { get; set; }
+
+        public string? Comment { get; set; }
     }
 }

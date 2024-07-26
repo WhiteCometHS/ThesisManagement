@@ -258,7 +258,9 @@ namespace DiplomaManagement.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PromoterId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(24)", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: true)
+                    StudentId = table.Column<int>(type: "int", nullable: true),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ThesisSophistication = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

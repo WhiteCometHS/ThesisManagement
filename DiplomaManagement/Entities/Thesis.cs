@@ -25,6 +25,10 @@ namespace DiplomaManagement.Entities
 
         public virtual Student? Student { get; set; }
 
+        public string? Comment { get; set; }
+
+        public string? ThesisSophistication { get; set; }
+
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
     }
 
