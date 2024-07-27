@@ -1,6 +1,6 @@
 ﻿using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
-using DiplomaManagement.Services;
+using DiplomaManagement.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

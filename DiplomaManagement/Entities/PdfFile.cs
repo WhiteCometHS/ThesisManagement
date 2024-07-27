@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using DiplomaManagement.Interfaces;
 
 namespace DiplomaManagement.Entities
 {
-    public class PdfFile
+    public class PdfFile : IFile
     {
         public int Id { get; set; }
         public string FileName { get; set; }

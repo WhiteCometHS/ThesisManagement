@@ -1,5 +1,5 @@
 ﻿@using DiplomaManagement.Entities
-@using DiplomaManagement.Services
+@using DiplomaManagement.Interfaces
 @model DiplomaManagement.Models.PromoterThesisViewModel
 
 @inject INotificationService NotificationService
@@ -64,7 +64,7 @@
                             @file.FileName
                         </th>
                         <td>
-                            <a asp-action="Download" asp-route-id="@file.Id" class="btn btn-primary">Download</a>
+                            <a asp-action="DownloadDocument" asp-route-id="@file.Id" class="btn btn-primary">Download</a>
                         </td>
                     </tr>
                     index++;
@@ -106,7 +106,7 @@
                             @pdf.FileName
                         </td>
                         <td>
-                            <a asp-action="Download" asp-route-id="@pdf.Id" class="btn btn-primary">Download</a>
+                            <a asp-action="DownloadDocument" asp-route-id="@pdf.Id" class="btn btn-primary">Download</a>
                         </td>
                         <td class="@statusClass">@statusValue</td>
                     </tr>
@@ -142,7 +142,7 @@
                             @presentation.FileName
                         </td>
                         <td>
-                            <a asp-action="Download" asp-route-id="@presentation.Id" class="btn btn-primary">Download</a>
+                            <a asp-action="DownloadPresentation" asp-route-id="@presentation.Id" class="btn btn-primary">Download</a>
                         </td>
                         <td class="@statusClass">@statusValue</td>
                     </tr>

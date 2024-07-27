@@ -1,4 +1,5 @@
 using DiplomaManagement.Data;
+using DiplomaManagement.Interfaces;
 using DiplomaManagement.Repositories;
 using DiplomaManagement.Services;
 using Microsoft.AspNetCore.Http.Features;

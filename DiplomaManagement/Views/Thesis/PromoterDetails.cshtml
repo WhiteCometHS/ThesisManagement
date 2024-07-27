@@ -1,5 +1,5 @@
 ﻿@using DiplomaManagement.Entities
-@using DiplomaManagement.Services
+@using DiplomaManagement.Interfaces
 @using Microsoft.AspNetCore.Antiforgery
 @model DiplomaManagement.Models.PromoterThesisViewModel
 
@@ -10,10 +10,6 @@
 @{
     ViewData["Title"] = "Details";
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
-    bool showTextareaForm = 
-        (ViewBag.OriginalPdf != null && ViewBag.OriginalPdf.FileStatus == FileStatus.NotAccepted) || 
-        (ViewBag.PresentationFile != null && ViewBag.PresentationFile.FileStatus == FileStatus.NotAccepted);
-    //var notificationMessage = NotificationService.GetNotification($"FilesAdded_{User.Identity.Name}");
 }
 
 @section Styles {
@@ -80,7 +76,7 @@
                         </td>
                         <td width="10%">
                             <div class="d-grid">
-                                <a asp-action="Download" asp-route-id="@pdf.Id" class="btn btn-primary">Download</a>
+                                <a asp-action="DownloadDocument" asp-route-id="@pdf.Id" class="btn btn-primary">Download</a>
                             </div>
                         </td>
                         <td width="30%">
@@ -124,7 +120,7 @@
                         </td>
                         <td width="10%">
                             <div class="d-grid">
-                                <a asp-action="Download" asp-route-id="@presentation.Id" class="btn btn-primary">Download</a>
+                                <a asp-action="DownloadPresentation" asp-route-id="@presentation.Id" class="btn btn-primary">Download</a>
                             </div>
                         </td>
                         <td width="30%">
@@ -145,7 +141,7 @@
             </table>
         }
 
-        <div id="textarea-form" @(showTextareaForm ? "" : "style='display:none;'")>
+        <div id="textarea-form" style="display:none;">
             <form id="statusForm" method="post">
                 <div class="form-floating">
                     <textarea name="comments" class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px">@Model.Comment</textarea>
@@ -166,24 +162,28 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = '@antiforgeryToken';
 
-            const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
-
             const alert = (message) => {
-                const wrapper = document.createElement('div')
-                wrapper.innerHTML = [
-                    `<div class="alert alert-success d-flex align-items-center alert-dismissible fade show" role="alert" id="info-message">`,
-                    `   <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>`,
-                    `   <div>${message}</div>`,
-                    '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                    '</div>'
-                ].join('')
+                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+                let existingAlert = document.getElementById('info-message');
+                if (existingAlert) {
+                    existingAlert.querySelector('div').innerHTML = message;
+                } else {
+                    const wrapper = document.createElement('div')
+                    wrapper.innerHTML = [
+                        `<div class="alert alert-success d-flex align-items-center alert-dismissible fade show" role="alert" id="info-message">`,
+                        `   <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>`,
+                        `   <div>${message}</div>`,
+                        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                        '</div>'
+                    ].join('')
 
-                alertPlaceholder.append(wrapper)
+                    alertPlaceholder.append(wrapper)
 
-                setTimeout(function () { 
-                    var alert = new bootstrap.Alert(wrapper);
-                    alert.close();
-                }, 5000);
+                    setTimeout(function () { 
+                        var alert = new bootstrap.Alert(wrapper);
+                        alert.close();
+                    }, 5000);
+                }
             }
 
             document.querySelectorAll('.toggle-switch button').forEach(button => {
@@ -201,7 +201,7 @@
                             status: status
                         },
                         success: function () {
-                            alert("File status updated successfully.");
+                            alert(`File status has been successfully changed to ${status}`);
 
                             const parentDiv = button.closest('.toggle-switch');
                             const buttons = parentDiv.querySelectorAll('button');
@@ -212,17 +212,41 @@
 
                             if (status === "NotAccepted") {
                                 $(button).addClass("activated-state-off");
-                                $('#textarea-form').show();
-                                $('#statusForm').attr('action', '/Thesis/SetThesisComment');
-                                $('#textareaLabel').text('Leave a comment here:');
                             } else if (status === "NotVerified") {
                                 $(button).addClass("activated-state-none");
-                                $('#textarea-form').hide();
                             } else if (status === "Accepted") {
                                 $(button).addClass("activated-state-on");
+                            }
+
+                            const toggleSwitchDivs = document.querySelectorAll('.toggle-switch');
+                            const dataStatusList = [];
+
+                            toggleSwitchDivs.forEach(toggleSwitch => {
+                                const activatedElements = toggleSwitch.querySelectorAll('[class*="activated"]');
+                                
+                                activatedElements.forEach(element => {
+                                    const dataStatus = element.getAttribute('data-status');
+                                    if (dataStatus) {
+                                        dataStatusList.push(dataStatus);
+                                    }
+                                });
+                            });
+
+                            const containsNotAccepted = dataStatusList.includes("NotAccepted");
+                            if (containsNotAccepted) {
+                                $('#statusForm').attr('action', '/Thesis/SetThesisComment');
+                                $('#textareaLabel').text('Leave a comment here:');
                                 $('#textarea-form').show();
-                                $('#statusForm').attr('action', '/Thesis/AcceptedAction');
-                                $('#textareaLabel').text('Enter degree of advancement of the thesis:');
+                            } else {
+                                const allAccepted = dataStatusList.every(status => status === "Accepted");
+                                if (allAccepted){
+                                    $('#statusForm').attr('action', '/Thesis/AcceptedAction');
+                                    $('#textareaLabel').text('Enter degree of advancement of the thesis:');
+                                    $('#textarea-form').show();
+                                }
+                                else{
+                                    $('#textarea-form').hide();
+                                }
                             }
                         },
                         error: function () {

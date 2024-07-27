@@ -1,4 +1,4 @@
-﻿namespace DiplomaManagement.Services
+﻿namespace DiplomaManagement.Interfaces
 {
     public interface INotificationService
     {

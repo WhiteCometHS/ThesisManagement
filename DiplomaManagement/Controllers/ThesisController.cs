@@ -9,8 +9,9 @@ using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
 using Microsoft.AspNetCore.Identity;
 using DiplomaManagement.Models;
-using DiplomaManagement.Services;
+
 using Microsoft.AspNetCore.Authorization;
+using DiplomaManagement.Interfaces;
 
 namespace DiplomaManagement.Controllers
 {
@@ -214,7 +215,7 @@ namespace DiplomaManagement.Controllers
                 var uploadedFile = new PresentationFile
                 {
                     Uploaded = DateTime.Now,
-                    FileType = vm.PdfFile.ContentType,
+                    FileType = vm.PresentationFile.ContentType,
                     FileName = fileName,
                     FilePath = filePath,
                     Extension = fileExtension,
@@ -436,24 +437,35 @@ namespace DiplomaManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Files/Download/5
-        public async Task<IActionResult> Download(int id)
+        // GET: /Files/DownloadDocument/5
+        public async Task<IActionResult> DownloadDocument(int id)
         {
-            PdfFile? file = await _context.PdfFiles.FirstOrDefaultAsync(m => m.Id == id);
+            return await DownloadFile(id, _context.PdfFiles);
+        }
+
+        // GET: /Files/DownloadPresentation/5
+        public async Task<IActionResult> DownloadPresentation(int id)
+        {
+            return await DownloadFile(id, _context.PresentationFiles);
+        }
+
+        private async Task<IActionResult> DownloadFile<T>(int id, DbSet<T> dbSet) where T : class, IFile
+        {
+            T? file = await dbSet.FirstOrDefaultAsync(m => m.Id == id);
 
             if (file == null)
             {
                 return NotFound();
             }
 
-            var filePath = file.FilePath;
+            string filePath = file.FilePath;
 
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound();
             }
 
-            var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(fileBytes, file.FileType, file.FileName);
         }
 

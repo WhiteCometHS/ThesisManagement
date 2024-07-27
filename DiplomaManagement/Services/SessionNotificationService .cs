@@ -1,4 +1,6 @@
-﻿namespace DiplomaManagement.Services
+﻿using DiplomaManagement.Interfaces;
+
+namespace DiplomaManagement.Services
 {
     public class SessionNotificationService : INotificationService
     {
