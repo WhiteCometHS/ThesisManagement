@@ -171,7 +171,8 @@ namespace DiplomaManagement.Controllers
                     Title = thesis.Title,
                     Description = thesis.Description,
                     PromoterId = thesis.PromoterId,
-                    Comment = thesis.Comment
+                    Comment = thesis.Comment,
+                    ThesisSophistication = thesis.ThesisSophistication
                 };
 
                 ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
@@ -532,7 +533,7 @@ namespace DiplomaManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Promoter")]
-        public async Task<IActionResult> SetThesisComment(int id, string comments)
+        public async Task<IActionResult> SetThesisComment(int id, string conclusion)
         {
             Thesis? thesis = await _context.Theses.FirstOrDefaultAsync(m => m.Id == id);
 
@@ -542,7 +543,7 @@ namespace DiplomaManagement.Controllers
             } 
             else 
             {
-                thesis.Comment = comments;
+                thesis.Comment = conclusion;
                 _context.Update(thesis);
                 await _context.SaveChangesAsync();
             }
@@ -550,6 +551,26 @@ namespace DiplomaManagement.Controllers
             return RedirectToAction(nameof(Edit), new { id = id });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> SetThesisSophistication(int id, string conclusion)
+        {
+            Thesis? thesis = await _context.Theses.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (thesis == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                thesis.ThesisSophistication = conclusion;
+                _context.Update(thesis);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Edit), new { id = id });
+        }
 
         // POST: Thesis/DeleteExamplePdf/5
         [HttpPost]

@@ -10,6 +10,8 @@
 @{
     ViewData["Title"] = "Details";
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
+    var comment = Model.Comment ?? string.Empty;
+    var thesisSophistication = Model.ThesisSophistication ?? string.Empty;
 }
 
 @section Styles {
@@ -141,10 +143,10 @@
         }
 
         <div id="textarea-form" style="display:none;">
-            <form id="statusForm" method="post">
+            <form id="conclusionForm" method="post">
                 <div class="form-floating">
-                    <textarea name="comments" class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px">@Model.Comment</textarea>
-                    <label for="floatingTextarea" id="textareaLabel">Comments</label>
+                    <textarea name="conclusion" class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px"></textarea>
+                    <label for="floatingTextarea" id="textareaLabel"></label>
                 </div>
                 <input type="hidden" name="id" id="fileId" value="@Model.Id">
                 <button type="submit" class="btn btn-primary mt-2">Submit</button>
@@ -160,6 +162,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const token = '@antiforgeryToken';
+            const comment = '@comment';
+            const thesisSophistication = '@thesisSophistication';
+            var conclusionAction;
 
             const alert = (message) => {
                 const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
@@ -184,6 +189,46 @@
                     }, 5000);
                 }
             }
+
+            const toggleConclusionForm = () => {
+                const toggleSwitchDivs = document.querySelectorAll('.toggle-switch');
+                const dataStatusList = [];
+
+                toggleSwitchDivs.forEach(toggleSwitch => {
+                    const activatedElements = toggleSwitch.querySelectorAll('[class*="activated"]');
+
+                    activatedElements.forEach(element => {
+                        const dataStatus = element.getAttribute('data-status');
+                        if (dataStatus) {
+                            dataStatusList.push(dataStatus);
+                        }
+                    });
+                });
+
+                const containsNotAccepted = dataStatusList.includes("NotAccepted");
+                if (containsNotAccepted) {
+                    conclusionAction = 0;
+                    $('#conclusionForm').attr('action', '/Thesis/SetThesisComment');
+                    $('#textareaLabel').text('Leave a comment here:');
+                    $('#floatingTextarea').text(comment);
+                    $('#textarea-form').show();
+                } else {
+                    const allAccepted = dataStatusList.every(status => status === "Accepted");
+                    if (allAccepted) {
+                        conclusionAction = 1;
+                        $('#conclusionForm').attr('action', '/Thesis/SetThesisSophistication');
+                        $('#textareaLabel').text('Enter degree of advancement of the thesis:');
+                        // clearing textarea in case comments were entered previously
+                        $('#floatingTextarea').text(thesisSophistication);
+                        $('#textarea-form').show();
+                    }
+                    else {
+                        $('#textarea-form').hide();
+                    }
+                }
+            }
+
+            toggleConclusionForm();
 
             document.querySelectorAll('.toggle-switch button').forEach(button => {
                 button.addEventListener('click', function () {
@@ -218,36 +263,7 @@
                                 $(button).addClass("activated-state-on");
                             }
 
-                            const toggleSwitchDivs = document.querySelectorAll('.toggle-switch');
-                            const dataStatusList = [];
-
-                            toggleSwitchDivs.forEach(toggleSwitch => {
-                                const activatedElements = toggleSwitch.querySelectorAll('[class*="activated"]');
-                                
-                                activatedElements.forEach(element => {
-                                    const dataStatus = element.getAttribute('data-status');
-                                    if (dataStatus) {
-                                        dataStatusList.push(dataStatus);
-                                    }
-                                });
-                            });
-
-                            const containsNotAccepted = dataStatusList.includes("NotAccepted");
-                            if (containsNotAccepted) {
-                                $('#statusForm').attr('action', '/Thesis/SetThesisComment');
-                                $('#textareaLabel').text('Leave a comment here:');
-                                $('#textarea-form').show();
-                            } else {
-                                const allAccepted = dataStatusList.every(status => status === "Accepted");
-                                if (allAccepted){
-                                    $('#statusForm').attr('action', '/Thesis/AcceptedAction');
-                                    $('#textareaLabel').text('Enter degree of advancement of the thesis:');
-                                    $('#textarea-form').show();
-                                }
-                                else{
-                                    $('#textarea-form').hide();
-                                }
-                            }
+                            toggleConclusionForm();
                         },
                         error: function () {
                             console.error("An error occurred while updating the file status.");
@@ -256,18 +272,22 @@
                 });
             });
 
-            $('#statusForm').on('submit', function (e) {
+            $('#conclusionForm').on('submit', function (e) {
                 e.preventDefault();
                 var form = $(this);
                 var actionUrl = form.attr('action');
-                var formData = form.serialize();
+                var formData = form.serializeArray();
+                formData.push({ name: "conclusionType", value: conclusionAction });
 
                 $.ajax({
                     url: actionUrl,
                     method: 'POST',
-                    data: formData,
+                    data: $.param(formData),
                     success: function (response) {
-                        alert("Comment updated successfully.");
+                        if (conclusionAction == 0) 
+                            alert("Comments updated successfully.");               
+                        else 
+                            alert("Thesis sophistication updated successfully.");                        
                     },
                     error: function () {
                         console.error("An error occurred while submitting the comment.");

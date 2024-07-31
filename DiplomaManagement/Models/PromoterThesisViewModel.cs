@@ -14,5 +14,7 @@ namespace DiplomaManagement.Models
         public IFormFile? PresentationFile { get; set; }
 
         public string? Comment { get; set; }
+
+        public string? ThesisSophistication { get; set; }
     }
 }
