@@ -24,7 +24,7 @@ namespace DiplomaManagement.Entities
         public virtual Thesis? Thesis { get; set; }
 
         [Column(TypeName = "nvarchar(24)")]
-        public FileStatus? FileStatus { get; set; }
+        public FileStatus FileStatus { get; set; }
     }
 
     public enum PdfType

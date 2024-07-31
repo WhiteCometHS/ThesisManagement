@@ -38,6 +38,11 @@ namespace DiplomaManagement.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
             Promoter? promoter = await _context.Promoters
                 .Include(p => p.Theses!)
                     .ThenInclude(t => t.PdfFiles)
@@ -61,13 +66,24 @@ namespace DiplomaManagement.Controllers
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
             Student? student = await _context.Students
                 .Include(s => s.Thesis)
                 .FirstOrDefaultAsync(p => p.StudentUserId == user.Id);
 
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
             List<Thesis> theses = await _context.Theses
-                .Include(t => t.Promoter)
-                .ThenInclude(p => p.User)
+                .Include(t => t.Promoter!)
+                    .ThenInclude(p => p.User)
+                .Include(t => t.Enrollments)   
                 .Where(t => t.Promoter.User.InstituteId == user.InstituteId && !t.Enrollments.Any(u => u.StudentId == student.Id))
                 .ToListAsync();
 
@@ -123,7 +139,7 @@ namespace DiplomaManagement.Controllers
                 };
 
                 List<PdfFile> examplePdfs = thesis.PdfFiles.Where(p => p.PdfType == PdfType.example).ToList();
-                if (examplePdfs != null)
+                if (examplePdfs.Any())
                 {
                     viewModel.SystemFiles = examplePdfs;
                 }
@@ -472,9 +488,23 @@ namespace DiplomaManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Promoter")]
-        public async Task<IActionResult> UpdateFileStatus(int id, string status)
+        public async Task<IActionResult> UpdateDocumentStatus(int id, string status)
         {
-            var file = await _context.PdfFiles.FindAsync(id);
+            return await UpdateFileSatus(id, status, _context.PdfFiles);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> UpdatePresentationStatus(int id, string status)
+        {
+            return await UpdateFileSatus(id, status, _context.PresentationFiles);
+        }
+
+        private async Task<IActionResult> UpdateFileSatus<T>(int id, string status, DbSet<T> dbSet) where T : class, IFile
+        {
+            T? file = await dbSet.FirstOrDefaultAsync(m => m.Id == id);
+
             if (file == null)
             {
                 return NotFound();

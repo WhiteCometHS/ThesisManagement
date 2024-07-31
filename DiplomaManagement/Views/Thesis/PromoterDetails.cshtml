@@ -80,7 +80,7 @@
                             </div>
                         </td>
                         <td width="30%">
-                            <div class="toggle-switch" data-file-id="@pdf.Id">
+                            <div class="toggle-switch" data-file-id="@pdf.Id" id="pdf">
                                 <button type="button" class="btn btn-outline-danger state-off @(pdf.FileStatus == FileStatus.NotAccepted ? "activated-state-off" : "")" data-status="@FileStatus.NotAccepted">Not accepted</button>
                                 <button type="button" class="btn btn-outline-warning state-none @(pdf.FileStatus == FileStatus.NotVerified ? "activated-state-none" : "")" data-status="@FileStatus.NotVerified">Not verified</button>
                                 <button type="button" class="btn btn-outline-success state-on @(pdf.FileStatus == FileStatus.Accepted ? "activated-state-on" : "")" data-status="@FileStatus.Accepted">Accepted</button>
@@ -93,7 +93,6 @@
 
         @if (ViewBag.PresentationFile != null)
         {
-
             PresentationFile presentation = ViewBag.PresentationFile;
             String statusClass;
             String statusValue;
@@ -124,7 +123,7 @@
                             </div>
                         </td>
                         <td width="30%">
-                            <div class="toggle-switch" data-file-id="@presentation.Id">
+                            <div class="toggle-switch" data-file-id="@presentation.Id" id="presentation">
                                 <button type="button" class="btn btn-outline-danger state-off @(presentation.FileStatus == FileStatus.NotAccepted ? "activated-state-off" : "")" data-status="@FileStatus.NotAccepted">
                                     Not accepted
                                 </button>
@@ -191,9 +190,10 @@
                     const toggleSwitch = button.closest('.toggle-switch');
                     const fileId = toggleSwitch.getAttribute('data-file-id');
                     const status = button.getAttribute('data-status');
+                    const url = '/Thesis/' + (toggleSwitch.id === 'pdf' ? 'UpdateDocumentStatus' : 'UpdatePresentationStatus');
 
                     $.ajax({
-                        url: '/Thesis/UpdateFileStatus',
+                        url: url,
                         method: 'POST',
                         data: {
                             __RequestVerificationToken: token,

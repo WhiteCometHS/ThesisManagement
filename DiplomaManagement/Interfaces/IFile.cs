@@ -1,3 +1,5 @@
+using DiplomaManagement.Entities;
+
 namespace DiplomaManagement.Interfaces
 {
     public interface IFile
@@ -7,5 +9,6 @@ namespace DiplomaManagement.Interfaces
         string FileType { get; set; }
         public string Extension { get; set; }
         string FilePath { get; set; }
+        public FileStatus FileStatus { get; set; }
     }
 }
