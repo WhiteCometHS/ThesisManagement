@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using System.IO;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Common;
+using DiplomaManagement.Interfaces;
 
 namespace DiplomaManagement.Controllers
 {
@@ -16,12 +17,14 @@ namespace DiplomaManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly INotificationService _notificationService;
 
-        public PromoterController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public PromoterController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _notificationService = notificationService;
         }
 
         // GET: Promoter
@@ -315,7 +318,7 @@ namespace DiplomaManagement.Controllers
             {
                 if (promoter.Theses.Any())
                 {
-                    TempData[$"ErrorMessage_{User.Identity.Name}"] = "It is not possible to delete this promoter as there is linked data. Check 'Theses' table.";
+                    _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", "It is not possible to delete this promoter as there is linked data. Check 'Theses' table.");
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -356,7 +359,7 @@ namespace DiplomaManagement.Controllers
 
                 if (result.Succeeded)
                 {
-                    TempData[$"SuccessMessage_{User.Identity.Name}"] = "The password has been successfully reset.";
+                    _notificationService.AddNotification($"SuccessMessage_{User.Identity.Name}", "User password has been successfully reset.");
                     return RedirectToAction(nameof(Edit), new { id = promoter.Id });
                 }
                 else
@@ -372,10 +375,8 @@ namespace DiplomaManagement.Controllers
             }
             else
             {
-                TempData[$"ErrorMessage_{User.Identity.Name}"] = "Promoter not found.";
+                return RedirectToAction(nameof(Edit), new { id = model.ResetPasswordViewModel.Id });
             }
-
-            return RedirectToAction(nameof(Edit), new { id = model.ResetPasswordViewModel.Id });
         }
 
         private bool PromoterExists(int id)

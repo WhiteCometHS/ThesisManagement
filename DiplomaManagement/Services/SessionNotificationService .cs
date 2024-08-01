@@ -29,6 +29,8 @@ namespace DiplomaManagement.Services
                     ClearNotification(key);
                     return message;
                 }
+
+                ClearNotification(key);
             }
             return null;
         }

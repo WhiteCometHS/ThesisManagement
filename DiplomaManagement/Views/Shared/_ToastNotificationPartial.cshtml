@@ -1,0 +1,29 @@
+﻿@model DiplomaManagement.Models.ToastNotificationViewModel
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast rounded" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="toast-header">
+            @{
+                String img = "/img/diploma.svg";
+            }
+            
+            @switch(Model.Title)
+            {
+                case "Success":
+                    img = "/img/web-development.svg";
+                    break;
+                case "Warning":
+                    img = "/img/warning.svg";
+                    break;
+            }
+
+            <img src="@img" class="rounded me-2 toast-img" alt="Diploma management label">
+            <strong class="me-auto">@Model.Title</strong>
+            <small>@DateTime.Now.ToString("HH:mm:ss")</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body rounded-bottom @Model.Class" style="--bs-bg-opacity: .6;">
+            @Model.Message
+        </div>
+    </div>
+</div>

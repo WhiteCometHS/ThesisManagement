@@ -1,25 +1,28 @@
-﻿@model DiplomaManagement.Models.DetailsViewModel<PromoterViewModel>
+﻿@using DiplomaManagement.Interfaces
+@model DiplomaManagement.Models.DetailsViewModel<PromoterViewModel>
+
+@inject INotificationService NotificationService
+
 @{
     ViewData["Title"] = "Edit";
+    var notificationMessage = NotificationService.GetNotification($"SuccessMessage_{User.Identity.Name}");
 }
 
 <h1>Edit</h1>
 
 <h4>Promoter</h4>
 <hr />
-@if (TempData[$"SuccessMessage_{User.Identity.Name}"] != null)
+
+@if (!string.IsNullOrEmpty(notificationMessage))
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert" id="info-message">
-        @TempData[$"SuccessMessage_{User.Identity.Name}"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-@if (TempData[$"ErrorMessage_{User.Identity.Name}"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="info-message">
-        @TempData[$"ErrorMessage_{User.Identity.Name}"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = notificationMessage,
+        Class = "bg-success"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 <div class="row">
     <div class="col-md-4">

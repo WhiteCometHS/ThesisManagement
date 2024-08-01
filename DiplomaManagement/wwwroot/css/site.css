@@ -20,3 +20,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.toast-img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
