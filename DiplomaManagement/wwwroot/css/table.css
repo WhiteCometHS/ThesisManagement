@@ -1,0 +1,71 @@
+.status.created {
+    padding: 2px 4px;
+    background: #6c757d;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status.available {
+    padding: 2px 4px;
+    background: #fff87d;
+    color: black;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status.requested {
+    padding: 2px 4px;
+    background: #ffaf7d;
+    color: black;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status.inprogress {
+    padding: 2px 4px;
+    background: #17a2b8;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status.accepted {
+    padding: 2px 4px;
+    background: #28a745;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.fileStatus.notverified {
+    padding: 2px 4px;
+    background: #6c757d;
+    color: white;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.fileStatus.notaccepted {
+    padding: 2px 4px;
+    background: #ff413b;
+    color: white;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.fileStatus.accepted {
+    padding: 2px 4px;
+    background: #28a745;
+    color: white;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+}

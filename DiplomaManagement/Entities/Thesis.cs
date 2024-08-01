@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace DiplomaManagement.Entities
 {
@@ -19,7 +20,8 @@ namespace DiplomaManagement.Entities
         public virtual PresentationFile? PresentationFile { get; set; }
 
         [Column(TypeName = "nvarchar(24)")]
-        public virtual ThesisStatus Status { get; set; }
+        [Display(Name = "Status")]
+        public ThesisStatus Status { get; set; }
 
         public int? StudentId { get; set; }
 

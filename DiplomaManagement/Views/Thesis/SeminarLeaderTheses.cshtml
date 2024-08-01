@@ -1,0 +1,56 @@
+@using DiplomaManagement.Entities
+@model IEnumerable<DiplomaManagement.Entities.Thesis>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                Promoter
+            </th>
+            <th>
+                Student
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
+                </td>
+                <td>
+                    @($"{(item.StudentId != null ? item.Student.User.FirstName + " " + item.Student.User.LastName : "--")}")
+                </td>
+                <td>
+                    <span class="status @item.Status.ToString().ToLower()">@Html.DisplayFor(modelItem => item.Status)</span>
+                </td>
+                <td>
+                    <a asp-action="PromoterDetails" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

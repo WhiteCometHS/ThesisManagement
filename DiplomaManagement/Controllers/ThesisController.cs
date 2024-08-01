@@ -103,9 +103,32 @@ namespace DiplomaManagement.Controllers
             if (user != null)
             {
                 List<Thesis> theses = await _context.Theses
-                    .Include(t => t.Student)
+                    .Include(t => t.Student!)
                         .ThenInclude(p => p.User)
                     .Where(t => t.Promoter != null && t.Promoter.User != null && t.Promoter.User.Id == user.Id && t.StudentId != null)
+                    .ToListAsync();
+
+                return View(theses);
+            }
+            else 
+            {
+                return NotFound();
+            }
+        }
+
+        [Authorize(Roles = "SeminarLeader")]
+        public async Task<IActionResult> SeminarLeaderTheses()
+        {
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                List<Thesis> theses = await _context.Theses
+                    .Include(t => t.Student!)
+                        .ThenInclude(s => s.User)
+                    .Include(t => t.Promoter!)
+                        .ThenInclude(p => p.User)
+                    .Where(t => t.Promoter != null && t.Promoter.User != null && t.Promoter.User.InstituteId == user.InstituteId)
                     .ToListAsync();
 
                 return View(theses);
@@ -138,7 +161,7 @@ namespace DiplomaManagement.Controllers
                     PromoterId = thesis.PromoterId,
                 };
 
-                List<PdfFile> examplePdfs = thesis.PdfFiles.Where(p => p.PdfType == PdfType.example).ToList();
+                List<PdfFile> examplePdfs = thesis.PdfFiles?.Where(p => p.PdfType == PdfType.example).ToList() ?? [];
                 if (examplePdfs.Any())
                 {
                     viewModel.SystemFiles = examplePdfs;
@@ -153,6 +176,43 @@ namespace DiplomaManagement.Controllers
 
         [Authorize(Roles = "Promoter")]
         public async Task<IActionResult> PromoterDetails(int id)
+        {
+            Thesis? thesis = await _context.Theses
+                .Include(t => t.PdfFiles)
+                .Include(t => t.PresentationFile)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (thesis == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var viewModel = new PromoterThesisViewModel
+                {
+                    Id = id,
+                    Title = thesis.Title,
+                    Description = thesis.Description,
+                    PromoterId = thesis.PromoterId,
+                    Comment = thesis.Comment,
+                    ThesisSophistication = thesis.ThesisSophistication
+                };
+
+                List<PdfFile> examplePdfs = thesis.PdfFiles?.Where(p => p.PdfType == PdfType.example).ToList() ?? [];
+                if (examplePdfs.Any())
+                {
+                    viewModel.SystemFiles = examplePdfs;
+                }
+
+                ViewBag.OriginalPdf = thesis.PdfFiles.FirstOrDefault(p => p.PdfType == PdfType.original);
+                ViewBag.PresentationFile = thesis.PresentationFile;
+
+                return View(viewModel);
+            }
+        }
+
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> ManageActiveThesis(int id)
         {
             Thesis? thesis = await _context.Theses
                 .Include(t => t.PdfFiles)
@@ -533,7 +593,7 @@ namespace DiplomaManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Promoter")]
-        public async Task<IActionResult> SetThesisComment(int id, string conclusion)
+        public async Task<IActionResult> SetThesisConclusion(int id, string conclusion, int conclusionType)
         {
             Thesis? thesis = await _context.Theses.FirstOrDefaultAsync(m => m.Id == id);
 
@@ -543,28 +603,15 @@ namespace DiplomaManagement.Controllers
             } 
             else 
             {
-                thesis.Comment = conclusion;
-                _context.Update(thesis);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Edit), new { id = id });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Promoter")]
-        public async Task<IActionResult> SetThesisSophistication(int id, string conclusion)
-        {
-            Thesis? thesis = await _context.Theses.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (thesis == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                thesis.ThesisSophistication = conclusion;
+                if (conclusionType == 0) 
+                {
+                    thesis.Comment = conclusion;
+                } 
+                else 
+                {
+                    thesis.ThesisSophistication = conclusion;
+                }
+                
                 _context.Update(thesis);
                 await _context.SaveChangesAsync();
             }

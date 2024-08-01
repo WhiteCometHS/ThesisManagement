@@ -41,6 +41,15 @@ namespace DiplomaManagement.Controllers
                 }
                 else
                 {
+                    Thesis? thesis = await _context.Theses.FirstOrDefaultAsync(t => t.Id == thesisId);
+                    
+                    if (thesis == null)
+                    {
+                        return NotFound();
+                    }
+
+                    thesis.Status = ThesisStatus.Requested;
+
                     Enrollment enrollment = new Enrollment
                     {
                         ThesisId = thesisId,

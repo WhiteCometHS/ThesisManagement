@@ -13,15 +13,21 @@
 @if (SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Promoter"))
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="Index">Theses</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="Index">Your theses</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="ActiveEnrollments">Active enrollments</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="ActiveEnrollments">Enrollments</a>
     </li>
     @if (await ThesisRepository.isPromoterHasActiveThesisAsync(user.Id))
     {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="ActiveTheses">Active theses</a>
+        </li>
+    }
+    @if (await UserManager.IsInRoleAsync(user, "SeminarLeader")) 
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="SeminarLeaderTheses">Theses management</a>
         </li>
     }
 }
