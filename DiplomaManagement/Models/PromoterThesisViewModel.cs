@@ -9,12 +9,11 @@ namespace DiplomaManagement.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public int PromoterId { get; set; }
+        public Promoter? Promoter { get; set; }
         public IFormFile? PdfFile { get; set; }
-
         public IFormFile? PresentationFile { get; set; }
-
         public string? Comment { get; set; }
-
         public string? ThesisSophistication { get; set; }
+        public ICollection<Enrollment>? Enrollments { get; set; }
     }
 }

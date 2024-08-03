@@ -84,7 +84,7 @@ namespace DiplomaManagement.Controllers
                 .Include(t => t.Promoter!)
                     .ThenInclude(p => p.User)
                 .Include(t => t.Enrollments)   
-                .Where(t => t.Promoter.User.InstituteId == user.InstituteId && !t.Enrollments.Any(u => u.StudentId == student.Id))
+                .Where(t => t.Promoter!.User!.InstituteId == user.InstituteId && !t.Enrollments!.Any(u => u.StudentId == student.Id))
                 .ToListAsync();
 
             if (student.Thesis != null) 
@@ -105,7 +105,7 @@ namespace DiplomaManagement.Controllers
                 List<Thesis> theses = await _context.Theses
                     .Include(t => t.Student!)
                         .ThenInclude(p => p.User)
-                    .Where(t => t.Promoter != null && t.Promoter.User != null && t.Promoter.User.Id == user.Id && t.StudentId != null)
+                    .Where(t => t.Promoter!.User!.Id == user.Id && t.StudentId != null)
                     .ToListAsync();
 
                 return View(theses);
@@ -117,19 +117,61 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "SeminarLeader")]
-        public async Task<IActionResult> SeminarLeaderTheses()
+        public async Task<IActionResult> SeminarLeaderTheses(string searchString, string sortOrder = "")
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
 
             if (user != null)
             {
-                List<Thesis> theses = await _context.Theses
+                ViewData["TitleSortParm"] = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+                ViewData["NameSortParm"] = sortOrder =="student" ? "student_desc" : "student";
+                ViewData["DateSortParm"] = sortOrder == "promoter" ? "promoter_desc" : "promoter";
+                ViewData["StatusSortParm"] = sortOrder == "status" ? "status_desc" : "status";
+                ViewData["CurrentFilter"] = searchString;
+
+                IQueryable<Thesis> thesesQuery = _context.Theses
                     .Include(t => t.Student!)
                         .ThenInclude(s => s.User)
                     .Include(t => t.Promoter!)
                         .ThenInclude(p => p.User)
-                    .Where(t => t.Promoter != null && t.Promoter.User != null && t.Promoter.User.InstituteId == user.InstituteId)
-                    .ToListAsync();
+                    .Where(t => t.Promoter!.User!.InstituteId == user.InstituteId);
+
+                bool isEnum = Enum.TryParse<ThesisStatus>(searchString, true, out var statusEnum);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    searchString = searchString.ToLower();
+                    
+                    thesesQuery = thesesQuery.Where(t =>
+                        t.Title.Contains(searchString) ||
+                        (t.Student != null && t.Student.User!.FirstName.Contains(searchString)) ||
+                        (t.Student != null && t.Student.User!.LastName.Contains(searchString)) ||
+                        t.Promoter!.User!.FirstName.Contains(searchString) ||
+                        t.Promoter!.User!.LastName.Contains(searchString) ||
+                        (isEnum == true && t.Status == statusEnum));
+                }
+
+                List<Thesis> theses = await thesesQuery.ToListAsync();
+
+                var sortMapping = new Dictionary<string, Func<IEnumerable<Thesis>, IOrderedEnumerable<Thesis>>>
+                {
+                    { "title_desc", theses => theses.OrderByDescending(t => t.Title) },
+                    { "student_desc", theses => theses.OrderByDescending(t => t.Student?.User!.LastName ?? string.Empty) },
+                    { "student", theses => theses.OrderBy(t => t.Student?.User!.LastName ?? string.Empty) },
+                    { "promoter", theses => theses.OrderBy(t => t.Promoter!.User!.LastName) },
+                    { "promoter_desc", theses => theses.OrderByDescending(t => t.Promoter!.User!.LastName) },
+                    { "status", theses => theses.OrderBy(t => t.Status.ToString()) },
+                    { "status_desc", theses => theses.OrderByDescending(t => t.Status.ToString()) }
+                };
+
+                if (sortMapping.TryGetValue(sortOrder, out var sortFunc))
+                {
+                    theses = sortFunc(theses).ToList();
+                }
+                else
+                {
+                    theses = theses.OrderBy(t => t.Title).ToList();
+                }
 
                 return View(theses);
             }
@@ -178,8 +220,13 @@ namespace DiplomaManagement.Controllers
         public async Task<IActionResult> PromoterDetails(int id)
         {
             Thesis? thesis = await _context.Theses
+                .Include(t => t.Promoter!)
+                    .ThenInclude(p => p.User)
                 .Include(t => t.PdfFiles)
                 .Include(t => t.PresentationFile)
+                .Include(t => t.Enrollments!)
+                    .ThenInclude(e => e.Student!)
+                        .ThenInclude(s => s.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (thesis == null)
@@ -194,8 +241,10 @@ namespace DiplomaManagement.Controllers
                     Title = thesis.Title,
                     Description = thesis.Description,
                     PromoterId = thesis.PromoterId,
+                    Promoter = thesis.Promoter,
                     Comment = thesis.Comment,
-                    ThesisSophistication = thesis.ThesisSophistication
+                    ThesisSophistication = thesis.ThesisSophistication,
+                    Enrollments = thesis.Enrollments
                 };
 
                 List<PdfFile> examplePdfs = thesis.PdfFiles?.Where(p => p.PdfType == PdfType.example).ToList() ?? [];
