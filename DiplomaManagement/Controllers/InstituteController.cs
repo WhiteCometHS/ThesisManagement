@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
 using Microsoft.AspNetCore.Authorization;
+using DiplomaManagement.Services;
+using DiplomaManagement.Interfaces;
 
 namespace DiplomaManagement.Controllers
 {
@@ -15,16 +17,89 @@ namespace DiplomaManagement.Controllers
     public class InstituteController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public InstituteController(ApplicationDbContext context)
+        public InstituteController(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         // GET: Institute
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
-            return View(await _context.Institutes.ToListAsync());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParam = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.SiteSortParam = sortOrder == "site" ? "site_desc" : "site";
+            ViewBag.StreetSortParam = sortOrder == "street" ? "street_desc" : "street";
+            ViewBag.EmailSortParam = sortOrder == "email" ? "email_desc" : "email";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            IQueryable<Institute> instituteQuery = _context.Institutes;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                instituteQuery = instituteQuery.Where(t =>
+                    t.Name.Contains(searchString) ||
+                    t.SiteAddress.Contains(searchString) ||
+                    t.Street.Contains(searchString) ||
+                    t.Email.Contains(searchString));
+            }
+
+            List<Institute> institutes = await instituteQuery.ToListAsync();
+
+            var sortMapping = new Dictionary<string, Func<IEnumerable<Institute>, IOrderedEnumerable<Institute>>>
+            {
+                { "name_desc", theses => theses.OrderByDescending(t => t.Name) },
+                { "site_desc", theses => theses.OrderByDescending(t => t.SiteAddress) },
+                { "site", theses => theses.OrderBy(t => t.SiteAddress) },
+                { "street", theses => theses.OrderBy(t => t.Street) },
+                { "street_desc", theses => theses.OrderByDescending(t => t.Street) },
+                { "email", theses => theses.OrderBy(t => t.Email) },
+                { "email_desc", theses => theses.OrderByDescending(t => t.Email) }
+            };
+
+            if (sortMapping.TryGetValue(sortOrder ?? "", out var sortFunc))
+            {
+                institutes = sortFunc(institutes).ToList();
+            }
+            else
+            {
+                institutes = institutes.OrderBy(t => t.Name).ToList();
+            }
+
+            int pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recordsCount = institutes.Count();
+            int pageNumber = page ?? 1;
+
+            PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+            ViewBag.Pager = pager;
+
+            int itemsToSkip = (pageNumber - 1) * pageSize;
+
+            List<Institute> items = institutes
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
+
+            return View(items);
         }
 
         // GET: Institute/Details/5
@@ -155,18 +230,18 @@ namespace DiplomaManagement.Controllers
 
             if (institute.Users.Any())
             {
-                TempData["ErrorMessage"] = "It is not possible to delete this institute as there is linked data. Check ";
+                string errorMessage = "It is not possible to delete this institute as there is linked data. Check ";
 
                 if (institute.Users.Any(u => u.UserPromoter != null))
                 {
-                    TempData["ErrorMessage"] += "'Promoters', ";
+                    errorMessage += "'Promoters', ";
                 }
 
                 if (institute.Users.Any(u => u.UserDirector != null))
                 {
-                    TempData["ErrorMessage"] += "'Directors' table.";
+                    errorMessage += "'Directors' table.";
                 }
-
+                _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", errorMessage);
 
                 return RedirectToAction(nameof(Index));
             }

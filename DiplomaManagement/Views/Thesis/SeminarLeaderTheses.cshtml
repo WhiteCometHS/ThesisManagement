@@ -14,6 +14,13 @@
         pager = ViewBag.Pager;
         pageNumber = pager.CurrentPage;
     }
+
+    PagerViewModel pagerViewModel = new PagerViewModel
+    {
+        Pager = pager,
+        ControllerName = "Thesis",
+        ActionName = "SeminarLeaderTheses"
+    };
 }
 
 <h1>Index</h1>
@@ -32,7 +39,7 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.TitleSortParm" asp-route-currentFilter="@ViewBag.currentFilter">Title</a>
+                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.TitleSortParm" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Title)</a>
             </th>
             <th>
                 <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.PromoterSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Promoter</a>
@@ -41,7 +48,7 @@
                 <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.StudentSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Student</a>
             </th>
             <th>
-                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.StatusSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Status</a>
+                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.StatusSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Status)</a>
             </th>
             <th></th>
         </tr>
@@ -71,7 +78,7 @@
 </table>
 <br />
 
-<partial name="_PagerPartial" model="@pager" />
+<partial name="_PagerPartial" model="@pagerViewModel" />
 
 @section Scripts {
     @{

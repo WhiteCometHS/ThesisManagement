@@ -1,4 +1,5 @@
 ﻿using DiplomaManagement.Data;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,6 +34,7 @@ namespace DiplomaManagement.Entities
         [Display(Name = "Institute Email")]
         public string Email { get; set; }
 
-        public virtual ICollection<ApplicationUser>? Users { get; set; }
+        public virtual ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
+        // public virtual ICollection<ApplicationUser>? Users { get; set; }
     }
 }
