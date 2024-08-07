@@ -235,7 +235,7 @@ namespace DiplomaManagement.Controllers
                     viewModel.SystemFiles = examplePdfs;
                 }
 
-                ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
+                ViewBag.OriginalPdf = thesis.PdfFiles?.FirstOrDefault(p => p.PdfType == PdfType.original);
                 ViewBag.PresentationFile = thesis.PresentationFile;
 
                 return View(viewModel);
@@ -279,7 +279,7 @@ namespace DiplomaManagement.Controllers
                     viewModel.SystemFiles = examplePdfs;
                 }
 
-                ViewBag.OriginalPdf = thesis.PdfFiles.FirstOrDefault(p => p.PdfType == PdfType.original);
+                ViewBag.OriginalPdf = thesis.PdfFiles?.FirstOrDefault(p => p.PdfType == PdfType.original);
                 ViewBag.PresentationFile = thesis.PresentationFile;
 
                 return View(viewModel);
@@ -310,7 +310,7 @@ namespace DiplomaManagement.Controllers
                     ThesisSophistication = thesis.ThesisSophistication
                 };
 
-                ViewBag.OriginalPdf = thesis.PdfFiles.Where(p => p.PdfType == PdfType.original).FirstOrDefault();
+                ViewBag.OriginalPdf = thesis.PdfFiles?.FirstOrDefault(p => p.PdfType == PdfType.original);
                 ViewBag.PresentationFile = thesis.PresentationFile;
 
                 return View(viewModel);
