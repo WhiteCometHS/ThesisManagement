@@ -1,8 +1,19 @@
-@using DiplomaManagement.Entities
+@using DiplomaManagement.Entities;
+@using DiplomaManagement.Services;
+
 @model IEnumerable<DiplomaManagement.Entities.Thesis>
 
 @{
     ViewData["Title"] = "Index";
+
+    PagingService pager = new PagingService();
+    int pageNumber = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNumber = pager.CurrentPage;
+    }
 }
 
 <h1>Index</h1>
@@ -10,7 +21,7 @@
 <form asp-action="SeminarLeaderTheses" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by name: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+            Find by name: <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
             <input type="submit" value="Search" class="btn btn-default" /> |
             <a asp-action="SeminarLeaderTheses">Back to Full List</a>
         </p>
@@ -21,17 +32,16 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewData["TitleSortParm"]">@Html.DisplayNameFor(model => model.Title)</a>
+                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.TitleSortParm" asp-route-currentFilter="@ViewBag.currentFilter">Title</a>
             </th>
             <th>
-                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewData["NameSortParm"]">Promoter</a>
+                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.PromoterSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Promoter</a>
             </th>
             <th>
-                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewData["DateSortParm"]">Student</a>
+                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.StudentSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Student</a>
             </th>
             <th>
-                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewData["StatusSortParm"]">@Html.DisplayNameFor(model => model.Status)</a>
-                
+                <a asp-action="SeminarLeaderTheses" asp-route-sortOrder="@ViewBag.StatusSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Status</a>
             </th>
             <th></th>
         </tr>
@@ -59,6 +69,9 @@
         }
     </tbody>
 </table>
+<br />
+
+<partial name="_PagerPartial" model="@pager" />
 
 @section Scripts {
     @{

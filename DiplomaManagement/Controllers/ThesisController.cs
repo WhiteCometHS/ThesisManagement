@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
@@ -12,6 +7,7 @@ using DiplomaManagement.Models;
 
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Interfaces;
+using DiplomaManagement.Services;
 
 namespace DiplomaManagement.Controllers
 {
@@ -117,17 +113,29 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "SeminarLeader")]
-        public async Task<IActionResult> SeminarLeaderTheses(string searchString, string sortOrder = "")
+        public async Task<IActionResult> SeminarLeaderTheses(string? currentFilter, string? searchString, int? page, string sortOrder = "")
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
 
             if (user != null)
             {
-                ViewData["TitleSortParm"] = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
-                ViewData["NameSortParm"] = sortOrder =="student" ? "student_desc" : "student";
-                ViewData["DateSortParm"] = sortOrder == "promoter" ? "promoter_desc" : "promoter";
-                ViewData["StatusSortParm"] = sortOrder == "status" ? "status_desc" : "status";
-                ViewData["CurrentFilter"] = searchString;
+                ViewBag.CurrentSort = sortOrder;
+                ViewBag.TitleSortParam = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+                ViewBag.StudentSortParam = sortOrder =="student" ? "student_desc" : "student";
+                ViewBag.PromoterSortParam = sortOrder == "promoter" ? "promoter_desc" : "promoter";
+                ViewBag.StatusSortParam = sortOrder == "status" ? "status_desc" : "status";
+
+                if (searchString != null)
+                {
+                    page = 1;
+                }
+                else
+                {
+                    searchString = currentFilter;
+                }
+
+                ViewBag.CurrentFilter = searchString;
+
 
                 IQueryable<Thesis> thesesQuery = _context.Theses
                     .Include(t => t.Student!)
@@ -173,7 +181,25 @@ namespace DiplomaManagement.Controllers
                     theses = theses.OrderBy(t => t.Title).ToList();
                 }
 
-                return View(theses);
+                int pageSize = 2;
+                if (page < 1)
+                {
+                    page = 1;
+                }
+
+                int recordsCount = theses.Count();
+                int pageNumber = page ?? 1;
+
+                PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+                ViewBag.Pager = pager;
+
+                int itemsToSkip = (pageNumber - 1) * pageSize;
+
+                List<Thesis> items = theses
+                    .Skip(itemsToSkip)
+                    .Take(pageSize)
+                    .ToList();
+                return View(items);
             }
             else 
             {
