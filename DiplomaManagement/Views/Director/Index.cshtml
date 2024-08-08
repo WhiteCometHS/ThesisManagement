@@ -1,10 +1,43 @@
-﻿@model IEnumerable<DiplomaManagement.Models.DirectorViewModel>
+﻿@using DiplomaManagement.Services;
+@using DiplomaManagement.Interfaces
+
+@model IEnumerable<DiplomaManagement.Models.DirectorViewModel>
+@inject INotificationService NotificationService
 
 @{
     ViewData["Title"] = "Index";
+    var errorMessage = NotificationService.GetNotification($"ErrorMessage_{User.Identity.Name}");
+
+    PagingService pager = new PagingService();
+    int pageNumber = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNumber = pager.CurrentPage;
+    }
+
+    PagerViewModel pagerViewModel = new PagerViewModel
+    {
+        Pager = pager,
+        ControllerName = "Director",
+        ActionName = "Index"
+    };
 }
 
 <h1>Index</h1>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Warning",
+        Message = errorMessage,
+        Class = "bg-danger"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+}
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,16 +46,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.FirstName)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SurnameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.LastName)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Email)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InstituteId)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.InstituteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Institute)</a>
             </th>
             <th></th>
         </tr>
@@ -52,33 +85,4 @@
     </tbody>
 </table>
 
-<!-- Modal -->
-<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                @TempData[$"ErrorMessage_{User.Identity.Name}"]
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    @* <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> *@
-    <script>
-        $(document).ready(function () {
-            var errorMessage = '@TempData[$"ErrorMessage_{User.Identity.Name}"]';
-            if (errorMessage) {
-                var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-                errorModal.show();
-            }
-        });
-    </script>
-}
+<partial name="_PagerPartial" model="@pagerViewModel" />

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using DiplomaManagement.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using DiplomaManagement.Interfaces;
+using DiplomaManagement.Services;
 
 namespace DiplomaManagement.Controllers
 {
@@ -19,22 +21,40 @@ namespace DiplomaManagement.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly INotificationService _notificationService;
         private readonly InstituteRepository _instituteRepository;
 
-        public DirectorController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, InstituteRepository instituteRepository)
+        public DirectorController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, InstituteRepository instituteRepository, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
             _instituteRepository = instituteRepository;
+            _notificationService = notificationService;
         }
 
         // GET: Director
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
-            List<DirectorViewModel> directors = await _context.Directors
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParam = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.SurnameSortParam = sortOrder == "surname" ? "surname_desc" : "surname";
+            ViewBag.EmailSortParam = sortOrder == "email" ? "email_desc" : "email";
+            ViewBag.InstituteSortParam = sortOrder == "institute" ? "institute_desc" : "institute";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            IQueryable<DirectorViewModel> directorQuery = _context.Directors
                 .Include(d => d.User)
-                .ThenInclude(u => u.Institute)
+                    .ThenInclude(u => u.Institute)
                 .Select(d => new DirectorViewModel
                 {
                     Id = d.Id,
@@ -42,10 +62,61 @@ namespace DiplomaManagement.Controllers
                     LastName = d.User.LastName,
                     Email = d.User.Email,
                     Institute = d.User.Institute
-                })
-                .ToListAsync();
+                });
 
-            return View(directors);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                directorQuery = directorQuery.Where(t =>
+                    t.FirstName.Contains(searchString) ||
+                    t.LastName.Contains(searchString) ||
+                    t.Email.Contains(searchString) ||
+                    t.Institute.Name.Contains(searchString));
+            }
+
+            List<DirectorViewModel> directors = await directorQuery.ToListAsync();
+
+            var sortMapping = new Dictionary<string, Func<IEnumerable<DirectorViewModel>, IOrderedEnumerable<DirectorViewModel>>>
+            {
+                { "name_desc", theses => theses.OrderByDescending(t => t.FirstName) },
+                { "surname_desc", theses => theses.OrderByDescending(t => t.LastName) },
+                { "surname", theses => theses.OrderBy(t => t.LastName) },
+                { "email", theses => theses.OrderBy(t => t.Email) },
+                { "email_desc", theses => theses.OrderByDescending(t => t.Email) },
+                { "institute", theses => theses.OrderBy(t => t.Institute.Name) },
+                { "institute_desc", theses => theses.OrderByDescending(t => t.Institute.Name) }
+            };
+
+            if (sortMapping.TryGetValue(sortOrder ?? "", out var sortFunc))
+            {
+                directors = sortFunc(directors).ToList();
+            }
+            else
+            {
+                directors = directors.OrderBy(t => t.FirstName).ToList();
+            }
+
+            int pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recordsCount = directors.Count();
+            int pageNumber = page ?? 1;
+
+            PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+            ViewBag.Pager = pager;
+
+            int itemsToSkip = (pageNumber - 1) * pageSize;
+
+            List<DirectorViewModel> items = directors
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
+
+            return View(items);
         }
 
         // GET: Director/Details/5
@@ -256,7 +327,7 @@ namespace DiplomaManagement.Controllers
             {
                 if (director.Promoters.Any())
                 {
-                    TempData[$"ErrorMessage_{User.Identity.Name}"] = "It is not possible to delete this director as there is linked data. Check 'Promoters' table.";
+                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", "It is not possible to delete this director as there is linked data. Check 'Promoters' table.");
                     return RedirectToAction(nameof(Index));
                 }
 

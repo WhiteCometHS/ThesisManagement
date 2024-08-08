@@ -11,9 +11,6 @@ namespace DiplomaManagement.Entities
 
         public virtual ApplicationUser? User { get; set; }
 
-/*        public int InstituteId { get; set; }
-        public virtual Institute? Institute { get; set; }*/
-
         public virtual ICollection<Promoter>? Promoters { get; set; }
     }
 }

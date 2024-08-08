@@ -241,7 +241,7 @@ namespace DiplomaManagement.Controllers
                 {
                     errorMessage += "'Directors' table.";
                 }
-                _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", errorMessage);
+                _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", errorMessage);
 
                 return RedirectToAction(nameof(Index));
             }
