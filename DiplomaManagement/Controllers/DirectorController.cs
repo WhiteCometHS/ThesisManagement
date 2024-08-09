@@ -404,40 +404,52 @@ namespace DiplomaManagement.Controllers
 
             Director? director = await _context.Directors
                 .Include(d => d.Promoters)
-                .ThenInclude(u => u.User)
+                    .ThenInclude(u => u.User)
                 .FirstOrDefaultAsync(d => d.DirectorUserId == user.Id);
 
             return View(director);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Director")]
+        public async Task<IActionResult> UpdatePromoterThesisLimit(int promoterId, int thesisLimit)
+        {
+            var promoter = await _context.Promoters.FindAsync(promoterId);
+            if (promoter == null)
+            {
+                return NotFound();
+            }
+
+            promoter.ThesisLimit = thesisLimit;
+            _context.Update(promoter);
+            await _context.SaveChangesAsync();
+            _notificationService.AddNotification($"SuccessMessage_{User.Identity!.Name}", $"Thesis limit for promoter with id: {promoter.Id} has been successfully changed.");
+
+            return RedirectToAction(nameof(AssignedPromoters));
+        }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Director")]
         public async Task<IActionResult> GlobalUpdateThesisLimit(int directorId, int thesisLimit)
         {
-            if (thesisLimit == null)
-            {
-                return RedirectToAction(nameof(AssignedPromoters), new { id = directorId });
-            }
-            else
-            {
-                Director? director = await _context.Directors
-                    .Include(d => d.Promoters)
-                    .FirstOrDefaultAsync(d => d.Id == directorId);
+            Director? director = await _context.Directors
+                .Include(d => d.Promoters)
+                .FirstOrDefaultAsync(d => d.Id == directorId);
 
-                if (director != null)
+            if (director != null)
+            {
+                foreach (var promoter in director.Promoters)
                 {
-                    foreach (var promoter in director.Promoters)
-                    {
-                        promoter.ThesisLimit = thesisLimit;
-                    }
-
-                    await _context.SaveChangesAsync();
+                    promoter.ThesisLimit = thesisLimit;
                 }
+
+                await _context.SaveChangesAsync();
+                _notificationService.AddNotification($"SuccessMessage_{User.Identity!.Name}", $"Thesis limit has been successfully changed for all promoters.");
             }
 
-            return RedirectToAction(nameof(AssignedPromoters), new { id = directorId });
+            return RedirectToAction(nameof(AssignedPromoters));
         }
 
         private bool DirectorExists(int id)

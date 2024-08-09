@@ -242,7 +242,7 @@ namespace DiplomaManagement.Controllers
             }
         }
 
-        [Authorize(Roles = "Promoter")]
+        [Authorize(Roles = "Director, Promoter")]
         public async Task<IActionResult> PromoterDetails(int id)
         {
             Thesis? thesis = await _context.Theses

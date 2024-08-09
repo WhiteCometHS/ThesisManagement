@@ -1,14 +1,45 @@
-﻿@model DiplomaManagement.Entities.Director
+﻿@using DiplomaManagement.Services;
+@using DiplomaManagement.Interfaces;
+
+@model DiplomaManagement.Entities.Director
+@inject INotificationService NotificationService
 
 @{
     ViewData["Title"] = "AssignedPromoters";
-    var promoters = Model.Promoters;
+    var successMessage = NotificationService.GetNotification($"SuccessMessage_{User.Identity!.Name}");
+
+    PagingService pager = new PagingService();
+    int pageNumber = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNumber = pager.CurrentPage;
+    }
+
+    PagerViewModel pagerViewModel = new PagerViewModel
+    {
+        Pager = pager,
+        ControllerName = "Director",
+        ActionName = "AssignedPromoters"
+    };
 }
 
 <h1>Index</h1>
 
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = successMessage,
+        Class = "bg-success"
+    };
 
-<h3>Change Limit globaly for all promoters</h3>
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+}
+
+<h3>Change limit globaly for all promoters</h3>
 <form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
     <input type="hidden" value="@Model.Id" name="directorId" />
     <div class="col-3">
@@ -44,7 +75,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in promoters)
+        @foreach (var item in Model.Promoters!)
         {
             <tr>
                 <td>
@@ -57,7 +88,11 @@
                     @Html.DisplayFor(modelItem => item.User.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ThesisLimit)
+                    <form asp-action="UpdatePromoterThesisLimit" asp-controller="Director" method="post">
+                        <input type="hidden" name="promoterId" value="@item.Id" />
+                        <input name="thesisLimit" value="@item.ThesisLimit" class="form-control" style="width: 80px;" onkeypress="return isNumberKey(event)"/>
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    </form>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -68,6 +103,8 @@
         }
     </tbody>
 </table>
+
+<partial name="_PagerPartial" model="@pagerViewModel" />
 
 @section Scripts {
     <script>

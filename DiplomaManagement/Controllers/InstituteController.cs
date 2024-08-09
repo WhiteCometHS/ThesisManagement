@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Services;
 using DiplomaManagement.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace DiplomaManagement.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class InstituteController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
 
-        public InstituteController(ApplicationDbContext context, INotificationService notificationService)
+        public InstituteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
         {
             _context = context;
+            _userManager = userManager;
             _notificationService = notificationService;
         }
 
         // GET: Institute
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -102,7 +100,26 @@ namespace DiplomaManagement.Controllers
             return View(items);
         }
 
+        [Authorize(Roles = "Director, SeminarLeader")]
+        public async Task<IActionResult> InstituteAssignedStudents()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var director = await _context.Directors
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.DirectorUserId == user.Id);
+
+            List<Student> students = await _context.Students
+                .Include(s => s.User)
+                .Include(s => s.Thesis)
+                .Where(i => i.User.InstituteId == director.User.InstituteId)
+                .ToListAsync();
+
+            return View(students);
+        }
+
         // GET: Institute/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -131,6 +148,7 @@ namespace DiplomaManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,SiteAddress,Street,City,PostalCode,Email")] Institute institute)
         {
             if (ModelState.IsValid)
@@ -143,6 +161,7 @@ namespace DiplomaManagement.Controllers
         }
 
         // GET: Institute/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -163,6 +182,7 @@ namespace DiplomaManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,SiteAddress,Street,City,PostalCode,Email")] Institute institute)
         {
             if (id != institute.Id)
@@ -194,6 +214,7 @@ namespace DiplomaManagement.Controllers
         }
 
         // GET: Institute/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -214,6 +235,7 @@ namespace DiplomaManagement.Controllers
         // POST: Institute/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var institute = await _context.Institutes

@@ -1,0 +1,99 @@
+@using DiplomaManagement.Services;
+@using DiplomaManagement.Interfaces
+
+@model IEnumerable<DiplomaManagement.Entities.Student>
+@inject INotificationService NotificationService
+
+@{
+    ViewData["Title"] = "Index";
+    var errorMessage = NotificationService.GetNotification($"ErrorMessage_{User.Identity.Name}");
+
+    PagingService pager = new PagingService();
+    int pageNumber = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNumber = pager.CurrentPage;
+    }
+
+    PagerViewModel pagerViewModel = new PagerViewModel
+    {
+        Pager = pager,
+        ControllerName = "Institute",
+        ActionName = "Index"
+    };
+}
+
+<h1>Index</h1>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Warning",
+        Message = errorMessage,
+        Class = "bg-danger"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+}
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Id)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SiteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Student</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StreetSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.User.Email)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StreetSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Thesis id</a>
+            </th>
+            <th>Thesis info</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @($"{item.User.FirstName} {item.User.LastName}")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            @if (item.Thesis != null) {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Thesis.Id)
+                </td>
+                <td>
+                    <a asp-action="PromoterDetails" asp-controller="Thesis" asp-route-id="@item.Thesis.Id">Thesis details</a>
+                </td>
+            } else {
+                <td colspan="2">
+                    @("No thesis assigned")
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
+
+<partial name="_PagerPartial" model="@pagerViewModel" />
