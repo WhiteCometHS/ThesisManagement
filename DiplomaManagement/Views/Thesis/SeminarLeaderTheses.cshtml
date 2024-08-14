@@ -70,7 +70,7 @@
                     <span class="status @item.Status.ToString().ToLower()">@Html.DisplayFor(modelItem => item.Status)</span>
                 </td>
                 <td>
-                    <a asp-action="PromoterDetails" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="PromoterDetails" asp-route-id="@item.Id" asp-route-previousActionType="1">Details</a>
                 </td>
             </tr>
         }

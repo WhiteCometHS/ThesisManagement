@@ -12,6 +12,10 @@
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
     var comment = Model.Comment ?? string.Empty;
     var thesisSophistication = Model.ThesisSophistication ?? string.Empty;
+
+    var route = (ViewBag.PreviousRoute as string).Split('|');
+    string previousController = route[0];
+    string previousAction = route[1];
 }
 
 @section Styles {
@@ -202,5 +206,5 @@
     }
 </div>
 <div>
-    <a asp-action="SeminarLeaderTheses">Back to List</a>
+    <a href="@Url.Action(previousAction, previousController)">Back to List</a>
 </div>

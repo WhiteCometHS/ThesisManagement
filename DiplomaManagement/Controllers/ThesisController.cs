@@ -243,7 +243,7 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "Director, Promoter")]
-        public async Task<IActionResult> PromoterDetails(int id)
+        public async Task<IActionResult> PromoterDetails(int id, int previousActionType = 0)
         {
             Thesis? thesis = await _context.Theses
                 .Include(t => t.Promoter!)
@@ -281,6 +281,16 @@ namespace DiplomaManagement.Controllers
 
                 ViewBag.OriginalPdf = thesis.PdfFiles?.FirstOrDefault(p => p.PdfType == PdfType.original);
                 ViewBag.PresentationFile = thesis.PresentationFile;
+
+                switch(previousActionType) 
+                {
+                    case 1:
+                        ViewBag.PreviousRoute = "Thesis|SeminarLeaderTheses";
+                        break;
+                    default:
+                        ViewBag.PreviousRoute = "Institute|InstituteAssignedStudents";
+                        break;
+                }
 
                 return View(viewModel);
             }
