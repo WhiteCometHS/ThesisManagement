@@ -41,5 +41,11 @@ namespace DiplomaManagement.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public IActionResult RenderToastNotification([FromBody] ToastNotificationViewModel toastModel)
+        {
+            return PartialView("_ToastNotificationPartial", toastModel);
+        }
     }
 }

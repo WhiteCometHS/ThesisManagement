@@ -32,7 +32,7 @@ builder.Services.AddControllersWithViews();
 
 // repositories/services registration
 builder.Services.AddScoped<InstituteRepository>();
-builder.Services.AddScoped<ThesisRepository>();
+builder.Services.AddScoped<IThesisRepository, ThesisRepository>();
 
 var app = builder.Build();
 

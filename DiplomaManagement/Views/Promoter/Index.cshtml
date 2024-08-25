@@ -8,8 +8,6 @@
     var notificationMessage = NotificationService.GetNotification($"ErrorMessage_{User.Identity.Name}");
 }
 
-<h1>Index</h1>
-
 @if (!string.IsNullOrEmpty(notificationMessage))
 {
     var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
@@ -21,6 +19,8 @@
 
     @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
+
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>

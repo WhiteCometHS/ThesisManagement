@@ -1,0 +1,76 @@
+﻿@using DiplomaManagement.Interfaces
+@model IEnumerable<DiplomaManagement.Entities.Thesis>
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Promoter
+            </th>
+            <th>
+                Sign up student for selected thesis
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.Enrollments != null)
+        {
+            @foreach (var item in ViewBag.Enrollments)
+            {
+                <tr style="background-color: #d4edda;">
+                    <td>
+                        @item.Thesis.Title
+                    </td>
+                    <td>
+                        @item.Thesis.Description
+                    </td>
+                    <td>
+                        @($"{item.Thesis.Promoter.User.FirstName} {item.Thesis.Promoter.User.LastName}")
+                    </td>
+                    <td>
+                        <form asp-controller="Thesis" asp-action="AssignThesisToStudentManual" method="post">
+                            <input type="hidden" name="thesisId" value="@item.Thesis.Id" />
+                            <input type="hidden" name="selectedStudent" value="@ViewBag.SelectedStudentId" />
+                            <button type="submit" class="btn btn-primary">Select</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
+                </td>
+                <td>
+                    <form asp-controller="Thesis" asp-action="AssignThesisToStudentManual" method="post">
+                        <input type="hidden" name="thesisId" value="@item.Id" />
+                        <input type="hidden" name="selectedStudent" value="@ViewBag.SelectedStudentId" />
+                        <button type="submit" class="btn btn-primary">Select</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

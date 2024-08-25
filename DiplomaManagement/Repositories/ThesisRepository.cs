@@ -1,9 +1,11 @@
 using DiplomaManagement.Data;
+using DiplomaManagement.Entities;
+using DiplomaManagement.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiplomaManagement.Repositories
 {
-    public class ThesisRepository
+    public class ThesisRepository : IThesisRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -30,6 +32,16 @@ namespace DiplomaManagement.Repositories
                 .AnyAsync();
 
             return isAnyActive;
+        }
+
+        public async Task assignThesisToStudent(Thesis thesis, int studentId, List<Enrollment> enrollmentsToRemove)
+        {
+            thesis.Status = ThesisStatus.InProgress;
+            thesis.StudentId = studentId;
+
+            _context.Enrollments.RemoveRange(enrollmentsToRemove);
+            _context.Update(thesis);
+            await _context.SaveChangesAsync();
         }
     }
 }

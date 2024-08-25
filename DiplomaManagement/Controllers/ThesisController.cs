@@ -8,6 +8,7 @@ using DiplomaManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Interfaces;
 using DiplomaManagement.Services;
+using DiplomaManagement.Repositories;
 
 namespace DiplomaManagement.Controllers
 {
@@ -18,14 +19,16 @@ namespace DiplomaManagement.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
+        private readonly IThesisRepository _thesisRepository;
 
-        public ThesisController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService)
+        public ThesisController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService, IThesisRepository thesisRepository)
         {
             _context = context;
             _userManager = userManager;
             _env = env;
             _configuration = configuration;
             _notificationService = notificationService;
+            _thesisRepository = thesisRepository;
         }
 
         // GET: Thesis
@@ -89,6 +92,45 @@ namespace DiplomaManagement.Controllers
             }
 
             return View(theses);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminAvailableTheses(int studentId)
+        {
+            Student? student = await _context.Students
+                .Include(s => s.User)
+                .Include(s => s.Enrollments!)
+                    .ThenInclude(e => e.Thesis)
+                        .ThenInclude(t => t.Promoter)
+                            .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == studentId);
+
+            if (student != null)
+            {
+                List<int> thesisIds = student.Enrollments
+                    .Where(e => e.Thesis != null)
+                    .Select(e => e.Thesis!.Id)
+                    .ToList();
+
+                List<Thesis> theses = await _context.Theses
+                    .Include(t => t.Promoter!)
+                        .ThenInclude(p => p.User)
+                    .Where(t => t.StudentId == null && t.Promoter!.User!.InstituteId == student.User!.InstituteId && !thesisIds.Contains(t.Id))
+                    .ToListAsync();
+
+                if (student.Enrollments.Any())
+                {
+                    ViewBag.Enrollments = student.Enrollments;
+                }
+
+                ViewBag.SelectedStudentId = studentId;
+
+                return View(theses);
+            }
+            else
+            {
+                return NotFound("Student not found.");
+            }
         }
 
         [Authorize(Roles = "Promoter")]
@@ -729,6 +771,119 @@ namespace DiplomaManagement.Controllers
             // TempData[$"DeleteExamplePdf_{User.Identity.Name}"] = "File has been successfully deleted.";
             _notificationService.AddNotification($"DeleteExamplePdf_{User.Identity.Name}", "File has been successfully deleted.");
             return RedirectToAction(nameof(Edit), new { id = thesisId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignThesisToStudents(List<int> selectedStudents)
+        {
+            if (selectedStudents != null && selectedStudents.Any())
+            {
+                List<Student> students = await _context.Students
+                    .Where(s => selectedStudents.Contains(s.Id))
+                    .Include(s => s.User)
+                    .Include(s => s.Enrollments!)
+                        .ThenInclude(e => e.Thesis)
+                    .ToListAsync();
+
+                // Students with enrollments come first
+                students = students
+                    .OrderByDescending(s => s.Enrollments != null && s.Enrollments.Any())
+                    .ToList();
+
+                List<Thesis> thesesWithoutEnrollments = await _context.Theses
+                    .Where(t => !t.Enrollments.Any())
+                    .ToListAsync();
+
+                var random = new Random();
+
+                foreach (var student in students)
+                {
+                    if (student.Enrollments != null && student.Enrollments.Any())
+                    {
+                        // Get a random enrollment
+                        List<Enrollment> enrollmentList = student.Enrollments.ToList();    
+                        int randomIndex = random.Next(enrollmentList.Count);
+                        Enrollment randomEnrollment = enrollmentList[randomIndex];
+
+                        if (randomEnrollment != null)
+                        {
+                            randomEnrollment.Thesis.Status = ThesisStatus.InProgress;
+                            randomEnrollment.Thesis.StudentId = student.Id;
+
+                            List<Enrollment> thesisEnrollments = await _context.Theses
+                                .Where(t => t.Id == randomEnrollment.Thesis.Id)
+                                .SelectMany(t => t.Enrollments)
+                                .ToListAsync();
+
+                            await _thesisRepository.assignThesisToStudent(randomEnrollment.Thesis, student.Id, thesisEnrollments);
+                        } 
+                    }
+                    else
+                    {
+                        if (thesesWithoutEnrollments.Any())
+                        {
+                            int randomIndex = random.Next(thesesWithoutEnrollments.Count);
+                            Thesis randomThesis = thesesWithoutEnrollments[randomIndex];
+
+                            List<Enrollment> thesisEnrollments = await _context.Theses
+                                .Where(t => t.Id == randomThesis.Id)
+                                .SelectMany(t => t.Enrollments)
+                                .ToListAsync();
+
+                            await _thesisRepository.assignThesisToStudent(randomThesis, student.Id, thesisEnrollments);
+                        }
+                        else
+                        {
+                            _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "There is no available theses right now, please try again later.");
+                            return RedirectToAction("StudentsWithoutThesis", "Student");
+                        }
+                    }
+                }
+
+                _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", $"{students.Count} students have been successfully processed and assigned to available theses.");
+                return RedirectToAction("StudentsWithoutThesis", "Student");
+            }
+
+            // _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", "No students were selected.");
+            return RedirectToAction("StudentsWithoutThesis","Student");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignThesisToStudentManual(int selectedStudent, int thesisId)
+        {
+            Student? student = await _context.Students
+                .Where(s => s.Id == selectedStudent)
+                .Include(s => s.User)
+                .Include(s => s.Enrollments!)
+                    .ThenInclude(e => e.Thesis)
+                .FirstOrDefaultAsync();
+
+            if (student != null)
+            {
+                Thesis? thesis = await _context.Theses
+                    .Where(t => t.Id == thesisId)
+                    .Include(t => t.Enrollments)
+                    .FirstOrDefaultAsync();
+                if (thesis != null)
+                {
+
+                    List<Enrollment> thesisEnrollments = thesis.Enrollments.Where(e => e.StudentId != student.Id).ToList();
+                    thesisEnrollments.AddRange(student.Enrollments);
+
+                    await _thesisRepository.assignThesisToStudent(thesis, student.Id, thesisEnrollments);
+
+                    _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", "Selected student have been successfully processed and assigned to available thesis.");
+                }
+                else
+                {
+                    _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "There is no available theses right now, please try again later.");
+                }
+            }
+
+            // _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "No students were selected.");
+            return RedirectToAction("StudentsWithoutThesis", "Student");
         }
 
         private bool ThesisExists(int id)

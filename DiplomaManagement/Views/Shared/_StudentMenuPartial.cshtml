@@ -1,10 +1,10 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using DiplomaManagement.Interfaces
+@using Microsoft.AspNetCore.Identity
 @using DiplomaManagement.Data
-@using DiplomaManagement.Repositories;
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@inject ThesisRepository ThesisRepository
+@inject IThesisRepository _thesisRepository
 
 @{
     ApplicationUser? user = await UserManager.GetUserAsync(User);
@@ -16,7 +16,7 @@
         <a class="nav-link text-dark" asp-controller="Thesis" asp-action="AvailableTheses">Theses</a>
     </li>
 
-    var thesisId = await ThesisRepository.GetStudentThesisAsync(user.Id);
+    var thesisId = await _thesisRepository.GetStudentThesisAsync(user.Id);
     @if (thesisId != null) 
     {
         <li class="nav-item">

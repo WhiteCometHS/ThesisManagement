@@ -14,14 +14,18 @@
 }
 
 <h1>Details</h1>
+
 @if (!string.IsNullOrEmpty(notificationMessage))
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert" id="info-message">
-        @notificationMessage
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = notificationMessage,
+        Class = "bg-success"
+    };
 
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+}
 
 <div>
     <h4>Thesis</h4>
@@ -153,7 +157,8 @@
 
     @if (ViewBag.OriginalPdf == null || ViewBag.PresentationFile == null)
     {
-        <form asp-action="AddStudentFiles" method="post" enctype="multipart/form-data">
+        <h4>Upload your files:</h4>
+        <form asp-action="AddStudentFiles" method="post" enctype="multipart/form-data" onsubmit="return validateFiles()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="@Model.Id" />
 
@@ -161,7 +166,7 @@
             {
                 <div class="form-group">
                     <label asp-for="PdfFile" class="control-label"></label>
-                    <input asp-for="PdfFile" type="file" class="form-control" accept=".pdf" lang="en" />
+                    <input asp-for="PdfFile" id="PdfFile" type="file" class="form-control" accept=".pdf" lang="en" />
                 </div>
             }
 
@@ -169,7 +174,7 @@
             {
                 <div class="form-group">
                     <label asp-for="PresentationFile" class="control-label"></label>
-                    <input asp-for="PresentationFile" type="file" class="form-control" accept=".pptx" lang="en" />
+                    <input asp-for="PresentationFile" id="PresentationFile" type="file" class="form-control" accept=".pptx" lang="en" />
                 </div>
             }
 
@@ -179,6 +184,43 @@
         </form>
     }
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<script>
+    function validateFiles() {
+        var pdfFile = document.getElementById("PdfFile");
+        var presentationFile = document.getElementById("PresentationFile");
+
+        // Check if both inputs are empty
+        if ((pdfFile && pdfFile.files.length === 0) &&
+            (presentationFile && presentationFile.files.length === 0)) {
+
+            showNotification("Please upload at least one file.");
+
+            return false;
+        }
+        return true;
+    }
+
+    function showNotification(message) {
+        var toastModel = {
+            Title: "Warning",
+            Message: message,
+            Class: "bg-danger"
+        };
+
+        // load the partial view with the toastModel data
+        $.ajax({
+            url: '@Url.Action("RenderToastNotification", "Home")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(toastModel),
+            success: function (response) {
+                $('body').append(response);
+
+                var toastElement = document.getElementById('liveToast');
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            }
+        });
+    }
+</script>
