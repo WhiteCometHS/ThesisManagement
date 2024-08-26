@@ -1,4 +1,6 @@
 ﻿@using System.Globalization
+@using DiplomaManagement.ExtensionMethods
+@using Microsoft.AspNetCore.Localization
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentCulture.Name">
 <head>
@@ -13,6 +15,19 @@
     <script src="~/js/notifications.js"></script>
 </head>
 <body>
+    @{
+        var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+        var defaultCultures = new List<CultureInfo>()
+        {
+            new CultureInfo("pl-PL"),
+            new CultureInfo("en-US"),
+        };
+
+        CultureInfo[] cinfo = CultureInfo.GetCultures(CultureTypes.AllCultures);
+        List<SelectListItem> cultureList = cinfo.Where(x => defaultCultures.Contains(x))
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName.Split('(')[0].Trim() })
+            .ToList();
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -35,15 +50,25 @@
                         <partial name="_StudentMenuPartial" />
                     </ul>
 
-                    <form id="langForm" asp-controller="Home" asp-action="SetLanguage" method="post" class="form-inline">
-                        <select name="culture" class="form-control" onchange="document.getElementById('langForm').submit();">
-                            <option value="en-US" selected="@(CultureInfo.CurrentCulture.Name == "en-US" ? "selected" : "")">
-                                English
-                            </option>
-                            <option value="pl-PL" selected="@(CultureInfo.CurrentCulture.Name == "pl-PL" ? "selected" : "")">
-                                Polish
-                            </option>
-                        </select>
+                    <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path"
+                        method="post" role="form" class="form-inline">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" href="#" id="dropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: transparent; border: none; padding: 0;">
+                                <img src="~/img/flags/@(requestCulture.RequestCulture.UICulture.Name.ToLower().Replace("-", "_")).svg" alt="@requestCulture.RequestCulture.UICulture.Name" style="width: 20px;"/>
+                            </button>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="min-width: unset;">
+                                @foreach (var item in cultureList)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" onclick="changeLanguage('@item.Value', event)">
+                                            <img src="~/img/flags/@(item.Value.ToLower().Replace("-", "_")).svg" alt="@item.Text" style="width: 20px;" /> @item.Text
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <input type="hidden" name="culture" id="cultureInput" />
                     </form>
 
                     <partial name="_LoginPartial" />
@@ -59,7 +84,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - DiplomaManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - DiplomaManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Html.Translate("privacy")</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

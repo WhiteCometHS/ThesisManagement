@@ -23,6 +23,7 @@ namespace DiplomaManagement.Controllers
             _instituteRepository = instituteRepository;
         }
 
+        [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl = "/")
         {
             Response.Cookies.Append(
