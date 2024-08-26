@@ -1,20 +1,28 @@
 ﻿@using DiplomaManagement.Interfaces
+@using DiplomaManagement.Models
 @model IEnumerable<DiplomaManagement.Entities.Thesis>
 
 @inject INotificationService NotificationService
 
 @{
     ViewData["Title"] = "Index";
-    var notificationMessage = NotificationService.GetNotification($"MaxThesisLimit_{User.Identity.Name}");
+    var errorMessage = NotificationService.GetNotification($"MaxThesisLimit_{User.Identity.Name}") 
+        ?? NotificationService.GetNotification($"DeleteFailure_{User.Identity.Name}") 
+        ?? null;
 }
 
 <h1>Index</h1>
-@if (!string.IsNullOrEmpty(notificationMessage))
+
+@if (!string.IsNullOrEmpty(errorMessage))
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="info-message">
-        @notificationMessage
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    var toastModel = new ToastNotificationViewModel
+    {
+        Title = "Danger",
+        Message = errorMessage,
+        Class = "bg-danger"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 
 <p>
@@ -53,26 +61,54 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn-submit" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to submit enrollment for this student? All other enrollments for this thesis will be declined.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="hiddenForm" method="post" style="display:none;"></form>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-@*     <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var MessageElement = document.getElementById('info-message');
-            if (MessageElement) {
-                setTimeout(function () {
-                    var alert = new bootstrap.Alert(MessageElement);
-                    alert.close();
-                }, 5000);
-            }
+            var submitButtons = document.querySelectorAll('.btn-submit');
+            var confirmButton = document.getElementById('confirmSubmit');
+            var currentItemId;
+
+            submitButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    currentItemId = this.getAttribute('data-id');
+                });
+            });
+
+            confirmButton.addEventListener('click', function () {
+                var form = document.getElementById('hiddenForm');
+                form.action = '@Url.Action("Delete", "Thesis")/' + currentItemId;
+                form.submit();
+            });
         });
-    </script> *@
+    </script>
 }

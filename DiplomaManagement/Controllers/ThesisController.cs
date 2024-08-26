@@ -251,11 +251,13 @@ namespace DiplomaManagement.Controllers
 
         // GET: Thesis/Details/5
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> StudentDetails(int id)
         {
             Thesis? thesis = await _context.Theses
                 .Include(t => t.PdfFiles)
                 .Include(t => t.PresentationFile)
+                .Include(t => t.Promoter!)
+                    .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (thesis == null)
@@ -269,6 +271,7 @@ namespace DiplomaManagement.Controllers
                     Title = thesis.Title,
                     Description = thesis.Description,
                     PromoterId = thesis.PromoterId,
+                    Promoter = thesis.Promoter,
                 };
 
                 List<PdfFile> examplePdfs = thesis.PdfFiles?.Where(p => p.PdfType == PdfType.example).ToList() ?? [];
@@ -433,7 +436,7 @@ namespace DiplomaManagement.Controllers
             await _context.SaveChangesAsync();
 
             _notificationService.AddNotification($"FilesAdded_{User.Identity.Name}", "Your files has been added to the system. Please, wait for promoter to check it.");
-            return RedirectToAction(nameof(Details), new { id = vm.Id });
+            return RedirectToAction(nameof(StudentDetails), new { id = vm.Id });
         }
 
         // GET: Thesis/Create
@@ -632,12 +635,19 @@ namespace DiplomaManagement.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var thesis = await _context.Theses.FindAsync(id);
+
             if (thesis != null)
             {
-                _context.Theses.Remove(thesis);
+                if (thesis.StudentId != null) {
+                    _notificationService.AddNotification($"DeleteFailure_{User.Identity.Name}", "You cant delete thesis with an assigned student.");
+                } 
+                else 
+                {
+                    _context.Theses.Remove(thesis);
+                    await _context.SaveChangesAsync();
+                }
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -811,10 +821,11 @@ namespace DiplomaManagement.Controllers
                             randomEnrollment.Thesis.Status = ThesisStatus.InProgress;
                             randomEnrollment.Thesis.StudentId = student.Id;
 
-                            List<Enrollment> thesisEnrollments = await _context.Theses
-                                .Where(t => t.Id == randomEnrollment.Thesis.Id)
-                                .SelectMany(t => t.Enrollments)
+                            List<Enrollment> thesisEnrollments = await _context.Enrollments
+                                .Where(t => t.ThesisId == randomEnrollment.Thesis.Id && t.StudentId != student.Id)
                                 .ToListAsync();
+
+                            thesisEnrollments.AddRange(student.Enrollments);
 
                             await _thesisRepository.assignThesisToStudent(randomEnrollment.Thesis, student.Id, thesisEnrollments);
                         } 
@@ -836,13 +847,11 @@ namespace DiplomaManagement.Controllers
                         else
                         {
                             _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "There is no available theses right now, please try again later.");
-                            return RedirectToAction("StudentsWithoutThesis", "Student");
                         }
                     }
                 }
 
                 _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", $"{students.Count} students have been successfully processed and assigned to available theses.");
-                return RedirectToAction("StudentsWithoutThesis", "Student");
             }
 
             // _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", "No students were selected.");

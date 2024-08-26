@@ -66,7 +66,7 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "Promoter")]
-        public async Task<IActionResult> ActiveEnrollments(int thesisId)
+        public async Task<IActionResult> ActiveEnrollments()
         {
             var user = await _userManager.GetUserAsync(User);
 

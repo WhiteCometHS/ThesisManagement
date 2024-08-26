@@ -11,17 +11,25 @@
 
 @if (!string.IsNullOrEmpty(enrollmentCreated))
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert" id="info-message">
-        @enrollmentCreated
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = enrollmentCreated,
+        Class = "bg-success"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 else if (!string.IsNullOrEmpty(enrollmentCreationError))
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="info-message">
-        @enrollmentCreationError
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Danger",
+        Message = enrollmentCreationError,
+        Class = "bg-danger"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 
 @if (ViewBag.Thesis != null)
