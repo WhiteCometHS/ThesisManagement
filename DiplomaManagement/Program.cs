@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,7 @@ builder.Services.AddSession();
 builder.Services.AddSingleton<INotificationService, SessionNotificationService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-// Add services to the container.
+// add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -29,6 +30,21 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+// add localization settings
+builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    List<CultureInfo> supportedCultures =
+    [
+        new CultureInfo("pl-PL"),
+        new CultureInfo("en-US"),
+    ];
+    options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+builder.Services.AddSingleton<SharedViewLocalizer>();
 
 // repositories/services registration
 builder.Services.AddScoped<InstituteRepository>();
@@ -41,6 +57,9 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     await Initializer.CreateAdminUser(services);
 }
+
+var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(locOptions.Value);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

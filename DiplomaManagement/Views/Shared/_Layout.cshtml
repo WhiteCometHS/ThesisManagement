@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Globalization
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentCulture.Name">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,6 +34,18 @@
                         <partial name="_PromoterMenuPartial" />
                         <partial name="_StudentMenuPartial" />
                     </ul>
+
+                    <form id="langForm" asp-controller="Home" asp-action="SetLanguage" method="post" class="form-inline">
+                        <select name="culture" class="form-control" onchange="document.getElementById('langForm').submit();">
+                            <option value="en-US" selected="@(CultureInfo.CurrentCulture.Name == "en-US" ? "selected" : "")">
+                                English
+                            </option>
+                            <option value="pl-PL" selected="@(CultureInfo.CurrentCulture.Name == "pl-PL" ? "selected" : "")">
+                                Polish
+                            </option>
+                        </select>
+                    </form>
+
                     <partial name="_LoginPartial" />
                 </div>
             </div>

@@ -4,7 +4,7 @@ using DiplomaManagement.Models;
 using DiplomaManagement.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
 using System.Diagnostics;
 
 namespace DiplomaManagement.Controllers
@@ -21,6 +21,17 @@ namespace DiplomaManagement.Controllers
             _logger = logger;
             _context = context;
             _instituteRepository = instituteRepository;
+        }
+
+        public IActionResult SetLanguage(string culture, string returnUrl = "/")
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return LocalRedirect(returnUrl);
         }
 
         public async Task<IActionResult> Index()
