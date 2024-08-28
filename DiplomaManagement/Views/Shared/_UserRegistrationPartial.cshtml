@@ -1,11 +1,13 @@
-﻿@using DiplomaManagement.ExtensionMethods
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 @model DiplomaManagement.Models.RegistrationModel
 
 <!-- Modal -->
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">@Html.Translate("registration-modal-title")</h5>
+            <h5 class="modal-title" id="exampleModalLabel">@Localizer["registration-modal-title"]</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -15,52 +17,52 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="RegistrationInValid">
                 <div class="mb-3 row">
-                    <label asp-for="UserName" class="col-md-4 col-form-label">@Html.Translate("user-name")</label>
+                    <label asp-for="UserName" class="col-md-4 col-form-label">@Localizer["user-name"]</label>
                     <div class="col-md-8">
-                        <input asp-for="UserName" placeholder="@Html.Translate("user-name")" class="form-control">
+                        <input asp-for="UserName" placeholder="@Localizer["user-name"]" class="form-control">
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label asp-for="Password" class="col-md-4 col-form-label">@Html.Translate("password")</label>
+                    <label asp-for="Password" class="col-md-4 col-form-label">@Localizer["password"]</label>
                     <div class="col-md-8">
-                        <input asp-for="Password" placeholder="@Html.Translate("enter-password")" class="form-control">
+                        <input asp-for="Password" placeholder="@Localizer["enter-password"]" class="form-control">
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label asp-for="ConfirmPassword" class="col-md-4 col-form-label">@Html.Translate("confirm-password")</label>
+                    <label asp-for="ConfirmPassword" class="col-md-4 col-form-label">@Localizer["confirm-password"]</label>
                     <div class="col-md-8">
-                        <input asp-for="ConfirmPassword" placeholder="@Html.Translate("confirm-password")" class="form-control">
+                        <input asp-for="ConfirmPassword" placeholder="@Localizer["confirm-password"]" class="form-control">
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label asp-for="FirstName" class="col-md-4 col-form-label">@Html.Translate("first-name")</label>
+                    <label asp-for="FirstName" class="col-md-4 col-form-label">@Localizer["first-name"]</label>
                     <div class="col-md-8">
-                        <input asp-for="FirstName" placeholder="@Html.Translate("first-name")" class="form-control">
+                        <input asp-for="FirstName" placeholder="@Localizer["first-name"]" class="form-control">
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label asp-for="LastName" class="col-md-4 col-form-label">@Html.Translate("last-name")</label>
+                    <label asp-for="LastName" class="col-md-4 col-form-label">@Localizer["last-name"]</label>
                     <div class="col-md-8">
-                        <input asp-for="LastName" placeholder="@Html.Translate("last-name")" class="form-control">
+                        <input asp-for="LastName" placeholder="@Localizer["last-name"]" class="form-control">
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <label asp-for="Email" class="col-md-4 col-form-label"></label>
                     <div class="col-md-8">
-                        <input asp-for="Email" placeholder="@Html.Translate("email-address")" class="form-control">
+                        <input asp-for="Email" placeholder="@Localizer["email-address"]" class="form-control">
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label asp-for="InstituteId" class="col-md-4 col-form-label">@Html.Translate("institute")</label>
+                    <label asp-for="InstituteId" class="col-md-4 col-form-label">@Localizer["institute"]</label>
                     <div class="col-md-8">
                         <select asp-for="InstituteId" class="form-control" asp-items="@ViewBag.Institutes" id="instituteSelect">
-                            <option value="" selected hidden>@Html.Translate("select-institute")</option>
+                            <option value="" selected hidden>@Localizer["select-institute"]</option>
                         </select>
                         <span asp-validation-for="InstituteId" class="text-danger"></span>
                     </div>
@@ -70,7 +72,7 @@
                         <div class="form-check">
                             <input asp-for="AcceptUserAgreement" class="form-check-input">
                             <label asp-for="AcceptUserAgreement" class="form-check-label">
-                                @Html.Translate("agreement") <a href="#">@Html.Translate("terms-of-use")</a> @Html.Translate("and") <a href="#">@Html.Translate("privacy-policy")</a>
+                                @Localizer["agreement"] <a href="#">@Localizer["terms-of-use"]</a> @Localizer["and"] <a href="#">@Localizer["privacy-policy"]</a>
                             </label>
                         </div>
                     </div>
@@ -78,8 +80,8 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Html.Translate("close")</button>
-            <button id="register" name="register" type="button" class="btn btn-primary">@Html.Translate("register")</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["close"]</button>
+            <button id="register" name="register" type="button" class="btn btn-primary">@Localizer["register"]</button>
         </div>
     </div>
 </div>

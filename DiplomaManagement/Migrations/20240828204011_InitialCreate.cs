@@ -316,7 +316,7 @@ namespace DiplomaManagement.Migrations
                     Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PdfType = table.Column<string>(type: "nvarchar(24)", nullable: false),
                     ThesisId = table.Column<int>(type: "int", nullable: false),
-                    FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: true)
+                    FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: false)
                 },
                 constraints: table =>
                 {

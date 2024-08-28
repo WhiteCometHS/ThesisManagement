@@ -1,6 +1,8 @@
 ﻿@using System.Globalization
-@using DiplomaManagement.ExtensionMethods
 @using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentCulture.Name">
 <head>
@@ -84,7 +86,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - DiplomaManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Html.Translate("privacy")</a>
+            &copy; 2024 - DiplomaManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["privacy"]</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

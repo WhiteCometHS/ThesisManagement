@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Services;
 using DiplomaManagement.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using DiplomaManagement.ExtensionMethods;
-using Microsoft.AspNetCore.Mvc.Localization;
+using DiplomaManagement.Resources;
+using Microsoft.Extensions.Localization;
 
 namespace DiplomaManagement.Controllers
 {
@@ -16,9 +16,9 @@ namespace DiplomaManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
-        private readonly IHtmlLocalizer<SharedResource> _htmlLocalizer;
+        private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-        public InstituteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IHtmlLocalizer<SharedResource> htmlLocalizer)
+        public InstituteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
@@ -256,17 +256,11 @@ namespace DiplomaManagement.Controllers
 
             if (institute.Users.Any())
             {
-                
-                
-
                 if (institute.Users.Any(u => u.UserPromoter != null) || institute.Users.Any(u => u.UserDirector != null))
                 {
-                    var message = _htmlLocalizer["institute-delete-error"].Value;
-                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", message);
+                    var test = _htmlLocalizer["institute-delete-error"];
+                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", _htmlLocalizer["institute-delete-error"]);
                 }
-
-                
-
                 return RedirectToAction(nameof(Index));
             }
 

@@ -1,12 +1,14 @@
-﻿@using DiplomaManagement.ExtensionMethods
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 @model DiplomaManagement.Models.LoginModel
 
 <!-- Modal -->
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">@Html.Translate("login-modal-title")</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Html.Translate("close")"></button>
+            <h5 class="modal-title" id="exampleModalLabel">@Localizer["login-modal-title"]</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Localizer["close"]"></button>
         </div>
         <div class="modal-body">
             <div id="alert_placeholder_login">
@@ -17,14 +19,14 @@
                 <div class="mb-3 row">
                     <label asp-for="Email" class="col-md-4 col-form-label">Email</label>
                     <div class="col-md-8">
-                        <input asp-for="Email" placeholder="@Html.Translate("email-address")" class="form-control" />
+                        <input asp-for="Email" placeholder="@Localizer["email-address"]" class="form-control" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label asp-for="Password" class="col-md-4 col-form-label">@Html.Translate("password")</label>
+                    <label asp-for="Password" class="col-md-4 col-form-label">@Localizer["password"]</label>
                     <div class="col-md-8">
-                        <input asp-for="Password" placeholder="@Html.Translate("enter-password")" class="form-control" />
+                        <input asp-for="Password" placeholder="@Localizer["enter-password"]" class="form-control" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>
@@ -32,14 +34,14 @@
                     <div class="col-md-8 offset-md-4">
                         <div class="form-check">
                             <input asp-for="RememberMe" class="form-check-input" />
-                            <label asp-for="RememberMe" class="form-check-label">@Html.Translate("remember-me")</label>
+                            <label asp-for="RememberMe" class="form-check-label">@Localizer["remember-me"]</label>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Html.Translate("close")</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["close"]</button>
             <button type="button" id="login" name="login" class="btn btn-primary">Login</button>
         </div>
     </div>

@@ -1,4 +1,4 @@
-namespace DiplomaManagement.Data
+namespace DiplomaManagement.Resources
 {
     public class SharedResource
     {

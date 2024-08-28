@@ -1,6 +1,8 @@
 ﻿@using DiplomaManagement.Data
-@using DiplomaManagement.ExtensionMethods
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -19,10 +21,10 @@
 else
 {
     <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" data-bs-toggle="modal" data-bs-target="#UserRegistrationModal">@Html.Translate("register")</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" data-bs-toggle="modal" data-bs-target="#UserRegistrationModal">@Localizer["register"]</a>
     </li>
     <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" data-bs-toggle="modal" data-bs-target="#UserLoginModal">@Html.Translate("login")</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" data-bs-toggle="modal" data-bs-target="#UserLoginModal">@Localizer["login"]</a>
     </li>
 }
 </ul>

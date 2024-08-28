@@ -1,9 +1,10 @@
-﻿@using DiplomaManagement.ExtensionMethods
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using DiplomaManagement.Data
+@using Microsoft.AspNetCore.Mvc.Localization
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 
 @{
     var user = await UserManager.GetUserAsync(User);
@@ -14,15 +15,15 @@
     <li class="nav-item dropdown show">
         <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Admin</a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" asp-controller="Institute" asp-action="Index">@Html.Translate("institutes")</a>
-            <a class="dropdown-item" asp-controller="Director" asp-action="Index">@Html.Translate("institute-directors")</a>
-            <a class="dropdown-item" asp-controller="Promoter" asp-action="Index">@Html.Translate("promoters")</a>
+            <a class="dropdown-item" asp-controller="Institute" asp-action="Index">@Localizer["institutes"]</a>
+            <a class="dropdown-item" asp-controller="Director" asp-action="Index">@Localizer["institute-directors"]</a>
+            <a class="dropdown-item" asp-controller="Promoter" asp-action="Index">@Localizer["promoters"]</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" asp-controller="Student" asp-action="Index">@Html.Translate("students")</a>
+            <a class="dropdown-item" asp-controller="Student" asp-action="Index">@Localizer["students"]</a>
         </div>
 
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="StudentsWithoutThesis">@Html.Translate("students-without-thesis")</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="StudentsWithoutThesis">@Localizer["students-without-thesis"]</a>
     </li>
 }

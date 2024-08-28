@@ -1,12 +1,13 @@
 ﻿@using DiplomaManagement.Services;
 @using DiplomaManagement.Interfaces
-@using DiplomaManagement.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.Localization
 
 @model IEnumerable<DiplomaManagement.Entities.Institute>
 @inject INotificationService NotificationService
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 
 @{
-    ViewData["Title"] = @Html.Translate("institutes");
+    ViewData["Title"] = @Localizer["institutes"];
     var errorMessage = NotificationService.GetNotification($"ErrorMessage_{User.Identity.Name}");
 
     PagingService pager = new PagingService();
@@ -26,7 +27,7 @@
     };
 }
 
-<h1>@Html.Translate("list-of-all-institutes")</h1>
+<h1>@Localizer["list-of-all-institutes"]</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -41,15 +42,15 @@
 }
 
 <p>
-    <a asp-action="Create">@Html.Translate("create-new-record")</a>
+    <a asp-action="Create">@Localizer["create-new-record"]</a>
 </p>
 
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            @Html.Translate("search-by-phrase") <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
-            <input type="submit" value="@Html.Translate("search")" class="btn btn-default" /> |
-            <a asp-action="Index">@Html.Translate("back-to-full-list")</a>
+            @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+            <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
+            <a asp-action="Index">@Localizer["back-to-full-list"]</a>
         </p>
     </div>
 </form>
@@ -58,22 +59,22 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.Translate("name")</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["name"]</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SiteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.Translate("site-address")</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SiteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["site-address"]</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StreetSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.Translate("street")</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StreetSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["street"]</a>
             </th>
             <th>
-                @Html.Translate("city")
+                @Localizer["city"]
             </th>
             <th>
-                @Html.Translate("post-code")
+                @Localizer["post-code"]
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.Translate("institute-email")</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["institute-email"]</a>
             </th>
             <th></th>
         </tr>
@@ -100,9 +101,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">@Html.Translate("edit")</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">@Html.Translate("details")</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">@Html.Translate("delete")</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit"]</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details"]</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">@Localizer["delete"]</a>
             </td>
         </tr>
     }

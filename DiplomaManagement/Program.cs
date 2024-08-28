@@ -1,6 +1,8 @@
+using DiplomaManagement;
 using DiplomaManagement.Data;
 using DiplomaManagement.Interfaces;
 using DiplomaManagement.Repositories;
+using DiplomaManagement.Resources;
 using DiplomaManagement.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -31,7 +33,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // add localization settings
-builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+builder.Services.AddLocalization();
 
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
@@ -48,7 +50,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
-builder.Services.AddSingleton<SharedViewLocalizer>();
 
 // repositories/services registration
 builder.Services.AddScoped<InstituteRepository>();
