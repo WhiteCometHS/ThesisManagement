@@ -29,10 +29,14 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
 
 // add localization settings
 builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     List<CultureInfo> supportedCultures =

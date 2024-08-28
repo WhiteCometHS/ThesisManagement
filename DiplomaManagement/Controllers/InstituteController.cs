@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Services;
 using DiplomaManagement.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using DiplomaManagement.ExtensionMethods;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace DiplomaManagement.Controllers
 {
@@ -14,12 +16,14 @@ namespace DiplomaManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
+        private readonly IHtmlLocalizer<SharedResource> _htmlLocalizer;
 
-        public InstituteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
+        public InstituteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IHtmlLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
+            _htmlLocalizer = htmlLocalizer;
         }
 
         // GET: Institute
@@ -252,18 +256,16 @@ namespace DiplomaManagement.Controllers
 
             if (institute.Users.Any())
             {
-                string errorMessage = "It is not possible to delete this institute as there is linked data. Check ";
+                
+                
 
-                if (institute.Users.Any(u => u.UserPromoter != null))
+                if (institute.Users.Any(u => u.UserPromoter != null) || institute.Users.Any(u => u.UserDirector != null))
                 {
-                    errorMessage += "'Promoters', ";
+                    var message = _htmlLocalizer["institute-delete-error"].Value;
+                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", message);
                 }
 
-                if (institute.Users.Any(u => u.UserDirector != null))
-                {
-                    errorMessage += "'Directors' table.";
-                }
-                _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", errorMessage);
+                
 
                 return RedirectToAction(nameof(Index));
             }
