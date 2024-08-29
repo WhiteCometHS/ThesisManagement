@@ -309,12 +309,11 @@ namespace DiplomaManagement.Controllers
             {
                 if (director.Promoters.Any())
                 {
-                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", "It is not possible to delete this director as there is linked data. Check 'Promoters' table.");
+                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", _htmlLocalizer["director-delete-error"]);
                 }
                 else 
                 {
                     var user = director.User;
-
                     _context.Directors.Remove(director);
 
                     if (user != null)
@@ -323,6 +322,7 @@ namespace DiplomaManagement.Controllers
                     }
 
                     await _context.SaveChangesAsync();
+                    _notificationService.AddNotification($"DirectorDeleted_{User.Identity!.Name}", _htmlLocalizer["director-deleted-message", user.FirstName, user.LastName]);
                 }
 
                 return RedirectToAction(nameof(Index));

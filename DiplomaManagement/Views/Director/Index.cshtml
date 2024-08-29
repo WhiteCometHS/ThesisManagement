@@ -9,6 +9,7 @@
 @{
     ViewData["Title"] = "Index";
     var errorMessage = NotificationService.GetNotification($"ErrorMessage_{User.Identity.Name}");
+    var successMessage = NotificationService.GetNotification($"InstituteDeleted_{User.Identity.Name}");
 
     PagingService pager = new PagingService();
     int pageNumber = 0;
@@ -27,7 +28,7 @@
     };
 }
 
-<h1>Index</h1>
+<h1>@Localizer["list-of-all-directors"]</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -41,8 +42,20 @@
     @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = successMessage,
+        Class = "bg-success"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+}
+
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@Localizer["create-new-record"]</a>
 </p>
 
 <form asp-action="Index" method="get">
@@ -59,22 +72,22 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.FirstName)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["first-name"]</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SurnameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.LastName)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SurnameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["last-name"]</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Email)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["email-address"]</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.InstituteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Institute)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.InstituteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["institute"]</a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
@@ -89,12 +102,12 @@
                 @Html.DisplayFor(modelItem => item.Institute.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
                 <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
 
@@ -107,7 +120,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @Localizer["aus-institute-delete"]
+                @Localizer["aus-director-delete"]
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["cancel"]</button>

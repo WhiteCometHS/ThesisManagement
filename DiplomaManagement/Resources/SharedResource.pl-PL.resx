@@ -309,4 +309,34 @@
     <value>Czy na pewno chcesz usunąć ten instytut?</value>
     <comment/>
   </data>
+  <data name="director-delete-error" xml:space="preserve">
+    <value>Nie jest możliwe usunięcie tego dyrektora, ponieważ istnieją powiązane dane. Sprawdź tabelę 'Promoters'.</value>
+  </data>
+  <data name="director-deleted-message" xml:space="preserve">
+    <value>Dyrektor ({0} {1}) został pomyślnie usunięty.</value>
+  </data>
+  <data name="list-of-all-directors" xml:space="preserve">
+    <value>Lista wszystkich dyrektorów</value>
+  </data>
+  <data name="aus-director-delete" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć tego dyrektora?</value>
+  </data>
+  <data name="promoter-delete-error" xml:space="preserve">
+    <value>It is not possible to delete this promoter as there is linked data. Check 'Theses' table.</value>
+  </data>
+  <data name="promoter-deleted-message" xml:space="preserve">
+    <value>Promotor ({0} {1}) został pomyślnie usunięty.</value>
+  </data>
+  <data name="aus-promoter-delete" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć tego promotora?</value>
+  </data>
+  <data name="list-of-all-promoters" xml:space="preserve">
+    <value>Lista wszystkich promotorów</value>
+  </data>
+  <data name="thesis-limit" xml:space="preserve">
+    <value>Limit prac dyplomowych</value>
+  </data>
+  <data name="assigned-director" xml:space="preserve">
+    <value>Przypisany dyrektor</value>
+  </data>
 </root>

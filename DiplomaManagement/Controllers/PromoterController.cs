@@ -5,10 +5,10 @@ using DiplomaManagement.Data;
 using DiplomaManagement.Models;
 using DiplomaManagement.Entities;
 using Microsoft.AspNetCore.Identity;
-using System.IO;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using NuGet.Common;
 using DiplomaManagement.Interfaces;
+using DiplomaManagement.Services;
+using DiplomaManagement.Resources;
+using Microsoft.Extensions.Localization;
 
 namespace DiplomaManagement.Controllers
 {
@@ -18,24 +18,100 @@ namespace DiplomaManagement.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly INotificationService _notificationService;
+        private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-        public PromoterController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, INotificationService notificationService)
+
+        public PromoterController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _notificationService = notificationService;
+            _htmlLocalizer = htmlLocalizer;
         }
 
         // GET: Promoter
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
-            var promoters = await _context.Promoters
-                .Include(p => p.Director.User)
-                .Include(p => p.User)
-                .ToListAsync();
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParam = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.SurnameSortParam = sortOrder == "surname" ? "surname_desc" : "surname";
+            ViewBag.EmailSortParam = sortOrder == "email" ? "email_desc" : "email";
+            ViewBag.ThesisLimitSortParam = sortOrder == "thesis_limit" ? "thesis_limit_desc" : "thesis_limit";
+            ViewBag.DirectorSortParam = sortOrder == "director" ? "director_desc" : "director";
 
-            return View(promoters);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            IQueryable<Promoter> promotersQuery = _context.Promoters
+                .Include(p => p.Director.User)
+                .Include(p => p.User);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                promotersQuery = promotersQuery.Where(t =>
+                    t.User.FirstName.Contains(searchString) ||
+                    t.User.LastName.Contains(searchString) ||
+                    t.User.Email.Contains(searchString) ||
+                    t.ThesisLimit.ToString().Contains(searchString) ||
+                    t.Director.User.FirstName.Contains(searchString) ||
+                    t.Director.User.LastName.Contains(searchString));
+            }
+
+            List<Promoter> promoters = await promotersQuery.ToListAsync();
+
+            var sortMapping = new Dictionary<string, Func<IEnumerable<Promoter>, IOrderedEnumerable<Promoter>>>
+            {
+                { "name_desc", theses => theses.OrderByDescending(t => t.User.FirstName) },
+                { "surname_desc", theses => theses.OrderByDescending(t => t.User.LastName) },
+                { "surname", theses => theses.OrderBy(t => t.User.LastName) },
+                { "email", theses => theses.OrderBy(t => t.User.Email) },
+                { "email_desc", theses => theses.OrderByDescending(t => t.User.Email) },
+                { "thesis_limit", theses => theses.OrderBy(t => t.ThesisLimit) },
+                { "thesis_limit_desc", theses => theses.OrderByDescending(t => t.ThesisLimit) },
+                { "director", theses => theses.OrderBy(t => t.Director.User.FirstName) },
+                { "director_desc", theses => theses.OrderByDescending(t => t.Director.User.FirstName) }
+            };
+
+            if (sortMapping.TryGetValue(sortOrder ?? "", out var sortFunc))
+            {
+                promoters = sortFunc(promoters).ToList();
+            }
+            else
+            {
+                promoters = promoters.OrderBy(t => t.User.FirstName).ToList();
+            }
+
+            int pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recordsCount = promoters.Count();
+            int pageNumber = page ?? 1;
+
+            PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+            ViewBag.Pager = pager;
+
+            int itemsToSkip = (pageNumber - 1) * pageSize;
+
+            List<Promoter> items = promoters
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
+
+            return View(items);
         }
 
         // GET: Promoter/Details/5
@@ -268,40 +344,6 @@ namespace DiplomaManagement.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
-            
-
-            List<Director> directorUsers = _context.Directors
-            .Include(d => d.User)
-            .ToList();
-
-            List<SelectListItem> directorsSelectList = directorUsers.Select(u => new SelectListItem
-            {
-                Value = u.Id.ToString(),
-                Text = $"{u.User.FirstName} {u.User.LastName}"
-            }).ToList();
-
-            ViewBag.Directors = new SelectList(directorsSelectList, "Value", "Text");
-            return View(detailsViewModel);
-        }
-
-        // GET: Promoter/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var promoter = await _context.Promoters
-                .Include(p => p.Director)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (promoter == null)
-            {
-                return NotFound();
-            }
-
-            return View(promoter);
         }
 
         // POST: Promoter/Delete/5
@@ -318,18 +360,20 @@ namespace DiplomaManagement.Controllers
             {
                 if (promoter.Theses.Any())
                 {
-                    _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", "It is not possible to delete this promoter as there is linked data. Check 'Theses' table.");
-                    return RedirectToAction(nameof(Index));
+                    _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", _htmlLocalizer["promoter-delete-error"]);
                 }
-
-                var user = promoter.User;
-
-                if (user != null)
+                else
                 {
-                    _context.Promoters.Remove(promoter);
-                    _context.Users.Remove(user);
-                    await _context.SaveChangesAsync();
-                }         
+                    var user = promoter.User;
+
+                    if (user != null)
+                    {
+                        _context.Promoters.Remove(promoter);
+                        _context.Users.Remove(user);
+                        await _context.SaveChangesAsync();
+                        _notificationService.AddNotification($"PromoterDeleted_{User.Identity!.Name}", _htmlLocalizer["promoter-deleted-message", user.FirstName, user.LastName]);
+                    }
+                }
             }
 
             return RedirectToAction(nameof(Index));
