@@ -1,8 +1,10 @@
 ﻿@using DiplomaManagement.Services;
 @using DiplomaManagement.Interfaces
+@using Microsoft.AspNetCore.Mvc.Localization
 
 @model IEnumerable<DiplomaManagement.Models.DirectorViewModel>
 @inject INotificationService NotificationService
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 
 @{
     ViewData["Title"] = "Index";
@@ -42,6 +44,17 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+            <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
+            <a asp-action="Index">@Localizer["back-to-full-list"]</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -78,11 +91,53 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">@Localizer["confirm-action"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @Localizer["aus-institute-delete"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["cancel"]</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">@Localizer["submit"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="hiddenDeleteForm" method="post" style="display:none;"></form>
+
 <partial name="_PagerPartial" model="@pagerViewModel" />
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteButtons = document.querySelectorAll('.btn-delete');
+            var confirmButton = document.getElementById('confirmSubmit');
+            var currentItemId;
+
+            deleteButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    currentItemId = this.getAttribute('data-id');
+                });
+            });
+
+            confirmButton.addEventListener('click', function () {
+                var form = document.getElementById('hiddenDeleteForm');
+                form.action = '@Url.Action("Delete")/' + currentItemId;
+                form.submit();
+            });
+        });
+    </script>
+}

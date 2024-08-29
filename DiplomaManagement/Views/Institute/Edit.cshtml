@@ -1,12 +1,15 @@
 ﻿@model DiplomaManagement.Entities.Institute
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = @Localizer["edit-header"];
 }
 
-<h1>Edit</h1>
+<h1>@Localizer["edit-header"]</h1>
 
-<h4>Institute</h4>
+<h4>@Localizer["institute"]</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,44 +17,44 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">@Localizer["name"]</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SiteAddress" class="control-label"></label>
+                <label asp-for="SiteAddress" class="control-label">@Localizer["site-address"]</label>
                 <input asp-for="SiteAddress" class="form-control" />
                 <span asp-validation-for="SiteAddress" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Street" class="control-label"></label>
+                <label asp-for="Street" class="control-label">@Localizer["street"]</label>
                 <input asp-for="Street" class="form-control" />
                 <span asp-validation-for="Street" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
+                <label asp-for="City" class="control-label">@Localizer["city"]</label>
                 <input asp-for="City" class="form-control" />
                 <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PostalCode" class="control-label"></label>
+                <label asp-for="PostalCode" class="control-label">@Localizer["post-code"]</label>
                 <input asp-for="PostalCode" class="form-control" />
                 <span asp-validation-for="PostalCode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
+                <label asp-for="Email" class="control-label">@Localizer["institute-email"]</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="@Localizer["save"]" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@Localizer["back-to-list"]</a>
 </div>
 
 @section Scripts {

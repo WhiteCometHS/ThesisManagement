@@ -217,25 +217,6 @@ namespace DiplomaManagement.Controllers
             return View(institute);
         }
 
-        // GET: Institute/Delete/5
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var institute = await _context.Institutes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (institute == null)
-            {
-                return NotFound();
-            }
-
-            return View(institute);
-        }
-
         // POST: Institute/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -258,14 +239,16 @@ namespace DiplomaManagement.Controllers
             {
                 if (institute.Users.Any(u => u.UserPromoter != null) || institute.Users.Any(u => u.UserDirector != null))
                 {
-                    var test = _htmlLocalizer["institute-delete-error"];
                     _notificationService.AddNotification($"ErrorMessage_{User.Identity!.Name}", _htmlLocalizer["institute-delete-error"]);
                 }
-                return RedirectToAction(nameof(Index));
+            } 
+            else 
+            {
+                _context.Institutes.Remove(institute);
+                await _context.SaveChangesAsync();
+                _notificationService.AddNotification($"InstituteDeleted_{User.Identity!.Name}", _htmlLocalizer["institute-deleted-message", institute.Name]);
             }
 
-            _context.Institutes.Remove(institute);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

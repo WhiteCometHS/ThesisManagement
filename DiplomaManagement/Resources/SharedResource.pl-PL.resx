@@ -257,15 +257,15 @@
     <value>Utwórz nowy rekord</value>
     <comment/>
   </data>
-  <data name="edit" xml:space="preserve">
+  <data name="edit-button" xml:space="preserve">
     <value>Edytuj</value>
     <comment/>
   </data>
-  <data name="details" xml:space="preserve">
+  <data name="details-button" xml:space="preserve">
     <value>Szczegóły</value>
     <comment/>
   </data>
-  <data name="delete" xml:space="preserve">
+  <data name="delete-button" xml:space="preserve">
     <value>Usuń</value>
     <comment/>
   </data>
@@ -275,6 +275,38 @@
   </data>
   <data name="institute-delete-error" xml:space="preserve">
     <value>Nie jest możliwe usunięcie tego instytutu, ponieważ istnieją powiązane dane. Sprawdź tabele „Promoters” i „Directors”. </value>
+    <comment/>
+  </data>
+  <data name="save" xml:space="preserve">
+    <value>Zapisz</value>
+    <comment/>
+  </data>
+  <data name="back-to-list" xml:space="preserve">
+    <value>Powrót do listy</value>
+    <comment/>
+  </data>
+  <data name="edit-header" xml:space="preserve">
+    <value>Edycja</value>
+    <comment/>
+  </data>
+  <data name="institute-deleted-message" xml:space="preserve">
+    <value>{0} został pomyślnie usunięty.</value>
+    <comment/>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Anuluj</value>
+    <comment/>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>Zatwierdź</value>
+    <comment/>
+  </data>
+  <data name="confirm-action" xml:space="preserve">
+    <value>Potwierdź akcję</value>
+    <comment/>
+  </data>
+  <data name="aus-institute-delete" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten instytut?</value>
     <comment/>
   </data>
 </root>

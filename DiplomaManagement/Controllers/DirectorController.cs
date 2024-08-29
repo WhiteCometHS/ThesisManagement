@@ -14,6 +14,8 @@ using DiplomaManagement.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Interfaces;
 using DiplomaManagement.Services;
+using Microsoft.Extensions.Localization;
+using DiplomaManagement.Resources;
 
 namespace DiplomaManagement.Controllers
 {
@@ -23,13 +25,15 @@ namespace DiplomaManagement.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
         private readonly InstituteRepository _instituteRepository;
+        private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-        public DirectorController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, InstituteRepository instituteRepository, INotificationService notificationService)
+        public DirectorController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, InstituteRepository instituteRepository, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
             _instituteRepository = instituteRepository;
             _notificationService = notificationService;
+            _htmlLocalizer = htmlLocalizer;
         }
 
         // GET: Director
@@ -265,7 +269,7 @@ namespace DiplomaManagement.Controllers
                     _context.Update(existingDirector);
                     await _context.SaveChangesAsync();
                 }
-                // basicaly it's not nedded (only if we have more that one administrator)
+                // basicaly it's not nedded (only if we have more than one administrator)
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!DirectorExists(director.Id))
@@ -283,28 +287,6 @@ namespace DiplomaManagement.Controllers
             List<Institute> institutes = await _instituteRepository.GetInstitutesWithoutDirector();
             institutes.Add(director.User.Institute);
             ViewBag.Institutes = new SelectList(institutes, "Id", "Name");
-            return View(director);
-        }
-
-        // GET: Director/Delete/5
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Director? director = await _context.Directors
-                .Include(d => d.User)
-                .ThenInclude(u => u.Institute)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (director == null)
-            {
-                return NotFound();
-            }
-
             return View(director);
         }
 

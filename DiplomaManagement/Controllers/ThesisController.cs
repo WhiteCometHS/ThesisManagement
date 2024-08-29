@@ -4,11 +4,9 @@ using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
 using Microsoft.AspNetCore.Identity;
 using DiplomaManagement.Models;
-
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Interfaces;
 using DiplomaManagement.Services;
-using DiplomaManagement.Repositories;
 
 namespace DiplomaManagement.Controllers
 {
@@ -83,7 +81,7 @@ namespace DiplomaManagement.Controllers
                 .Include(t => t.Promoter!)
                     .ThenInclude(p => p.User)
                 .Include(t => t.Enrollments)   
-                .Where(t => t.Promoter!.User!.InstituteId == user.InstituteId && !t.Enrollments!.Any(u => u.StudentId == student.Id))
+                .Where(t => t.Promoter!.User!.InstituteId == user.InstituteId && t.StudentId == null && !t.Enrollments!.Any(u => u.StudentId == student.Id))
                 .ToListAsync();
 
             if (student.Thesis != null) 
@@ -389,8 +387,10 @@ namespace DiplomaManagement.Controllers
                 var path = Path.Combine(_env.WebRootPath, _configuration.GetSection("FileManagement:SystemFileUploads").Value);
                 var filePath = Path.Combine(path, fileName);
 
-                var stream = new FileStream(filePath, FileMode.Create);
-                await vm.PdfFile.CopyToAsync(stream);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await vm.PdfFile.CopyToAsync(stream);
+                }
 
                 var uploadedFile = new PdfFile
                 {
@@ -416,8 +416,10 @@ namespace DiplomaManagement.Controllers
                 var path = Path.Combine(_env.WebRootPath, _configuration.GetSection("FileManagement:SystemPresentationUploads").Value);
                 var filePath = Path.Combine(path, fileName);
 
-                var stream = new FileStream(filePath, FileMode.Create);
-                await vm.PresentationFile.CopyToAsync(stream);
+                using (var stream = new FileStream(filePath, FileMode.Create)) 
+                {
+                    await vm.PresentationFile.CopyToAsync(stream);
+                }
 
                 var uploadedFile = new PresentationFile
                 {

@@ -1,4 +1,5 @@
-﻿@using DiplomaManagement.Interfaces
+﻿@using DiplomaManagement.Entities
+@using DiplomaManagement.Interfaces
 @model DiplomaManagement.Models.PromoterThesisViewModel
 
 @inject INotificationService NotificationService
@@ -62,11 +63,12 @@
 else
 {
     <table class="table table-striped table-bordered table-hover">
-        <thead>
+        <thead class="text-center">
             <tr>
                 <th>Id</th>
                 <th>File Name</th>
                 <th>Extension</th>
+                <th colspan="2">Type/Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -83,8 +85,20 @@ else
                     <th>
                         @file.Extension
                     </th>
+                    @if (file.PdfType == PdfType.example) {
+                        <th colspan="2" class="text-center">
+                            Przykładowy
+                        </th>
+                    } else {
+                        <th>
+                            Oryginał
+                        </th>
+                        <th>
+                            @file.FileStatus
+                        </th>
+                    }
                     <td>
-                        <a asp-action="Download" asp-route-id="@file.Id" class="btn btn-primary">Download</a>
+                        <a asp-action="DownloadDocument" asp-route-id="@file.Id" class="btn btn-primary">Download</a>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-file-id="@file.Id" data-filename="@file.FileName">
                             Delete
                         </button>
