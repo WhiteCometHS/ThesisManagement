@@ -291,4 +291,19 @@
   <data name="assigned-director" xml:space="preserve">
     <value>Assigned director</value>
   </data>
+  <data name="director" xml:space="preserve">
+    <value>Director</value>
+  </data>
+  <data name="assigned-institute" xml:space="preserve">
+    <value>Assigned institute</value>
+  </data>
+  <data name="reset-password" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+    <data name="new-password" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="reset-password-success" xml:space="preserve">
+    <value>The password has been successfully reset.</value>
+  </data>
 </root>

@@ -1,12 +1,31 @@
 ﻿@model DiplomaManagement.Models.DetailsViewModel<DiplomaManagement.Entities.Director>
+@using DiplomaManagement.Interfaces
+@using DiplomaManagement.Services;
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
+@inject INotificationService NotificationService
 
 @{
     ViewData["Title"] = "Edit";
+    var successMessage = NotificationService.GetNotification($"PasswordResetSuccess_{User.Identity.Name}");
 }
 
-<h1>Edit</h1>
+<h1>@Localizer["edit-header"]</h1>
 
-<h4>Director</h4>
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = successMessage,
+        Class = "bg-success"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+}
+
+<h4>@Localizer["director"]</h4>
 <hr />
 @if (TempData[$"SuccessMessage_{User.Identity.Name}"] != null)
 {
@@ -28,22 +47,22 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Entity.DirectorUserId" />
             <div class="form-group">
-                <label asp-for="Entity.User.FirstName" class="control-label"></label>
+                <label asp-for="Entity.User.FirstName" class="control-label">@Localizer["first-name"]</label>
                 <input asp-for="Entity.User.FirstName" class="form-control" />
                 <span asp-validation-for="Entity.User.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.User.LastName" class="control-label"></label>
+                <label asp-for="Entity.User.LastName" class="control-label">@Localizer["last-name"]</label>
                 <input asp-for="Entity.User.LastName" class="form-control" />
                 <span asp-validation-for="Entity.User.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.User.Email" class="control-label"></label>
+                <label asp-for="Entity.User.Email" class="control-label">@Localizer["email-address"]</label>
                 <input asp-for="Entity.User.Email" class="form-control" />
                 <span asp-validation-for="Entity.User.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.User.InstituteId" class="control-label"></label>
+                <label asp-for="Entity.User.InstituteId" class="control-label">@Localizer["assigned-institute"]</label>
                 <select asp-for="Entity.User.InstituteId" class="form-control" asp-items="ViewBag.Institutes"></select>
                 <span asp-validation-for="Entity.User.InstituteId" class="text-danger"></span>
             </div>
@@ -58,13 +77,13 @@
     <input type="hidden" asp-for="ResetPasswordViewModel.Id" value="@Model.ResetPasswordViewModel.Id" />
 
     <div class="form-group mb-3">
-        <label asp-for="ResetPasswordViewModel.NewPassword" class="col-md-4 col-form-label"></label>
+        <label asp-for="ResetPasswordViewModel.NewPassword" class="col-md-4 col-form-label">@Localizer["new-password"]</label>
         <div class="col-md-3">
             <input asp-for="ResetPasswordViewModel.NewPassword" class="form-control" />
             <span asp-validation-for="ResetPasswordViewModel.NewPassword" class="text-danger"></span>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Reset Password</button>
+    <button type="submit" class="btn btn-primary">@Localizer["reset-password"]</button>
 </form>
 
 <div>

@@ -353,7 +353,7 @@ namespace DiplomaManagement.Controllers
 
                 if (result.Succeeded)
                 {
-                    TempData[$"SuccessMessage_{User.Identity.Name}"] = "The password has been successfully reset.";
+                    _notificationService.AddNotification($"PasswordResetSuccess_{User.Identity.Name}", _htmlLocalizer["reset-password-success"]);
                     return RedirectToAction(nameof(Edit), new { id = director.Id });
                 }
                 else
@@ -370,10 +370,8 @@ namespace DiplomaManagement.Controllers
             }
             else
             {
-                TempData[$"ErrorMessage_{User.Identity.Name}"] = "Promoter not found.";
+                return NotFound("Promoter not found.");
             }
-
-            return RedirectToAction(nameof(Edit), new { id = model.ResetPasswordViewModel.Id });
         }
 
         [Authorize(Roles = "Director")]
