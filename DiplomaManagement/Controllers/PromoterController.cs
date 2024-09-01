@@ -20,7 +20,6 @@ namespace DiplomaManagement.Controllers
         private readonly INotificationService _notificationService;
         private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-
         public PromoterController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
@@ -403,7 +402,7 @@ namespace DiplomaManagement.Controllers
 
                 if (result.Succeeded)
                 {
-                    _notificationService.AddNotification($"SuccessMessage_{User.Identity.Name}", "User password has been successfully reset.");
+                    _notificationService.AddNotification($"SuccessMessage_{User.Identity.Name}", _htmlLocalizer["reset-password-success"]);
                     return RedirectToAction(nameof(Edit), new { id = promoter.Id });
                 }
                 else

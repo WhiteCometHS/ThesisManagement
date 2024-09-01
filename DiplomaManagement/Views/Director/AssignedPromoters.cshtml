@@ -25,7 +25,7 @@
     };
 }
 
-<h1>Index</h1>
+<h1>@Localizer["available-promoters"]</h1>
 
 @if (!string.IsNullOrEmpty(successMessage))
 {
@@ -39,20 +39,20 @@
     @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 
-<h3>Change limit globaly for all promoters</h3>
+<h3>@Localizer["change-thesis-limit-globaly"]</h3>
+
 <form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
     <input type="hidden" value="@Model.Id" name="directorId" />
     <div class="col-3">
         <div class="row mb-3">
-            <label for="thesisLimit" class="col-sm-4 col-form-label">Thesis Limit:</label>
+            <label for="thesisLimit" class="col-sm-4 col-form-label">@Localizer["thesis-limit"]:</label>
             <div class="col-sm-8">
                 <input class="form-control" id="thesisLimit" name="thesisLimit" onkeypress="return isNumberKey(event)">
             </div>
-            <span class="text-danger" id="thesisLimitError" style="display:none;">Please enter a non-negative integer.</span>
         </div>
     </div>
     <div class="col-3">
-        <button type="submit" class="btn btn-primary mb-3">Submit</button>
+        <button type="submit" class="btn btn-primary mb-3">@Localizer["submit"]</button>
     </div>
 </form>
 
@@ -63,13 +63,13 @@
                 Id
             </th>
             <th>
-                Name and Surname
+                @Localizer["name-and-surname"]
             </th>
             <th>
-                Email
+                @Localizer["email-address"]
             </th>
             <th>
-                Thesis Limit
+                @Localizer["thesis-limit"]
             </th>
             <th></th>
         </tr>
@@ -91,13 +91,11 @@
                     <form asp-action="UpdatePromoterThesisLimit" asp-controller="Director" method="post">
                         <input type="hidden" name="promoterId" value="@item.Id" />
                         <input name="thesisLimit" value="@item.ThesisLimit" class="form-control" style="width: 80px;" onkeypress="return isNumberKey(event)"/>
-                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        <button type="submit" class="btn btn-primary btn-sm">@Localizer["save"]</button>
                     </form>
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a>
                 </td>
             </tr>
         }

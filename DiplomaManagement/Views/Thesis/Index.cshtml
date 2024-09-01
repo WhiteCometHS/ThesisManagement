@@ -1,17 +1,18 @@
-﻿@using DiplomaManagement.Interfaces
+﻿@using DiplomaManagement.Helpers
+@using DiplomaManagement.Interfaces
 @using DiplomaManagement.Models
 @model IEnumerable<DiplomaManagement.Entities.Thesis>
 
 @inject INotificationService NotificationService
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = @Localizer["theses"];
     var errorMessage = NotificationService.GetNotification($"MaxThesisLimit_{User.Identity.Name}") 
         ?? NotificationService.GetNotification($"DeleteFailure_{User.Identity.Name}") 
         ?? null;
 }
 
-<h1>Index</h1>
+<h1>@Localizer["list-of-all-theses"]</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -26,19 +27,19 @@
 }
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@Localizer["create-new-record"]</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Localizer["title"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Localizer["description"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PresentationFile)
+                @Localizer["uploaded-example"]
             </th>
             <th></th>
         </tr>
@@ -52,16 +53,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-@*             <td>
-                @Html.DisplayFor(modelItem => item.PdfFile.Id)
-            </td> *@
             <td>
-                @Html.DisplayFor(modelItem => item.PresentationFile.Id)
+                @{
+                    var firstPdfFile = item.PdfFiles.FirstOrDefault();
+                        var truncatedString = firstPdfFile?.FileName.Truncate(20);
+                }
+                @truncatedString
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a class="btn-submit" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
+                <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
             </td>
         </tr>
 }
@@ -73,15 +75,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                <h5 class="modal-title" id="confirmationModalLabel">@Localizer["confirm-action"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to submit enrollment for this student? All other enrollments for this thesis will be declined.
+                @Localizer["aus-thesis-delete"]
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmSubmit">Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["cancel"]</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">@Localizer["submit"]</button>
             </div>
         </div>
     </div>
@@ -94,7 +96,7 @@
     }
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var submitButtons = document.querySelectorAll('.btn-submit');
+            var submitButtons = document.querySelectorAll('.btn-delete');
             var confirmButton = document.getElementById('confirmSubmit');
             var currentItemId;
 

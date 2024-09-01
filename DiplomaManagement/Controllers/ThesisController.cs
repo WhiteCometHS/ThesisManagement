@@ -7,6 +7,8 @@ using DiplomaManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Interfaces;
 using DiplomaManagement.Services;
+using DiplomaManagement.Resources;
+using Microsoft.Extensions.Localization;
 
 namespace DiplomaManagement.Controllers
 {
@@ -18,8 +20,9 @@ namespace DiplomaManagement.Controllers
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
         private readonly IThesisRepository _thesisRepository;
+        private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-        public ThesisController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService, IThesisRepository thesisRepository)
+        public ThesisController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService, IThesisRepository thesisRepository, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
@@ -27,6 +30,7 @@ namespace DiplomaManagement.Controllers
             _configuration = configuration;
             _notificationService = notificationService;
             _thesisRepository = thesisRepository;
+            _htmlLocalizer = htmlLocalizer;
         }
 
         // GET: Thesis
@@ -42,7 +46,7 @@ namespace DiplomaManagement.Controllers
 
             Promoter? promoter = await _context.Promoters
                 .Include(p => p.Theses!)
-                    .ThenInclude(t => t.PdfFiles)
+                    .ThenInclude(t => t.PdfFiles.Where(p => p.PdfType == PdfType.example))
                 .Include(p => p.Theses!)
                     .ThenInclude(t => t.PresentationFile)
                 .FirstOrDefaultAsync(p => p.PromoterUserId == user.Id);
@@ -59,8 +63,24 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> AvailableTheses()
+        public async Task<IActionResult> AvailableTheses(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.TitleSortParam = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewBag.DescriptionSortParam = sortOrder == "description" ? "description_desc" : "description";
+            ViewBag.PromoterSortParam = sortOrder == "promoter" ? "promoter_desc" : "promoter";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             ApplicationUser? user = await _userManager.GetUserAsync(User);
 
             if (user == null)
@@ -77,19 +97,68 @@ namespace DiplomaManagement.Controllers
                 return NotFound("Student not found.");
             }
 
-            List<Thesis> theses = await _context.Theses
-                .Include(t => t.Promoter!)
-                    .ThenInclude(p => p.User)
-                .Include(t => t.Enrollments)   
-                .Where(t => t.Promoter!.User!.InstituteId == user.InstituteId && t.StudentId == null && !t.Enrollments!.Any(u => u.StudentId == student.Id))
-                .ToListAsync();
-
-            if (student.Thesis != null) 
+            if (student.Thesis != null)
             {
-                ViewBag.Thesis = student.Thesis;  
+                ViewBag.Thesis = student.Thesis;
             }
 
-            return View(theses);
+            IQueryable<Thesis> thesesQuery = _context.Theses
+                .Include(t => t.Promoter!)
+                    .ThenInclude(p => p.User)
+                .Include(t => t.Enrollments)
+                .Where(t => t.Promoter!.User!.InstituteId == user.InstituteId && t.StudentId == null && !t.Enrollments!.Any(u => u.StudentId == student.Id));
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                thesesQuery = thesesQuery.Where(t =>
+                    t.Title.Contains(searchString) ||
+                    t.Description.Contains(searchString) ||
+                    t.Promoter.User.FirstName.Contains(searchString) ||
+                    t.Promoter.User.LastName.Contains(searchString));
+            }
+
+            List<Thesis> theses = await thesesQuery.ToListAsync();
+
+            var sortMapping = new Dictionary<string, Func<IEnumerable<Thesis>, IOrderedEnumerable<Thesis>>>
+            {
+                { "title_desc", theses => theses.OrderByDescending(t => t.Title) },
+                { "description_desc", theses => theses.OrderByDescending(t => t.Description) },
+                { "description", theses => theses.OrderBy(t => t.Description) },
+                { "promoter", theses => theses.OrderBy(t => t.Promoter.User.FirstName) },
+                { "promoter_desc", theses => theses.OrderByDescending(t => t.Promoter.User.FirstName) }
+            };
+
+            if (sortMapping.TryGetValue(sortOrder ?? "", out var sortFunc))
+            {
+                theses = sortFunc(theses).ToList();
+            }
+            else
+            {
+                theses = theses.OrderBy(t => t.Title).ToList();
+            }
+
+            int pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recordsCount = theses.Count();
+            int pageNumber = page ?? 1;
+
+            PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+            ViewBag.Pager = pager;
+
+            int itemsToSkip = (pageNumber - 1) * pageSize;
+
+            List<Thesis> items = theses
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
+
+            return View(items);
         }
 
         [Authorize(Roles = "Admin")]
@@ -437,7 +506,7 @@ namespace DiplomaManagement.Controllers
 
             await _context.SaveChangesAsync();
 
-            _notificationService.AddNotification($"FilesAdded_{User.Identity.Name}", "Your files has been added to the system. Please, wait for promoter to check it.");
+            _notificationService.AddNotification($"FilesAdded_{User.Identity.Name}", _htmlLocalizer["uploaded-files-success"]);
             return RedirectToAction(nameof(StudentDetails), new { id = vm.Id });
         }
 
@@ -455,7 +524,7 @@ namespace DiplomaManagement.Controllers
             {
                 if (promoter.Theses != null && promoter.Theses.Count >= promoter.ThesisLimit)
                 {
-                    _notificationService.AddNotification($"MaxThesisLimit_{User.Identity.Name}", "You have reached the maximum number of theses.");
+                    _notificationService.AddNotification($"MaxThesisLimit_{User.Identity.Name}", _htmlLocalizer["thesis-limit-reached-message", promoter.ThesisLimit]);
                     return RedirectToAction("Index");
                 }
             } 
@@ -641,7 +710,7 @@ namespace DiplomaManagement.Controllers
             if (thesis != null)
             {
                 if (thesis.StudentId != null) {
-                    _notificationService.AddNotification($"DeleteFailure_{User.Identity.Name}", "You cant delete thesis with an assigned student.");
+                    _notificationService.AddNotification($"DeleteFailure_{User.Identity.Name}", _htmlLocalizer["thesis-delete-error"]);
                 } 
                 else 
                 {
@@ -781,7 +850,7 @@ namespace DiplomaManagement.Controllers
             _context.PdfFiles.Remove(file);
             await _context.SaveChangesAsync();
             // TempData[$"DeleteExamplePdf_{User.Identity.Name}"] = "File has been successfully deleted.";
-            _notificationService.AddNotification($"DeleteExamplePdf_{User.Identity.Name}", "File has been successfully deleted.");
+            _notificationService.AddNotification($"DeleteExamplePdf_{User.Identity.Name}", _htmlLocalizer["file-delete-success"]);
             return RedirectToAction(nameof(Edit), new { id = thesisId });
         }
 
@@ -848,12 +917,12 @@ namespace DiplomaManagement.Controllers
                         }
                         else
                         {
-                            _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "There is no available theses right now, please try again later.");
+                            _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", _htmlLocalizer["no-available-theses"]);
                         }
                     }
                 }
 
-                _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", $"{students.Count} students have been successfully processed and assigned to available theses.");
+                _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", _htmlLocalizer["auto-assign-success", students.Count]);
             }
 
             // _notificationService.AddNotification($"ErrorMessage_{User.Identity.Name}", "No students were selected.");
@@ -885,11 +954,11 @@ namespace DiplomaManagement.Controllers
 
                     await _thesisRepository.assignThesisToStudent(thesis, student.Id, thesisEnrollments);
 
-                    _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", "Selected student have been successfully processed and assigned to available thesis.");
+                    _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", _htmlLocalizer["auto-assign-selected-student-success"]);
                 }
                 else
                 {
-                    _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "There is no available theses right now, please try again later.");
+                    _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", _htmlLocalizer["no-available-theses"]);
                 }
             }
 

@@ -30,32 +30,32 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Entity.Id" />
             <div class="form-group">
-                <label asp-for="Entity.FirstName" class="control-label"></label>
+                <label asp-for="Entity.FirstName" class="control-label">@Localizer["first-name"]</label>
                 <input asp-for="Entity.FirstName" class="form-control" />
                 <span asp-validation-for="Entity.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.LastName" class="control-label"></label>
+                <label asp-for="Entity.LastName" class="control-label">@Localizer["last-name"]</label>
                 <input asp-for="Entity.LastName" class="form-control" />
                 <span asp-validation-for="Entity.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.Email" class="control-label"></label>
+                <label asp-for="Entity.Email" class="control-label">@Localizer["email-address"]</label>
                 <input asp-for="Entity.Email" class="form-control" />
                 <span asp-validation-for="Entity.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.ThesisLimit" class="control-label"></label>
+                <label asp-for="Entity.ThesisLimit" class="control-label">@Localizer["thesis-limit"]</label>
                 <input asp-for="Entity.ThesisLimit" class="form-control" />
                 <span asp-validation-for="Entity.ThesisLimit" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Entity.DirectorId" class="control-label"></label>
+                <label asp-for="Entity.DirectorId" class="control-label">@Localizer["assigned-director"]</label>
                 <select asp-for="Entity.DirectorId" class="form-control" asp-items="ViewBag.Directors"></select>
                 <span asp-validation-for="Entity.DirectorId" class="text-danger"></span>
             </div>
             <div class="form-check">
-                <label asp-for="Entity.isSeminarLeader" class="form-check-label"></label>
+                <label asp-for="Entity.isSeminarLeader" class="form-check-label">@Localizer["is-seminar-leader"]</label>
                 <input asp-for="Entity.isSeminarLeader" class="form-check-input" type="checkbox">
             </div>
             <div class="form-group">
@@ -69,17 +69,17 @@
     <input type="hidden" asp-for="ResetPasswordViewModel.Id" value="@Model.ResetPasswordViewModel.Id" />
 
     <div class="form-group mb-3">
-        <label asp-for="ResetPasswordViewModel.NewPassword" class="col-md-4 col-form-label"></label>
+        <label asp-for="ResetPasswordViewModel.NewPassword" class="col-md-4 col-form-label">@Localizer["new-password"]</label>
         <div class="col-md-3">
             <input asp-for="ResetPasswordViewModel.NewPassword" class="form-control" />
             <span asp-validation-for="ResetPasswordViewModel.NewPassword" class="text-danger"></span>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Reset Password</button>
+    <button type="submit" class="btn btn-primary">@Localizer["reset-password"]</button>
 </form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@Localizer["back-to-list"]</a>
 </div>
 
 @section Scripts {

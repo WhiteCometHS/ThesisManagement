@@ -1,10 +1,8 @@
 ﻿@using DiplomaManagement.Services;
 @using DiplomaManagement.Interfaces
-@using Microsoft.AspNetCore.Mvc.Localization
 
 @model IEnumerable<DiplomaManagement.Entities.Institute>
 @inject INotificationService NotificationService
-@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 
 @{
     ViewData["Title"] = @Localizer["institutes"];

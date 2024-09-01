@@ -354,4 +354,166 @@
   <data name="reset-password-success" xml:space="preserve">
     <value>Hasło zostało pomyślnie zresetowane.</value>
   </data>
+  <data name="is-seminar-leader" xml:space="preserve">
+    <value>Prowadzący seminarium</value>
+  </data>
+  <data name="list-of-all-students" xml:space="preserve">
+    <value>Lista wszystkich studentów</value>
+  </data>
+  <data name="thesis-title" xml:space="preserve">
+    <value>Tytuł pracy</value>
+  </data>
+  <data name="list-of-students-without-thesis" xml:space="preserve">
+    <value>Lista studentów nieprzypisanych do pracy dyplomowej</value>
+  </data>
+  <data name="no-students-without-thesis" xml:space="preserve">
+    <value>Brak studentów bez przypisanej pracy dyplomowej</value>
+  </data>
+  <data name="student-enrollments" xml:space="preserve">
+    <value>Zgłoszenia studentów</value>
+  </data>
+  <data name="pager-first" xml:space="preserve">
+    <value>Pierwsza</value>
+  </data>
+  <data name="pager-previous" xml:space="preserve">
+    <value>Poprzednia</value>
+  </data>
+  <data name="pager-next" xml:space="preserve">
+    <value>Następna</value>
+  </data>
+  <data name="pager-last" xml:space="preserve">
+    <value>Ostatnia</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Wyloguj się</value>
+  </data>
+  <data name="hello" xml:space="preserve">
+    <value>Witaj </value>
+  </data>
+  <data name="your-theses" xml:space="preserve">
+    <value>Twoje tematy</value>
+  </data>
+  <data name="enrollments" xml:space="preserve">
+    <value>Zgłoszenia</value>
+  </data>
+  <data name="active-theses" xml:space="preserve">
+    <value>Aktywne prace dyplomowes</value>
+  </data>
+  <data name="theses-management" xml:space="preserve">
+    <value>Zarządzanie pracami</value>
+  </data>
+  <data name="theses" xml:space="preserve">
+    <value>Pracy dyplomowe</value>
+  </data>
+  <data name="list-of-all-theses" xml:space="preserve">
+    <value>Lista wszystkich prac dyplomowych</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Tytuł</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Opis</value>
+  </data>
+  <data name="uploaded-example" xml:space="preserve">
+    <value>Załączony przykład</value>
+  </data>
+  <data name="aus-thesis-delete" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć tę pracę?</value>
+  </data>
+  <data name="thesis-limit-reached-message" xml:space="preserve">
+    <value>Osiągnięto maksymalną liczbę prac dyplomowych: {0}.</value>
+  </data>
+  <data name="thesis" xml:space="preserve">
+    <value>Praca dyplomowa</value>
+  </data>
+  <data name="upload-example-file" xml:space="preserve">
+    <value>Załaduj wzorzec pracy</value>
+  </data>
+  <data name="download-button" xml:space="preserve">
+    <value>Pobierz</value>
+  </data>
+  <data name="file-name" xml:space="preserve">
+    <value>Nazwa pliku</value>
+  </data>
+  <data name="extension" xml:space="preserve">
+    <value>Rozszerzenie pliku</value>
+  </data>
+  <data name="type-status" xml:space="preserve">
+    <value>Typ/Status</value>
+  </data>
+  <data name="actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+  <data name="aus-file-delete" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć plik {0}?</value>
+  </data>
+  <data name="example-type" xml:space="preserve">
+    <value>Przykład</value>
+  </data>
+  <data name="original-type" xml:space="preserve">
+    <value>Oryginał</value>
+  </data>
+  <data name="student-name-surname" xml:space="preserve">
+    <value>Student (Imię Nazwisko)</value>
+  </data>
+  <data name="student-email" xml:space="preserve">
+    <value>E-mail studenta</value>
+  </data>
+  <data name="active-enrollments" xml:space="preserve">
+    <value>Aktywne zgłoszenia</value>
+  </data>
+  <data name="no-active-enrollments" xml:space="preserve">
+    <value>Nie ma aktywnych zgłoszeń do prac dyplomowych.</value>
+  </data>
+  <data name="name-and-surname" xml:space="preserve">
+    <value>Imię i nazwisko</value>
+  </data>
+  <data name="change-thesis-limit-globaly" xml:space="preserve">
+    <value>Zmień limit globalnie dla wszystkich promotorów</value>
+  </data>
+  <data name="thesis-limit-change-success" xml:space="preserve">
+    <value>Limit tezy dla promotora o id: {0} został pomyślnie zmieniony.</value>
+  </data>
+  <data name="thesis-limit-global-change-success" xml:space="preserve">
+    <value>Limit prac dyplomowych został z powodzeniem zmieniony dla wszystkich promotorów.</value>
+  </data>
+  <data name="available-promoters" xml:space="preserve">
+    <value>Dostępni promotorzy</value>
+  </data>
+  <data name="available-theses" xml:space="preserve">
+    <value>Dostępne prace dyplomowe</value>
+  </data>
+  <data name="already-have-assigned-thesis" xml:space="preserve">
+    <value>Masz już przypisaną pracę dyplomową. Nie będziesz mógł zapisać się na kolejną.</value>
+  </data>
+  <data name="promoter-name-surname" xml:space="preserve">
+    <value>Promotor (Imię Nazwisko)</value>
+  </data>
+  <data name="enroll-in" xml:space="preserve">
+    <value>Zgłoś się</value>
+  </data>
+  <data name="already-created-enrollment" xml:space="preserve">
+    <value>Utworzono już zgłoszenie dla tej pracy dyplomowej.</value>
+  </data>
+  <data name="enrollment-created-success" xml:space="preserve">
+    <value>Zgłoszenie zostało pomyślnie utworzone.</value>
+  </data>
+  <data name="uploaded-files-success" xml:space="preserve">
+    <value>Twoje pliki zostały dodane do systemu. Poczekaj, aż promotor je sprawdzi.</value>
+  </data>
+  <data name="thesis-delete-error" xml:space="preserve">
+    <value>Nie można usunąć pracy dyplomowej z przypisanym studentem.</value>
+  </data>
+  <data name="file-delete-success" xml:space="preserve">
+    <value>Plik został pomyślnie usunięty.</value>
+  </data>
+  <data name="no-available-theses" xml:space="preserve">
+    <value>W tej chwili nie ma dostępnych prac dyplomowych, spróbuj ponownie później.</value>
+  </data>
+  <data name="auto-assign-success" xml:space="preserve">
+    <value>{0} studentów zostało pomyślnie przetworzonych i przypisanych do dostępnych prac dyplomowych.</value>
+  </data>
+  <data name="auto-assign-selected-student-success" xml:space="preserve">
+    <value>Wybrani studenci zostali pomyślnie przetworzeni i przypisani do dostępnych prac.</value>
+  </data>
 </root>

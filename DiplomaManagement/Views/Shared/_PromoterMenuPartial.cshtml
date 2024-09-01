@@ -7,27 +7,31 @@
 @inject IThesisRepository _thesisRepository
 
 @{
-    ApplicationUser? user = await UserManager.GetUserAsync(User);
+    ApplicationUser? user = null;
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        user = await UserManager.GetUserAsync(User);
+    }
 }
 
-@if (SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Promoter"))
+@if (user != null && SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Promoter"))
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="Index">Your theses</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="Index">@Localizer["your-theses"]</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="ActiveEnrollments">Enrollments</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="ActiveEnrollments">@Localizer["enrollments"]</a>
     </li>
     @if (await _thesisRepository.isPromoterHasActiveThesisAsync(user.Id))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="ActiveTheses">Active theses</a>
+            <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="ActiveTheses">@Localizer["active-theses"]</a>
         </li>
     }
     @if (await UserManager.IsInRoleAsync(user, "SeminarLeader")) 
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="SeminarLeaderTheses">Theses management</a>
+            <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="SeminarLeaderTheses">@Localizer["theses-management"]</a>
         </li>
     }
 }

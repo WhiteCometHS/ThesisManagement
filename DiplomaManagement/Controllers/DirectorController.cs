@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
 using DiplomaManagement.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 using DiplomaManagement.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using DiplomaManagement.Interfaces;
@@ -405,7 +400,7 @@ namespace DiplomaManagement.Controllers
             promoter.ThesisLimit = thesisLimit;
             _context.Update(promoter);
             await _context.SaveChangesAsync();
-            _notificationService.AddNotification($"SuccessMessage_{User.Identity!.Name}", $"Thesis limit for promoter with id: {promoter.Id} has been successfully changed.");
+            _notificationService.AddNotification($"SuccessMessage_{User.Identity!.Name}", _htmlLocalizer["thesis-limit-change-success", promoter.Id]);
 
             return RedirectToAction(nameof(AssignedPromoters));
         }
@@ -427,7 +422,7 @@ namespace DiplomaManagement.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                _notificationService.AddNotification($"SuccessMessage_{User.Identity!.Name}", $"Thesis limit has been successfully changed for all promoters.");
+                _notificationService.AddNotification($"SuccessMessage_{User.Identity!.Name}", _htmlLocalizer["thesis-limit-global-change-success"]);
             }
 
             return RedirectToAction(nameof(AssignedPromoters));

@@ -1,10 +1,13 @@
 ﻿using DiplomaManagement.Data;
 using DiplomaManagement.Entities;
 using DiplomaManagement.Interfaces;
+using DiplomaManagement.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace DiplomaManagement.Controllers
 {
@@ -13,12 +16,14 @@ namespace DiplomaManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
+        private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-        public EnrollmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
+        public EnrollmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
+            _htmlLocalizer = htmlLocalizer;
         }
 
         [Authorize(Roles = "Student")]
@@ -37,7 +42,7 @@ namespace DiplomaManagement.Controllers
 
                 if (createdEnrollment)
                 {
-                    _notificationService.AddNotification($"EnrollmentCreationError_{User.Identity.Name}", "You have already created enrollment for this thesis.");
+                    _notificationService.AddNotification($"EnrollmentCreationError_{User.Identity.Name}", _htmlLocalizer["already-created-enrollment"]);
                 }
                 else
                 {
@@ -58,7 +63,7 @@ namespace DiplomaManagement.Controllers
 
                     await _context.AddAsync(enrollment);
                     await _context.SaveChangesAsync();
-                    _notificationService.AddNotification($"EnrollmentCreated_{User.Identity.Name}", "Your enrollment has been created successfully.");
+                    _notificationService.AddNotification($"EnrollmentCreated_{User.Identity.Name}", _htmlLocalizer["enrollment-created-success"]);
                 }
             }
 

@@ -240,7 +240,7 @@
   <data name="save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="back-to-lsit" xml:space="preserve">
+  <data name="back-to-list" xml:space="preserve">
     <value>Back to list</value>
   </data>
   <data name="edit-header" xml:space="preserve">
@@ -305,5 +305,167 @@
   </data>
   <data name="reset-password-success" xml:space="preserve">
     <value>The password has been successfully reset.</value>
+  </data>
+  <data name="is-seminar-leader" xml:space="preserve">
+    <value>Is seminar leader</value>
+  </data>
+  <data name="list-of-all-students" xml:space="preserve">
+    <value>List of all students</value>
+  </data>
+  <data name="thesis-title" xml:space="preserve">
+    <value>Thesis Title</value>
+  </data>
+  <data name="list-of-students-without-thesis" xml:space="preserve">
+    <value>List of thesis-unassigned students</value>
+  </data>
+  <data name="no-students-without-thesis" xml:space="preserve">
+    <value>There are no students without assigned thesis</value>
+  </data>
+  <data name="student-enrollments" xml:space="preserve">
+    <value>Student enrollments</value>
+  </data>
+  <data name="pager-first" xml:space="preserve">
+    <value>First</value>
+  </data>
+  <data name="pager-previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="pager-next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="pager-last" xml:space="preserve">
+    <value>Last</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="hello" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="your-theses" xml:space="preserve">
+    <value>Your theses</value>
+  </data>
+  <data name="enrollments" xml:space="preserve">
+    <value>Enrollments</value>
+  </data>
+  <data name="active-theses" xml:space="preserve">
+    <value>Active theses</value>
+  </data>
+  <data name="theses-management" xml:space="preserve">
+    <value>Theses management</value>
+  </data>
+  <data name="theses" xml:space="preserve">
+    <value>Theses</value>
+  </data>
+  <data name="list-of-all-theses" xml:space="preserve">
+    <value>List of all theses</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="uploaded-example" xml:space="preserve">
+    <value>Uploaded example</value>
+  </data>
+  <data name="aus-thesis-delete" xml:space="preserve">
+    <value>Are you sure you want to delete that thesis?</value>
+  </data>
+  <data name="thesis-limit-reached-message" xml:space="preserve">
+    <value>You have reached the maximum number of theses: {0}.</value>
+  </data>
+  <data name="thesis" xml:space="preserve">
+    <value>Thesis</value>
+  </data>
+  <data name="upload-example-file" xml:space="preserve">
+    <value>Upload example file</value>
+  </data>
+  <data name="download-button" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="file-name" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="extension" xml:space="preserve">
+    <value>Extension</value>
+  </data>
+  <data name="type-status" xml:space="preserve">
+    <value>Type/Status</value>
+  </data>
+  <data name="actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="aus-file-delete" xml:space="preserve">
+    <value>Are you sure you want to delete the file {0}?</value>
+  </data>
+  <data name="example-type" xml:space="preserve">
+    <value>Example</value>
+  </data>
+  <data name="original-type" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="student-name-surname" xml:space="preserve">
+    <value>Student (Name Surname)</value>
+  </data>
+  <data name="student-email" xml:space="preserve">
+    <value>Student email</value>
+  </data>
+  <data name="active-enrollments" xml:space="preserve">
+    <value>Active Enrollments</value>
+  </data>
+  <data name="no-active-enrollments" xml:space="preserve">
+    <value>There is no active enrollments in your theses.</value>
+  </data>
+  <data name="name-and-surname" xml:space="preserve">
+    <value>Name and Surname</value>
+  </data>
+  <data name="change-thesis-limit-globaly" xml:space="preserve">
+    <value>Change limit globaly for all promoters</value>
+  </data>
+  <data name="thesis-limit-change-success" xml:space="preserve">
+    <value>Thesis limit for promoter with id: {0} has been successfully changed.</value>
+  </data>
+  <data name="thesis-limit-global-change-success" xml:space="preserve">
+    <value>Thesis limit has been successfully changed for all promoters.</value>
+  </data>
+  <data name="available-promoters" xml:space="preserve">
+    <value>Available promoters</value>
+  </data>
+  <data name="available-theses" xml:space="preserve">
+    <value>Available theses</value>
+  </data>
+  <data name="already-have-assigned-thesis" xml:space="preserve">
+    <value>You already have assigned thesis. You won't be able to enroll for another one.</value>
+  </data>
+  <data name="promoter-name-surname" xml:space="preserve">
+    <value>Promoter (Name Surname)</value>
+  </data>
+  <data name="enroll-in" xml:space="preserve">
+    <value>Enroll in</value>
+  </data>
+  <data name="already-created-enrollment" xml:space="preserve">
+    <value>You have already created enrollment for this thesis.</value>
+  </data>
+  <data name="enrollment-created-success" xml:space="preserve">
+    <value>Your enrollment has been created successfully.</value>
+  </data>
+  <data name="uploaded-files-success" xml:space="preserve">
+    <value>Your files has been added to the system. Please, wait for promoter to check it.</value>
+  </data>
+  <data name="thesis-delete-error" xml:space="preserve">
+    <value>You cant delete thesis with an assigned student.</value>
+  </data>
+  <data name="file-delete-success" xml:space="preserve">
+    <value>File has been successfully deleted.</value>
+  </data>
+  <data name="no-available-theses" xml:space="preserve">
+    <value>There is no available theses right now, please try again later.</value>
+  </data>
+  <data name="auto-assign-success" xml:space="preserve">
+    <value>{0} students have been successfully processed and assigned to available theses.</value>
+  </data>
+  <data name="auto-assign-selected-student-success" xml:space="preserve">
+    <value>Selected student have been successfully processed and assigned to available thesis.</value>
   </data>
 </root>

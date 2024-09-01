@@ -1,61 +1,73 @@
 ﻿@model IEnumerable<DiplomaManagement.Entities.Enrollment>
 
 @{
-    ViewData["Title"] = "ActiveEnrollments";
+    ViewData["Title"] = @Localizer["active-enrollments"];
 }
 
-<h1>Active Enrollments</h1>
+<h1>@Localizer["active-enrollments"]</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Thesis
-            </th>
-            <th>
-                Student
-            </th>
-            <th>
-                Email
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Thesis.Title)
-                </td>
-                <td>
-                    @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Student.User.Email)
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-submit" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">Submit</button>
-                </td>
+                <th>
+                    @Localizer["thesis-title"]
+                </th>
+                <th>
+                    @Localizer["student-name-surname"]
+                </th>
+                <th>
+                    @Localizer["student-email"]
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Thesis.Title)
+                    </td>
+                    <td>
+                        @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Student.User.Email)
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-submit" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["submit"]</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-primary d-flex align-items-center" role="alert">
+        <partial name="Icons/_WarningIconPartial" />
+        <div>
+            @Localizer["no-active-enrollments"]
+        </div>
+    </div>
+}
 
 <!-- Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                <h5 class="modal-title" id="confirmationModalLabel">@Localizer["confirm-action"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to submit enrollment for this student? All other enrollments for this thesis will be declined.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmSubmit">Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["cancel"]</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">@Localizer["submit"]</button>
             </div>
         </div>
     </div>

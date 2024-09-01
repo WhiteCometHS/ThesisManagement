@@ -57,10 +57,12 @@ builder.Services.AddScoped<IThesisRepository, ThesisRepository>();
 
 var app = builder.Build();
 
+// runs initializer methods
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await Initializer.CreateAdminUser(services);
+    await Initializer.PopulateInstituteTable(services);
 }
 
 var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();

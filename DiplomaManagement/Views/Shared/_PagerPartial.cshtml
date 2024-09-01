@@ -13,7 +13,7 @@
                         asp-route-sortOrder="@ViewBag.CurrentSort"
                         asp-route-currentFilter="@ViewBag.CurrentFilter" 
                         asp-route-page="1"
-                    >First</a>
+                    >@Localizer["pager-first"]</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link" 
@@ -22,7 +22,7 @@
                         asp-route-sortOrder="@ViewBag.CurrentSort" 
                         asp-route-currentFilter="@ViewBag.CurrentFilter"
                         asp-route-page="@(Model.Pager.CurrentPage - 1)"
-                    >Previous</a>
+                    >@Localizer["pager-previous"]</a>
                 </li>
             }
 
@@ -48,7 +48,7 @@
                         asp-route-sortOrder="@ViewBag.CurrentSort" 
                         asp-route-currentFilter="@ViewBag.CurrentFilter" 
                         asp-route-page="@(Model.Pager.CurrentPage + 1)"
-                    >Next</a>
+                    >@Localizer["pager-next"]</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link" 
@@ -57,7 +57,7 @@
                         asp-route-sortOrder="@ViewBag.CurrentSort" 
                         asp-route-currentFilter="@ViewBag.CurrentFilter"
                         asp-route-page="@Model.Pager.TotalPages"
-                    >Last</a>
+                    >@Localizer["pager-last"]</a>
                 </li>
             }
         </ul>

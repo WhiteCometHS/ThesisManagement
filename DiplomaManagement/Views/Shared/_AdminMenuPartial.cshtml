@@ -1,16 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using DiplomaManagement.Data
-@using Microsoft.AspNetCore.Mvc.Localization
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@inject IHtmlLocalizer<DiplomaManagement.Resources.SharedResource> Localizer
 
 @{
-    var user = await UserManager.GetUserAsync(User);
+    ApplicationUser? user = null;
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        user = await UserManager.GetUserAsync(User);
+    }
 }
 
-@if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(user, "Admin"))
+@if (user != null && User.Identity.IsAuthenticated && await UserManager.IsInRoleAsync(user, "Admin"))
 {
     <li class="nav-item dropdown show">
         <a class="dropdown-toggle nav-link" href="#" data-bs-toggle="dropdown">Admin</a>

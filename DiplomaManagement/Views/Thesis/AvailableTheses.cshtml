@@ -1,13 +1,30 @@
 ﻿@using DiplomaManagement.Interfaces
+@using DiplomaManagement.Services
 @model IEnumerable<DiplomaManagement.Entities.Thesis>
 @inject INotificationService NotificationService
 
 @{
     var enrollmentCreated = NotificationService.GetNotification($"EnrollmentCreated_{User.Identity.Name}");
     var enrollmentCreationError = NotificationService.GetNotification($"EnrollmentCreationError_{User.Identity.Name}");
+
+    PagingService pager = new PagingService();
+    int pageNumber = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNumber = pager.CurrentPage;
+    }
+
+    PagerViewModel pagerViewModel = new PagerViewModel
+            {
+                Pager = pager,
+                ControllerName = "Thesis",
+                ActionName = "AvailableTheses"
+            };
 }
 
-<h1>Index</h1>
+<h1>@Localizer["available-theses"]</h1>
 
 @if (!string.IsNullOrEmpty(enrollmentCreated))
 {
@@ -35,22 +52,32 @@ else if (!string.IsNullOrEmpty(enrollmentCreationError))
 @if (ViewBag.Thesis != null)
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert" id="info-message">
-        You already have assigned thesis. You won't be able to enroll for another one.
+        @Localizer["already-have-assigned-thesis"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+
+<form asp-action="AvailableTheses" method="get">
+    <div class="form-actions no-color">
+        <p>
+            @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+            <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
+            <a asp-action="AvailableTheses">@Localizer["back-to-full-list"]</a>
+        </p>
+    </div>
+</form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.TitleSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["title"]</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.DescriptionSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["description"]</a>              
             </th>
             <th>
-                Promoter
+                <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.PromoterSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["promoter-name-surname"]</a>             
             </th>
             <th></th>
         </tr>
@@ -71,14 +98,15 @@ else if (!string.IsNullOrEmpty(enrollmentCreationError))
                 <td>
                     @if (ViewBag.Thesis == null) 
                     {
-                        <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">Enroll in</a>
+                        <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">@Localizer["enroll-in"]</a>
                     }
-                
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<partial name="_PagerPartial" model="@pagerViewModel" />
 
 @section Scripts {
     @{

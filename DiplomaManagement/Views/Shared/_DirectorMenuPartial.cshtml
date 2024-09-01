@@ -5,15 +5,19 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    var user = await UserManager.GetUserAsync(User);
+    ApplicationUser? user = null;
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        user = await UserManager.GetUserAsync(User);
+    }
 }
 
-@if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(user, "Director"))
+@if (user != null && SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(user, "Director"))
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Director" asp-action="AssignedPromoters">Promoters</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Director" asp-action="AssignedPromoters">@Localizer["promoters"]</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Institute" asp-action="InstituteAssignedStudents">Students</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Institute" asp-action="InstituteAssignedStudents">@Localizer["students"]</a>
     </li>
 }
