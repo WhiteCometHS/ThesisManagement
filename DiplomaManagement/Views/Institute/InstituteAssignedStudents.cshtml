@@ -21,11 +21,11 @@
     {
         Pager = pager,
         ControllerName = "Institute",
-        ActionName = "Index"
+        ActionName = "InstituteAssignedStudents"
     };
 }
 
-<h1>Index</h1>
+<h1>@Localizer["students-of-institute"]</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -39,61 +39,73 @@
     @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name: <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
-        </p>
-    </div>
-</form>
+@if (Model != null && Model.Any()) 
+{
+    <form asp-action="InstituteAssignedStudents" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+                <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
+                <a asp-action="InstituteAssignedStudents">@Localizer["back-to-full-list"]</a>
+            </p>
+        </div>
+    </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.Id)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SiteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Student</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StreetSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Html.DisplayNameFor(model => model.User.Email)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StreetSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Thesis id</a>
-            </th>
-            <th>Thesis info</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @($"{item.User.FirstName} {item.User.LastName}")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            @if (item.Thesis != null) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="InstituteAssignedStudents" asp-route-sortOrder="@ViewBag.IdSortParam" asp-route-currentFilter="@ViewBag.currentFilter">Id</a>
+                </th>
+                <th>
+                    <a asp-action="InstituteAssignedStudents" asp-route-sortOrder="@ViewBag.StudentSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["student-name-surname"]</a>
+                </th>
+                <th>
+                    <a asp-action="InstituteAssignedStudents" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["email-address"]</a>
+                </th>
+                <th>
+                    <a asp-action="InstituteAssignedStudents" asp-route-sortOrder="@ViewBag.ThesisTitleSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["thesis-title"]</a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Thesis.Id)
+                    @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    <a asp-action="PromoterDetails" asp-controller="Thesis" asp-route-id="@item.Thesis.Id">Thesis details</a>
+                    @($"{item.User.FirstName} {item.User.LastName}")
                 </td>
-            } else {
-                <td colspan="2">
-                    @("No thesis assigned")
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
                 </td>
-            }
-        </tr>
-    }
-    </tbody>
-</table>
+                @if (item.Thesis != null) {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Thesis.Title)
+                    </td>
+                    <td>
+                        <a asp-action="PromoterDetails" asp-controller="Thesis" asp-route-id="@item.Thesis.Id">@Localizer["thesis-details"]</a>
+                    </td>
+                } else {
+                    <td colspan="2" class="text-center">
+                        @Localizer["no-thesis-assigned"]
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else 
+{
+    <div class="alert alert-primary d-flex align-items-center" role="alert">
+        <partial name="Icons/_WarningIconPartial" />
+        <div>
+            @Localizer["no-students-in-institute"]
+        </div>
+    </div>
+}
 
 <partial name="_PagerPartial" model="@pagerViewModel" />

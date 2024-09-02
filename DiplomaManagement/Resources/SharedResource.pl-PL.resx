@@ -405,8 +405,8 @@
   <data name="theses" xml:space="preserve">
     <value>Pracy dyplomowe</value>
   </data>
-  <data name="list-of-all-theses" xml:space="preserve">
-    <value>Lista wszystkich prac dyplomowych</value>
+  <data name="list-of-all-your-theses" xml:space="preserve">
+    <value>Lista wszystkich twoich prac dyplomowych</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>Tytuł</value>
@@ -515,5 +515,26 @@
   </data>
   <data name="auto-assign-selected-student-success" xml:space="preserve">
     <value>Wybrani studenci zostali pomyślnie przetworzeni i przypisani do dostępnych prac.</value>
+  </data>
+  <data name="no-students-in-institute" xml:space="preserve">
+    <value>Nie ma jeszcze studentów przypisanych do tego instytutu.</value>
+  </data>
+  <data name="students-of-institute" xml:space="preserve">
+    <value>Wszyscy studenci instytutu</value>
+  </data>
+    <data name="no-thesis-assigned" xml:space="preserve">
+    <value>Nie przypisano tematu pracy</value>
+  </data>
+  <data name="thesis-details" xml:space="preserve">
+    <value>Szczegóły pracy</value>
+  </data>
+  <data name="no-created-theses" xml:space="preserve">
+    <value>Nie utworzyłeś jeszcze żadnej pracy dyplomowej. Kliknij tutaj, aby ją utworzyć</value>
+  </data>
+  <data name="creation" xml:space="preserve">
+    <value>Tworzenie</value>
+  </data>
+  <data name="upload-example-file-optional" xml:space="preserve">
+    <value>Załaduj przykładowy plik (opcjonalnie)</value>
   </data>
 </root>

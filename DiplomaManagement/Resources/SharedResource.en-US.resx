@@ -357,8 +357,8 @@
   <data name="theses" xml:space="preserve">
     <value>Theses</value>
   </data>
-  <data name="list-of-all-theses" xml:space="preserve">
-    <value>List of all theses</value>
+  <data name="list-of-all-your-theses" xml:space="preserve">
+    <value>List of all your theses</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>Title</value>
@@ -467,5 +467,26 @@
   </data>
   <data name="auto-assign-selected-student-success" xml:space="preserve">
     <value>Selected student have been successfully processed and assigned to available thesis.</value>
+  </data>
+  <data name="no-students-in-institute" xml:space="preserve">
+    <value>There are no students assigned to that institute yet.</value>
+  </data>
+  <data name="students-of-institute" xml:space="preserve">
+    <value>All students of the institute</value>
+  </data>
+  <data name="no-thesis-assigned" xml:space="preserve">
+    <value>No thesis assigned</value>
+  </data>
+    <data name="thesis-details" xml:space="preserve">
+    <value>Thesis details</value>
+  </data>
+  <data name="no-created-theses" xml:space="preserve">
+    <value>You don't have any theses created yet. Click here to create one</value>
+  </data>
+  <data name="creation" xml:space="preserve">
+    <value>Creation</value>
+  </data>
+  <data name="upload-example-file-optional" xml:space="preserve">
+    <value>Upload example file (optional)</value>
   </data>
 </root>

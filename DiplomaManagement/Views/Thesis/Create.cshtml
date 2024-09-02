@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>@Localizer["creation"]</h1>
 
 <h4>Thesis</h4>
 <hr />
@@ -14,21 +14,21 @@
             <input type="hidden" asp-for="PromoterId" value="@ViewData["PromoterId"]" />
             
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
+                <label asp-for="Title" class="control-label">@Localizer["title"]</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label asp-for="Description" class="control-label">@Localizer["description"]</label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PdfFile" class="control-label"></label>
+                <label asp-for="PdfFile" class="control-label">@Localizer["upload-example-file-optional"]</label>
                 <input asp-for="PdfFile" type="file" class="form-control" accept=".pdf" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Upload File" class="btn btn-primary" />
+                <input type="submit" value="@Localizer["submit"]" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -36,7 +36,7 @@
 <hr />
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@Localizer["back-to-list"]</a>
 </div>
 
 @section Scripts {

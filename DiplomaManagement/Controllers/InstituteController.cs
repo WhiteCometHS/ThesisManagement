@@ -105,7 +105,7 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "Director, SeminarLeader")]
-        public async Task<IActionResult> InstituteAssignedStudents()
+        public async Task<IActionResult> InstituteAssignedStudents(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -113,11 +113,80 @@ namespace DiplomaManagement.Controllers
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.DirectorUserId == user.Id);
 
-            List<Student> students = await _context.Students
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.IdSortParam = string.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
+            ViewBag.StudentSortParam = sortOrder == "student" ? "student_desc" : "student";
+            ViewBag.EmailSortParam = sortOrder == "email" ? "email_desc" : "email";
+            ViewBag.ThesisTitleSortParam = sortOrder == "thesis_title" ? "thesis_title_desc" : "thesis_title";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            IQueryable<Student> studentsQuery = _context.Students
                 .Include(s => s.User)
                 .Include(s => s.Thesis)
-                .Where(i => i.User.InstituteId == director.User.InstituteId)
-                .ToListAsync();
+                .Where(i => i.User.InstituteId == director.User.InstituteId);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                studentsQuery = studentsQuery.Where(t =>
+                    t.Id.ToString().Contains(searchString) ||
+                    t.User.FirstName.Contains(searchString) ||
+                    t.User.LastName.Contains(searchString) ||
+                    t.User.Email.Contains(searchString) ||
+                    t.Thesis != null && t.Thesis.Title.Contains(searchString));
+            }
+
+            List<Student> students = await studentsQuery.ToListAsync();
+
+            var sortMapping = new Dictionary<string, Func<IEnumerable<Student>, IOrderedEnumerable<Student>>>
+            {
+                { "id_desc", theses => theses.OrderByDescending(t => t.Id) },
+                { "student", theses => theses.OrderBy(t => t.User.FirstName) },
+                { "student_desc", theses => theses.OrderByDescending(t => t.User.FirstName) },
+                { "email", theses => theses.OrderBy(t => t.User.Email) },
+                { "email_desc", theses => theses.OrderByDescending(t => t.User.Email) },
+                { "thesis_title", theses => theses.OrderBy(t => t.Thesis?.Title ?? string.Empty) },
+                { "thesis_title_desc", theses => theses.OrderByDescending(t => t.Thesis?.Title ?? string.Empty) }
+            };
+
+            if (sortMapping.TryGetValue(sortOrder ?? "", out var sortFunc))
+            {
+                students = sortFunc(students).ToList();
+            }
+            else
+            {
+                students = students.OrderBy(t => t.Id).ToList();
+            }
+
+            int pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recordsCount = students.Count();
+            int pageNumber = page ?? 1;
+
+            PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+            ViewBag.Pager = pager;
+
+            int itemsToSkip = (pageNumber - 1) * pageSize;
+
+            List<Student> items = students
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
 
             return View(students);
         }

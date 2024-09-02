@@ -62,6 +62,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await Initializer.CreateAdminUser(services);
+    // use only for testing purposes!
     await Initializer.PopulateInstituteTable(services);
 }
 

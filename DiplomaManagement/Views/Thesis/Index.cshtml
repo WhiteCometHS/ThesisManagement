@@ -12,7 +12,7 @@
         ?? null;
 }
 
-<h1>@Localizer["list-of-all-theses"]</h1>
+<h1>@Localizer["list-of-all-your-theses"]</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -29,46 +29,59 @@
 <p>
     <a asp-action="Create">@Localizer["create-new-record"]</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Localizer["title"]
-            </th>
-            <th>
-                @Localizer["description"]
-            </th>
-            <th>
-                @Localizer["uploaded-example"]
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @{
-                    var firstPdfFile = item.PdfFiles.FirstOrDefault();
-                        var truncatedString = firstPdfFile?.FileName.Truncate(20);
-                }
-                @truncatedString
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
-                <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
-            </td>
-        </tr>
+
+@if (Model != null && Model.Any()) 
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Localizer["title"]
+                </th>
+                <th>
+                    @Localizer["description"]
+                </th>
+                <th>
+                    @Localizer["uploaded-example"]
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @{
+                        var firstPdfFile = item.PdfFiles.FirstOrDefault();
+                            var truncatedString = firstPdfFile?.FileName.Truncate(20);
+                    }
+                    @truncatedString
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
+                    <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else 
+{
+    <div class="alert alert-primary d-flex align-items-center" role="alert">
+        <partial name="Icons/_WarningIconPartial" />
+        <div>
+            @Localizer["no-created-theses"] <a asp-action="Create" class="btn btn-outline-success">@Localizer["create-new-record"]</a>
+        </div>
+    </div>
+}
 
 <!-- Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
