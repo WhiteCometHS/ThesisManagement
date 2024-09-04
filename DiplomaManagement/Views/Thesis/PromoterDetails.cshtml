@@ -8,7 +8,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @Localizer["details-button"];
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
     var comment = Model.Comment ?? string.Empty;
     var thesisSophistication = Model.ThesisSophistication ?? string.Empty;
@@ -22,32 +22,26 @@
     <link rel="stylesheet" href="~/css/thesis.css" />
 }
 
-<h1>Details</h1>
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-<symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-  </symbol>
-</svg>
-<div id="liveAlertPlaceholder"></div>
+<h1>@Localizer["thesis-details"]</h1>
 
 <div>
-    <h4>Thesis</h4>
+    <h4>@Localizer["thesis"]</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Localizer["title"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Localizer["description"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
-            Promoter
+            @Localizer["promoter"]
         </dt>
         <dd class="col-sm-10">
             @($"{Model.Promoter.User.FirstName} {Model.Promoter.User.LastName} ({Model.Promoter.User.Email})")
@@ -55,7 +49,7 @@
         @if(!string.IsNullOrEmpty(Model.Comment))
         {
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Comment)
+                @Localizer["comment"]
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Comment)
@@ -64,7 +58,7 @@
         @if(!string.IsNullOrEmpty(Model.ThesisSophistication))
         {
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.ThesisSophistication)
+                @Localizer["thesis-sophistication"]
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.ThesisSophistication)
@@ -75,15 +69,15 @@
     @if (Model.SystemFiles != null)
     {
         <div class="additional-materials text-center">
-            <div class="mb-4">Additional materials:</div>
+            <div class="mb-4">@Localizer["additional-materials"]:</div>
         </div>
         <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>File Name</th>
-                <th>Extension</th>
-                <th>Actions</th>
+                <th>@Localizer["file-name"]</th>
+                <th>@Localizer["extension"]</th>
+                <th>@Localizer["actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -100,7 +94,7 @@
                         @file.Extension
                     </th>
                     <td>
-                        <a asp-action="Download" asp-route-id="@file.Id" class="btn btn-primary">Download</a>
+                        <a asp-action="DownloadDocument" asp-route-id="@file.Id" class="btn btn-primary">@Localizer["download-button"]</a>
                     </td>
                 </tr>
             }
@@ -108,8 +102,9 @@
     </table>
     }
     else {
-        <div class="additional-materials text-center">
-            <div class="mb-4">Thesis don't have additional materials attached by promoter</div>
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <partial name="Icons/_WarningIconPartial" />
+            <div>@Localizer["thesis-dont-have-additional-materials"]</div>
         </div>
     }
 
@@ -129,7 +124,7 @@
                     <td width="10%"><span class="fileStatus @pdf.FileStatus.ToString().ToLower()">@pdf.FileStatus</span></td>
                     <td width="10%">
                         <div class="d-grid">
-                            <a asp-action="DownloadDocument" asp-route-id="@pdf.Id" class="btn btn-primary">Download</a>
+                            <a asp-action="DownloadDocument" asp-route-id="@pdf.Id" class="btn btn-primary">@Localizer["download-button"]</a>
                         </div>
                     </td>
                 </tr>
@@ -151,7 +146,7 @@
                         </td>
                         <td width="10%">
                             <div class="d-grid">
-                                <a asp-action="DownloadPresentation" asp-route-id="@presentation.Id" class="btn btn-primary">Download</a>
+                                <a asp-action="DownloadPresentation" asp-route-id="@presentation.Id" class="btn btn-primary">@Localizer["download-button"]</a>
                             </div>
                         </td>
                     </tr>
@@ -160,37 +155,37 @@
         }
     }
     else {
-        <div class="additional-materials text-center">
-            <div class="mb-4">Thesis don't have uploaded files</div>
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <partial name="Icons/_WarningIconPartial" />
+            <div>@Localizer["thesis-dont-have-uploaded-files"]</div>
         </div>
     }
 
     @if (Model.Enrollments != null && Model.Enrollments.Any()) 
     {
         <div class="additional-materials text-center">
-            <div class="mb-4">Active enrollments:</div>
+            <div class="mb-4">@Localizer["active-enrollments"]:</div>
         </div>
         <table class="table">
             <thead>
                 <tr>
                     <th>
-                        Nr.
+                        Id
                     </th>
                     <th>
-                        Student
+                        @Localizer["student-name-surname"]
                     </th>
                     <th>
-                        Email
+                        @Localizer["student-email"]
                     </th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Enrollments)
                 {
-                    int counter = 1;
                     <tr>
                         <td>
-                            @counter
+                            @Html.DisplayFor(modelItem => item.Student.Id)
                         </td>
                         <td>
                             @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
@@ -199,12 +194,11 @@
                             @Html.DisplayFor(modelItem => item.Student.User.Email)
                         </td>
                     </tr>
-                    counter++;
                 }
             </tbody>
         </table>
     }
 </div>
 <div>
-    <a href="@Url.Action(previousAction, previousController)">Back to List</a>
+    <a href="@Url.Action(previousAction, previousController)">@Localizer["back-to-list"]</a>
 </div>

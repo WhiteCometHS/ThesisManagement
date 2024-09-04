@@ -13,14 +13,14 @@
 @if (SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Student"))
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="Thesis" asp-action="AvailableTheses">Theses</a>
+        <a class="nav-link text-dark" asp-controller="Thesis" asp-action="AvailableTheses">@Localizer["theses"]</a>
     </li>
 
     var thesisId = await _thesisRepository.GetStudentThesisAsync(user.Id);
     @if (thesisId != null) 
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Thesis" asp-action="StudentDetails" asp-route-id="@thesisId">Your thesis</a>
+            <a class="nav-link text-dark" asp-controller="Thesis" asp-action="StudentDetails" asp-route-id="@thesisId">@Localizer["your-thesis"]</a>
         </li>
     }
 }

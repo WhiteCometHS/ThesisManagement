@@ -17,11 +17,11 @@
     }
 
     PagerViewModel pagerViewModel = new PagerViewModel
-            {
-                Pager = pager,
-                ControllerName = "Thesis",
-                ActionName = "AvailableTheses"
-            };
+    {
+        Pager = pager,
+        ControllerName = "Thesis",
+        ActionName = "AvailableTheses"
+    };
 }
 
 <h1>@Localizer["available-theses"]</h1>
@@ -57,54 +57,66 @@ else if (!string.IsNullOrEmpty(enrollmentCreationError))
     </div>
 }
 
-<form asp-action="AvailableTheses" method="get">
-    <div class="form-actions no-color">
-        <p>
-            @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
-            <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
-            <a asp-action="AvailableTheses">@Localizer["back-to-full-list"]</a>
-        </p>
-    </div>
-</form>
+@if (Model != null && Model.Any()) 
+{
+    <form asp-action="AvailableTheses" method="get">
+        <div class="form-actions no-color">
+            <p>
+                @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+                <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
+                <a asp-action="AvailableTheses">@Localizer["back-to-full-list"]</a>
+            </p>
+        </div>
+    </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.TitleSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["title"]</a>
-            </th>
-            <th>
-                <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.DescriptionSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["description"]</a>              
-            </th>
-            <th>
-                <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.PromoterSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["promoter-name-surname"]</a>             
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
-                </td>
-                <td>
-                    @if (ViewBag.Thesis == null) 
-                    {
-                        <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">@Localizer["enroll-in"]</a>
-                    }
-                </td>
+                <th>
+                    <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.TitleSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["title"]</a>
+                </th>
+                <th>
+                    <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.DescriptionSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["description"]</a>              
+                </th>
+                <th>
+                    <a asp-action="AvailableTheses" asp-route-sortOrder="@ViewBag.PromoterSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["promoter-name-surname"]</a>             
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @($"{item.Promoter.User.FirstName} {item.Promoter.User.LastName}")
+                    </td>
+                    <td>
+                        @if (ViewBag.Thesis == null) 
+                        {
+                            <a asp-controller="Enrollment" asp-action="Create" asp-route-thesisId="@item.Id">@Localizer["enroll-in"]</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else 
+{
+    <div class="alert alert-primary d-flex align-items-center" role="alert">
+        <partial name="Icons/_WarningIconPartial" />
+        <div>
+            @Localizer["no-available-theses"]
+        </div>
+    </div>
+}
 
 <partial name="_PagerPartial" model="@pagerViewModel" />
 

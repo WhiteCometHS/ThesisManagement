@@ -16,13 +16,15 @@ namespace DiplomaManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
+        private readonly IThesisRepository _thesisRepository;
         private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
 
-        public EnrollmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
+        public EnrollmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IThesisRepository thesisRepository, IStringLocalizer<SharedResource> htmlLocalizer)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
+            _thesisRepository = thesisRepository;
             _htmlLocalizer = htmlLocalizer;
         }
 
@@ -98,14 +100,24 @@ namespace DiplomaManagement.Controllers
 
             if (enrollment != null)
             {
-                enrollment.Thesis.Status = ThesisStatus.InProgress;
-                enrollment.Thesis.StudentId = enrollment.StudentId;
+                // enrollment.Thesis.Status = ThesisStatus.InProgress;
+                // enrollment.Thesis.StudentId = enrollment.StudentId;
 
-                _context.Enrollments.RemoveRange(enrollment.Thesis.Enrollments);
+                List<Enrollment> thesisEnrollments = await _context.Enrollments
+                    .Where(e => e.StudentId == enrollment.StudentId)
+                    .ToListAsync();
 
-                _context.Update(enrollment.Thesis);
+                thesisEnrollments.AddRange(enrollment.Thesis.Enrollments.Where(e => e.StudentId != enrollment.StudentId).ToList());
 
-                await _context.SaveChangesAsync();
+                await _thesisRepository.assignThesisToStudent(enrollment.Thesis, enrollment.StudentId, thesisEnrollments);
+
+                //_context.Enrollments.RemoveRange(enrollment.Thesis.Enrollments);
+
+                //_context.Update(enrollment.Thesis);
+
+                //await _context.SaveChangesAsync();
+
+                _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", _htmlLocalizer["auto-assign-selected-student-success"]);
 
             }
 

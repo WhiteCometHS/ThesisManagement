@@ -537,4 +537,37 @@
   <data name="upload-example-file-optional" xml:space="preserve">
     <value>Załaduj przykładowy plik (opcjonalnie)</value>
   </data>
+  <data name="your-thesis" xml:space="preserve">
+    <value>Twoja praca dyplomowa</value>
+  </data>
+  <data name="new-thesis" xml:space="preserve">
+    <value>Nowa praca dyplomowa</value>
+  </data>
+  <data name="list-of-all-theses" xml:space="preserve">
+    <value>Lista wszystkich prac dyplomowych</value>
+  </data>
+  <data name="status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="promoter" xml:space="preserve">
+    <value>Promotor</value>
+  </data>
+  <data name="comment" xml:space="preserve">
+    <value>Komentarz</value>
+  </data>
+  <data name="thesis-sophistication" xml:space="preserve">
+    <value>Zaawansowanie pracy dyplomowej</value>
+  </data>
+  <data name="additional-materials" xml:space="preserve">
+    <value>Materiały dodatkowe</value>
+  </data>
+  <data name="thesis-dont-have-additional-materials" xml:space="preserve">
+    <value>Praca dyplomowa nie zawiera dodatkowych materiałów dołączonych przez promotora</value>
+  </data>
+  <data name="thesis-dont-have-uploaded-files" xml:space="preserve">
+    <value>Praca dyplomowa nie ma przesłanych plików</value>
+  </data>
+  <data name="aus-submit-enrollment" xml:space="preserve">
+    <value>Czy na pewno chcesz przesłać rejestrację dla tego studenta? Wszystkie inne zapisy dla tej pracy dyplomowej zostaną odrzucone.</value>
+  </data>
 </root>

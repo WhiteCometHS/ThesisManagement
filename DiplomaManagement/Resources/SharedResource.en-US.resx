@@ -412,7 +412,7 @@
     <value>Student email</value>
   </data>
   <data name="active-enrollments" xml:space="preserve">
-    <value>Active Enrollments</value>
+    <value>Active enrollments</value>
   </data>
   <data name="no-active-enrollments" xml:space="preserve">
     <value>There is no active enrollments in your theses.</value>
@@ -488,5 +488,38 @@
   </data>
   <data name="upload-example-file-optional" xml:space="preserve">
     <value>Upload example file (optional)</value>
+  </data>
+  <data name="your-thesis" xml:space="preserve">
+    <value>Your thesis</value>
+  </data>
+  <data name="new-thesis" xml:space="preserve">
+    <value>New thesis</value>
+  </data>
+  <data name="list-of-all-theses" xml:space="preserve">
+    <value>List of all theses</value>
+  </data>
+  <data name="status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="promoter" xml:space="preserve">
+    <value>Promoter</value>
+  </data>
+  <data name="comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="thesis-sophistication" xml:space="preserve">
+    <value>Thesis Sophistication</value>
+  </data>
+  <data name="additional-materials" xml:space="preserve">
+    <value>Additional materials</value>
+  </data>
+  <data name="thesis-dont-have-additional-materials" xml:space="preserve">
+    <value>Thesis don't have additional materials attached by promoter</value>
+  </data>
+  <data name="thesis-dont-have-uploaded-files" xml:space="preserve">
+    <value>Thesis don't have uploaded files</value>
+  </data>
+  <data name="aus-submit-enrollment" xml:space="preserve">
+    <value>Are you sure you want to submit enrollment for this student? All other enrollments for this thesis will be declined.</value>
   </data>
 </root>
