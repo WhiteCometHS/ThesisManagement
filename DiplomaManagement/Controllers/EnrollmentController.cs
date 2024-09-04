@@ -117,8 +117,7 @@ namespace DiplomaManagement.Controllers
 
                 //await _context.SaveChangesAsync();
 
-                _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", _htmlLocalizer["auto-assign-selected-student-success"]);
-
+                _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", _htmlLocalizer["assign-selected-student-success"]);
             }
 
             return RedirectToAction("ActiveEnrollments");

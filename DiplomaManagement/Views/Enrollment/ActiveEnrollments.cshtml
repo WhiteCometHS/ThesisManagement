@@ -1,7 +1,11 @@
-﻿@model IEnumerable<DiplomaManagement.Entities.Enrollment>
+﻿@using DiplomaManagement.Interfaces
+@model IEnumerable<DiplomaManagement.Entities.Enrollment>
+
+@inject INotificationService NotificationService
 
 @{
     ViewData["Title"] = @Localizer["active-enrollments"];
+    var notificationMessage = NotificationService.GetNotification($"SuccessfullAssigned_{User.Identity.Name}");
 }
 
 <h1>@Localizer["active-enrollments"]</h1>

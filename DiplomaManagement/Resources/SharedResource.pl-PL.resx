@@ -570,4 +570,7 @@
   <data name="aus-submit-enrollment" xml:space="preserve">
     <value>Czy na pewno chcesz przesłać rejestrację dla tego studenta? Wszystkie inne zapisy dla tej pracy dyplomowej zostaną odrzucone.</value>
   </data>
+  <data name="assign-selected-student-success" xml:space="preserve">
+    <value>Wybrany student został pomyślnie przypisany do pracy dyplomowej.</value>
+  </data>
 </root>

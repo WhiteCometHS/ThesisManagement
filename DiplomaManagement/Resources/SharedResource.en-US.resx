@@ -522,4 +522,7 @@
   <data name="aus-submit-enrollment" xml:space="preserve">
     <value>Are you sure you want to submit enrollment for this student? All other enrollments for this thesis will be declined.</value>
   </data>
+  <data name="assign-selected-student-success" xml:space="preserve">
+    <value>Selected student have been successfully assigned to your thesis.</value>
+  </data>
 </root>
