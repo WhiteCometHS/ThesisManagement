@@ -5,7 +5,19 @@
 
 @{
     ViewData["Title"] = @Localizer["active-enrollments"];
-    var notificationMessage = NotificationService.GetNotification($"SuccessfullAssigned_{User.Identity.Name}");
+    var successMessage = NotificationService.GetNotification($"SuccessfullAssigned_{User.Identity.Name}");
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = successMessage,
+        Class = "bg-success"
+    };
+
+    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
 }
 
 <h1>@Localizer["active-enrollments"]</h1>

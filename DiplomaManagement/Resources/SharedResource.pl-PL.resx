@@ -573,4 +573,16 @@
   <data name="assign-selected-student-success" xml:space="preserve">
     <value>Wybrany student został pomyślnie przypisany do pracy dyplomowej.</value>
   </data>
+  <data name="upload-your-files" xml:space="preserve">
+    <value>Prześlij pliki</value>
+  </data>
+  <data name="upload-pdf-file" xml:space="preserve">
+    <value>Załącz plik pdf</value>
+  </data>
+  <data name="upload-presentation-file" xml:space="preserve">
+    <value>Załącz plik z prezentacją (opcjonalne)</value>
+  </data>
+  <data name="upload-at-least-one-file" xml:space="preserve">
+    <value>Prześlij co najmniej jeden plik.</value>
+  </data>
 </root>

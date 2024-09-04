@@ -100,22 +100,13 @@ namespace DiplomaManagement.Controllers
 
             if (enrollment != null)
             {
-                // enrollment.Thesis.Status = ThesisStatus.InProgress;
-                // enrollment.Thesis.StudentId = enrollment.StudentId;
-
                 List<Enrollment> thesisEnrollments = await _context.Enrollments
-                    .Where(e => e.StudentId == enrollment.StudentId)
+                    .Where(e => e.StudentId == enrollment.StudentId && e.ThesisId != enrollment.ThesisId)
                     .ToListAsync();
 
-                thesisEnrollments.AddRange(enrollment.Thesis.Enrollments.Where(e => e.StudentId != enrollment.StudentId).ToList());
+                thesisEnrollments.AddRange(enrollment.Thesis.Enrollments);
 
                 await _thesisRepository.assignThesisToStudent(enrollment.Thesis, enrollment.StudentId, thesisEnrollments);
-
-                //_context.Enrollments.RemoveRange(enrollment.Thesis.Enrollments);
-
-                //_context.Update(enrollment.Thesis);
-
-                //await _context.SaveChangesAsync();
 
                 _notificationService.AddNotification($"SuccessfullAssigned_{User.Identity.Name}", _htmlLocalizer["assign-selected-student-success"]);
             }

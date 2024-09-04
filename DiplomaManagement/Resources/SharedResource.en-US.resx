@@ -525,4 +525,16 @@
   <data name="assign-selected-student-success" xml:space="preserve">
     <value>Selected student have been successfully assigned to your thesis.</value>
   </data>
+  <data name="upload-your-files" xml:space="preserve">
+    <value>Upload your files</value>
+  </data>
+  <data name="upload-pdf-file" xml:space="preserve">
+    <value>Attach your pdf file</value>
+  </data>
+  <data name="upload-presentation-file" xml:space="preserve">
+    <value>Attach your presentation file (optional)</value>
+  </data>
+  <data name="upload-at-least-one-file" xml:space="preserve">
+    <value>Please upload at least one file.</value>
+  </data>
 </root>
