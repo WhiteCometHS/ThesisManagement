@@ -537,4 +537,28 @@
   <data name="upload-at-least-one-file" xml:space="preserve">
     <value>Please upload at least one file.</value>
   </data>
+  <data name="file-status-change-success" xml:space="preserve">
+    <value>File status has been successfully changed to </value>
+  </data>
+  <data name="comment-update-success" xml:space="preserve">
+    <value>Comments updated successfully.</value>
+  </data>
+  <data name="sophistication-update-success" xml:space="preserve">
+    <value>Thesis sophistication updated successfully.</value>
+  </data>
+  <data name="change-thesis-status-message" xml:space="preserve">
+    <value>If you have reviewed all aspects of the thesis and are satisfied with the progress, you can proceed to change its status to Accepted. Please be aware that once you confirm this decision, the status will be permanently set, and further modifications or reversals will not be possible. This action signifies that the thesis has met all the necessary criteria and is ready for final submission or evaluation. Ensure that all details are correct and thoroughly reviewed before proceeding, as this step cannot be undone later.</value>
+  </data>
+  <data name="accept-thesis-button" xml:space="preserve">
+    <value>Accept thesis</value>
+  </data>
+  <data name="not-verified-status" xml:space="preserve">
+    <value>Not verified</value>
+  </data>
+  <data name="not-accepted-status" xml:space="preserve">
+    <value>Not accepted</value>
+  </data>
+  <data name="accepted-status" xml:space="preserve">
+    <value>Accepted</value>
+  </data>
 </root>

@@ -585,4 +585,28 @@
   <data name="upload-at-least-one-file" xml:space="preserve">
     <value>Prześlij co najmniej jeden plik.</value>
   </data>
+  <data name="file-status-change-success" xml:space="preserve">
+    <value>Status pliku został pomyślnie zmieniony na </value>
+  </data>
+  <data name="comment-update-success" xml:space="preserve">
+    <value>Komentarz został pomyślnie zaktualizowany.</value>
+  </data>
+  <data name="sophistication-update-success" xml:space="preserve">
+    <value>Ocena zaawansowania pracy dyplomowej została pomyślnie zaktualizowana.</value>
+  </data>
+  <data name="change-thesis-status-message" xml:space="preserve">
+    <value>Jeśli przejrzałeś wszystkie aspekty pracy dyplomowej i jesteś zadowolony z postępów, możesz zmienić jej status na Zaakceptowany. Należy pamiętać, że po potwierdzeniu tej decyzji status zostanie ustawiony na stałe, a dalsze modyfikacje lub cofnięcia nie będą możliwe. Ta czynność oznacza, że praca dyplomowa spełniła wszystkie niezbędne kryteria i jest gotowa do ostatecznego złożenia lub oceny. Przed kontynuowaniem upewnij się, że wszystkie szczegóły są poprawne i dokładnie sprawdzone, ponieważ tego kroku nie można później cofnąć.</value>
+  </data>
+  <data name="accept-thesis-button" xml:space="preserve">
+    <value>Zaakceptuj pracę</value>
+  </data>
+    <data name="not-verified-status" xml:space="preserve">
+    <value>Nie zweryfikowano</value>
+  </data>
+  <data name="not-accepted-status" xml:space="preserve">
+    <value>Nie zaakceptowano</value>
+  </data>
+  <data name="accepted-status" xml:space="preserve">
+    <value>Zaakceptowano</value>
+  </data>
 </root>

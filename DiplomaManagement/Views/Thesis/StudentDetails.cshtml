@@ -207,32 +207,17 @@
         if ((pdfFile && pdfFile.files.length === 0) &&
             (presentationFile && presentationFile.files.length === 0)) {
 
-            showNotification('@Localizer["upload-at-least-one-file"]');
+             var notificationMessage = '@Localizer["upload-at-least-one-file"]';
+
+            var toastModel = {
+                Title: "Warning",
+                Message: notificationMessage,
+                Class: "bg-danger"
+            };
+
+            showToastNotification(toastModel);
             return false;
         }
         return true;
-    }
-
-    function showNotification(message) {
-        var toastModel = {
-            Title: "Warning",
-            Message: message,
-            Class: "bg-danger"
-        };
-
-        // load the partial view with the toastModel data
-        $.ajax({
-            url: '@Url.Action("RenderToastNotification", "Home")',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(toastModel),
-            success: function (response) {
-                $('body').append(response);
-
-                var toastElement = document.getElementById('liveToast');
-                var toast = new bootstrap.Toast(toastElement);
-                toast.show();
-            }
-        });
     }
 </script>
