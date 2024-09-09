@@ -37,7 +37,9 @@
         Class = "bg-danger"
     };
 
-    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
 }
 
 @if (!string.IsNullOrEmpty(successMessage))
@@ -49,7 +51,9 @@
         Class = "bg-success"
     };
 
-    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
 }
 
 <p>

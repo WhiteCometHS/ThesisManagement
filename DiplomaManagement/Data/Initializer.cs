@@ -8,6 +8,7 @@ namespace DiplomaManagement.Data
     {
         private static string ADMIN_PASSWORD = "*Admin123";
         private static string DIRECTOR_PASSWORD = "*Dir123";
+        private static string PROMOTER_PASSWORD = "*Prom123";
         public static async Task CreateAdminUser(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
@@ -52,7 +53,8 @@ namespace DiplomaManagement.Data
 
             bool hasInstitutes = await _context.Institutes.AnyAsync();
             bool hasDirectors= await _context.Directors.AnyAsync();
-            if (!hasInstitutes && !hasDirectors)
+            bool hasPromoters = await _context.Promoters.AnyAsync();
+            if (!hasInstitutes && !hasDirectors && !hasPromoters)
             {
                 var instituteList = new List<Institute>
                 {
@@ -292,6 +294,171 @@ namespace DiplomaManagement.Data
                 }
 
                 _context.AddRange(directors);
+                await _context.SaveChangesAsync();
+
+                var promotersList = new List<ApplicationUser>
+                {
+                    new ApplicationUser
+                    {
+                        UserName = "s.ambroszkiewicz@gmail.com",
+                        Email = "s.ambroszkiewicz@gmail.com",
+                        FirstName = "Stanisław",
+                        LastName = "Ambroszkiewicz",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "m.baranski@gmail.com",
+                        Email = "m.baranski@gmail.com",
+                        FirstName = "Mirosław",
+                        LastName = "Barański",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "a.barczak@gmail.com",
+                        Email = "a.barczak@gmail.com",
+                        FirstName = "Andrzej",
+                        LastName = "Barczak",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "w.bartyna@gmail.com",
+                        Email = "w.bartyna@gmail.com",
+                        FirstName = "Waldemar",
+                        LastName = "Bartyna",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "d.mikulowski@gmail.com",
+                        Email = "d.mikulowski@gmail.com",
+                        FirstName = "Dariusz",
+                        LastName = "Mikułowski",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "z.mlynarski@gmail.com",
+                        Email = "z.mlynarski@gmail.com",
+                        FirstName = "Zbigniew",
+                        LastName = "Młynarski",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "w.nabialek@gmail.com",
+                        Email = "w.nabialek@gmail.com",
+                        FirstName = "Wojciech",
+                        LastName = "Nabiałek",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "m.pilski@gmail.com",
+                        Email = "m.pilski@gmail.com",
+                        FirstName = "Marek",
+                        LastName = "Pilski",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "a.salamonczyk@gmail.com",
+                        Email = "a.salamonczyk@gmail.com",
+                        FirstName = "Andrzej",
+                        LastName = "Salamończyk",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "j.skaruz@gmail.com",
+                        Email = "j.skaruz@gmail.com",
+                        FirstName = "Jarosław",
+                        LastName = "Skaruz",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "p.switalski@gmail.com",
+                        Email = "p.switalski@gmail.com",
+                        FirstName = "Piotr",
+                        LastName = "Świtalski",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "m.stepniak@gmail.com",
+                        Email = "m.stepniak@gmail.com",
+                        FirstName = "Marcin",
+                        LastName = "Stępniak",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "e.szczepanik@gmail.com",
+                        Email = "e.szczepanik@gmail.com",
+                        FirstName = "Ewa",
+                        LastName = "Szczepanik",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                    new ApplicationUser
+                    {
+                        UserName = "g.terlikowski@gmail.com",
+                        Email = "g.terlikowski@gmail.com",
+                        FirstName = "Grzegorz",
+                        LastName = "Terlikowski",
+                        EmailConfirmed = true,
+                        InstituteId = savedInstitutes.FirstOrDefault(i => i.Name == "Instytut Informatyki")?.Id
+                    },
+                };
+
+                var promoters = new List<Promoter>();
+                Director DirectorNiewiadomski = directors.First();
+
+                foreach (var user in promotersList)
+                {
+                    var result = await userManager.CreateAsync(user, PROMOTER_PASSWORD);
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, "Promoter");
+
+                        Promoter promoter = new Promoter
+                        {
+                            PromoterUserId = user.Id,
+                            Director = DirectorNiewiadomski
+                        };
+
+                        promoters.Add(promoter);
+                    }
+                }
+
+                // Niewiadomski as a promoter too
+                var niewiadomski = directorList.First();
+                await userManager.AddToRoleAsync(niewiadomski, "Promoter");
+
+                Promoter p = new Promoter
+                {
+                    PromoterUserId = niewiadomski.Id,
+                    Director = DirectorNiewiadomski
+                };
+
+                promoters.Add(p);
+
+                _context.AddRange(promoters);
                 await _context.SaveChangesAsync();
             }
         }

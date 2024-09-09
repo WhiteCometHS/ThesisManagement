@@ -397,7 +397,7 @@
     <value>Zgłoszenia</value>
   </data>
   <data name="active-theses" xml:space="preserve">
-    <value>Aktywne prace dyplomowes</value>
+    <value>Aktywne prace dyplomowe</value>
   </data>
   <data name="theses-management" xml:space="preserve">
     <value>Zarządzanie pracami</value>
@@ -611,5 +611,47 @@
   </data>
   <data name="thesis_status_changed" xml:space="preserve">
     <value>Status pracy dyplomowej został pomyślnie zmieniony na Zaakceptowany</value>
+  </data>
+  <data name="list-of-all-active-theses" xml:space="preserve">
+    <value>Lista wszystkich aktywnych prac dyplomowych</value>
+  </data>
+  <data name="enter-thesis-sophistication" xml:space="preserve">
+    <value>Podaj stopień zaawansowania pracy dyplomowej:</value>
+  </data>
+  <data name="leave-comment-here" xml:space="preserve">
+    <value>Zostaw komentarz tutaj:</value>
+  </data>
+  <data name="create-header" xml:space="preserve">
+    <value>Tworzenie</value>
+  </data>
+  <data name="create" xml:space="preserve">
+    <value>Utwórz</value>
+  </data>
+  <data name="details" xml:space="preserve">
+    <value>Szczegóły</value>
+  </data>
+  <data name="institute-details" xml:space="preserve">
+    <value>Szczegółowe informacje o instytucie</value>
+  </data>
+  <data name="director-details" xml:space="preserve">
+    <value>Szczegółowe informacje o dyrektorze</value>
+  </data>
+  <data name="promoter-details" xml:space="preserve">
+    <value>Szczegółowe informacje o promotorze</value>
+  </data>
+  <data name="submit-selected" xml:space="preserve">
+    <value>Zatwierdź wybrane</value>
+  </data>
+  <data name="assign-thesis-manually" xml:space="preserve">
+    <value>Przypisz prace ręczne</value>
+  </data>
+  <data name="welcome-to-diploma-management" xml:space="preserve">
+    <value>Witamy w Diploma Management</value>
+  </data>
+  <data name="select" xml:space="preserve">
+    <value>Wybierz</value>
+  </data>
+  <data name="sign-up-student" xml:space="preserve">
+    <value>Zapisz studenta na wybraną pracę dyplomową</value>
   </data>
 </root>

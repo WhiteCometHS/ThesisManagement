@@ -29,6 +29,7 @@
     <Folder Include="Areas\Identity\Pages\Account\" />
     <Folder Include="Data\Migrations\" />
     <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\pdfs\" />
     <Folder Include="wwwroot\presentations\" />
   </ItemGroup>
 

@@ -477,7 +477,7 @@
   <data name="no-thesis-assigned" xml:space="preserve">
     <value>No thesis assigned</value>
   </data>
-    <data name="thesis-details" xml:space="preserve">
+  <data name="thesis-details" xml:space="preserve">
     <value>Thesis details</value>
   </data>
   <data name="no-created-theses" xml:space="preserve">
@@ -563,5 +563,47 @@
   </data>
   <data name="thesis_status_changed" xml:space="preserve">
     <value>Thesis status has been successfully changed to Accepted</value>
+  </data>
+  <data name="list-of-all-active-theses" xml:space="preserve">
+    <value>List of all your active theses</value>
+  </data>
+  <data name="enter-thesis-sophistication" xml:space="preserve">
+    <value>Enter degree of advancement of the thesis:</value>
+  </data>
+  <data name="leave-comment-here" xml:space="preserve">
+    <value>Leave a comment here:</value>
+  </data>
+  <data name="create-header" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="institute-details" xml:space="preserve">
+    <value>Institute details</value>
+  </data>
+  <data name="director-details" xml:space="preserve">
+    <value>Director details</value>
+  </data>
+  <data name="promoter-details" xml:space="preserve">
+    <value>Promoter details</value>
+  </data>
+  <data name="submit-selected" xml:space="preserve">
+    <value>Submit Selected</value>
+  </data>
+  <data name="assign-thesis-manually" xml:space="preserve">
+    <value>Assign thesis manually</value>
+  </data>
+  <data name="welcome-to-diploma-management" xml:space="preserve">
+    <value>Welcome to Diploma Management</value>
+  </data>
+  <data name="select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="sign-up-student" xml:space="preserve">
+    <value>Sign up student for selected thesis</value>
   </data>
 </root>

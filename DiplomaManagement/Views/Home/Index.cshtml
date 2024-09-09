@@ -12,7 +12,7 @@
     var user = await UserManager.GetUserAsync(User);
     userName = user?.UserName;
     <div class="text-center">
-        <h1 class="display-4">Welcome to Diploma Management, @userName</h1>
+        <h1 class="display-4">@Localizer["welcome-to-diploma-management"], @userName</h1>
     </div>
 }
 else
@@ -22,7 +22,7 @@ else
     </div>
 }
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <@* <h1 class="display-4">Welcome</h1> *@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <div class="modal fade" id="UserLoginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

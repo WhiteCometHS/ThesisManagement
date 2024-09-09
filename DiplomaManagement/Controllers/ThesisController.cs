@@ -773,7 +773,9 @@ namespace DiplomaManagement.Controllers
 
         private async Task<IActionResult> UpdateFileSatus<T>(int id, string status, DbSet<T> dbSet) where T : class, IFile
         {
-            T? file = await dbSet.FirstOrDefaultAsync(m => m.Id == id);
+            T? file = await dbSet
+                .Include(m => m.Thesis)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (file == null)
             {
@@ -784,9 +786,11 @@ namespace DiplomaManagement.Controllers
             {
                 case "Accepted":
                     file.FileStatus = FileStatus.Accepted;
+                    file.Thesis!.Comment = null;
                     break;
                 case "NotAccepted":
                     file.FileStatus = FileStatus.NotAccepted;
+                    file.Thesis!.ThesisSophistication = null;
                     break;
                 case "NotVerified":
                     file.FileStatus = FileStatus.NotVerified;

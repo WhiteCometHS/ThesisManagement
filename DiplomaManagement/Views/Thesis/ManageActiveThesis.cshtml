@@ -13,6 +13,8 @@
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
     var comment = Model.Comment ?? string.Empty;
     var thesisSophistication = Model.ThesisSophistication ?? string.Empty;
+    var thesisStatus = Model.ThesisStatus;
+
 }
 
 @section Styles {
@@ -160,8 +162,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const token = '@antiforgeryToken';
-            const comment = '@comment';
-            const thesisSophistication = '@thesisSophistication';
+            var comment = '@comment';
+            var thesisSophistication = '@thesisSophistication';
             var conclusionAction;
 
             const toggleConclusionForm = () => {
@@ -182,17 +184,23 @@
                 const containsNotAccepted = dataStatusList.includes("NotAccepted");
                 if (containsNotAccepted) {
                     conclusionAction = '0';
-                    $('#textareaLabel').text('Leave a comment here:');
-                    $('#floatingTextarea').text(comment);
+                    $('#textareaLabel').text('@Localizer["leave-comment-here"]');
+                    $('#floatingTextarea').val(comment);
+                    thesisSophistication = null;
                     $('#textarea-form').show();
                 } else {
-                    const allAccepted = dataStatusList.every(status => status === "Accepted");
+                    const allAccepted = dataStatusList.length > 0 && dataStatusList.every(status => status === "Accepted");
                     if (allAccepted) {
                         conclusionAction = '1';
-                        $('#textareaLabel').text('Enter degree of advancement of the thesis:');
-                        $('#floatingTextarea').text(thesisSophistication);
+                        $('#textareaLabel').text('@Localizer["enter-thesis-sophistication"]');
+                        $('#floatingTextarea').val(thesisSophistication);
+                        comment = null;
                         $('#textarea-form').show();
-                        $('#status-form').show();
+
+                        if ('@thesisStatus' !== "Accepted")
+                        {
+                            $('#status-form').show();
+                        }
                     }
                     else {
                         $('#textarea-form').hide();
@@ -269,6 +277,15 @@
                         var notificationMessage = (conclusionAction == 0) 
                             ? '@Localizer["comment-update-success"]'
                             : '@Localizer["sophistication-update-success"]';
+
+                        if (conclusionAction==0)
+                        {
+                            comment = $('#floatingTextarea').val();
+                        }
+                        else 
+                        {
+                            thesisSophistication = $('#floatingTextarea').val();
+                        }
 
                         var toastModel = {
                             Title: "Success",

@@ -1,22 +1,22 @@
 ﻿@using DiplomaManagement.Interfaces
 @model IEnumerable<DiplomaManagement.Entities.Thesis>
 
-<h1>Index</h1>
+<h1>@Localizer["available-theses"]</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Localizer["title"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Localizer["description"]
             </th>
             <th>
-                Promoter
+                @Localizer["promoter-name-surname"]
             </th>
             <th>
-                Sign up student for selected thesis
+                @Localizer["sign-up-student"]
             </th>
         </tr>
     </thead>
@@ -39,7 +39,7 @@
                         <form asp-controller="Thesis" asp-action="AssignThesisToStudentManual" method="post">
                             <input type="hidden" name="thesisId" value="@item.Thesis.Id" />
                             <input type="hidden" name="selectedStudent" value="@ViewBag.SelectedStudentId" />
-                            <button type="submit" class="btn btn-primary">Select</button>
+                            <button type="submit" class="btn btn-primary">@Localizer["select"]</button>
                         </form>
                     </td>
                 </tr>
@@ -61,7 +61,7 @@
                     <form asp-controller="Thesis" asp-action="AssignThesisToStudentManual" method="post">
                         <input type="hidden" name="thesisId" value="@item.Id" />
                         <input type="hidden" name="selectedStudent" value="@ViewBag.SelectedStudentId" />
-                        <button type="submit" class="btn btn-primary">Select</button>
+                        <button type="submit" class="btn btn-primary">@Localizer["select"]</button>
                     </form>
                 </td>
             </tr>

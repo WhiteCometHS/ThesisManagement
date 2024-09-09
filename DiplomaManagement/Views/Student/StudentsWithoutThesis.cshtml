@@ -34,7 +34,9 @@
         Class = "bg-success"
     };
 
-    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
 }
 
 <h1>@Localizer["list-of-students-without-thesis"]</h1>
@@ -42,7 +44,7 @@
 @if (Model != null && Model.Any())
 {
     <form asp-controller="Thesis" asp-action="AssignThesisToStudents" method="post" id="studentsForm">
-        <button type="button" class="btn btn-primary" onclick="checkSelection()">Submit Selected</button>
+        <button type="button" class="btn btn-primary" onclick="checkSelection()">@Localizer["submit-selected"]</button>
 
         <table class="table">
             <thead>
@@ -103,7 +105,7 @@
                             }
                         </td>
                         <td>
-                            <a asp-controller="Thesis" asp-action="AdminAvailableTheses" asp-route-studentId="@item.Id" class="btn btn-primary">Assign thesis manually</a>
+                            <a asp-controller="Thesis" asp-action="AdminAvailableTheses" asp-route-studentId="@item.Id" class="btn btn-primary">@Localizer["assign-thesis-manually"]</a>
                         </td>
                     </tr>
                 }

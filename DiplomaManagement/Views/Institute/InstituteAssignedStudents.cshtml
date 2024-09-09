@@ -36,7 +36,9 @@
         Class = "bg-danger"
     };
 
-    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
 }
 
 @if (Model != null && Model.Any()) 

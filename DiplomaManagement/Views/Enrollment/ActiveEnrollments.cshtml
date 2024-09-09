@@ -17,7 +17,9 @@
         Class = "bg-success"
     };
 
-    @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
 }
 
 <h1>@Localizer["active-enrollments"]</h1>
