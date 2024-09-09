@@ -429,7 +429,8 @@ namespace DiplomaManagement.Controllers
                     Description = thesis.Description,
                     PromoterId = thesis.PromoterId,
                     Comment = thesis.Comment,
-                    ThesisSophistication = thesis.ThesisSophistication
+                    ThesisSophistication = thesis.ThesisSophistication,
+                    ThesisStatus = thesis.Status
                 };
 
                 ViewBag.OriginalPdf = thesis.PdfFiles?.FirstOrDefault(p => p.PdfType == PdfType.original);
@@ -856,6 +857,7 @@ namespace DiplomaManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignThesisToStudents(List<int> selectedStudents)
         {
             if (selectedStudents != null && selectedStudents.Any())
@@ -931,6 +933,7 @@ namespace DiplomaManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignThesisToStudentManual(int selectedStudent, int thesisId)
         {
             Student? student = await _context.Students
@@ -964,6 +967,40 @@ namespace DiplomaManagement.Controllers
 
             // _notificationService.AddNotification($"AssignThesisError_{User.Identity.Name}", "No students were selected.");
             return RedirectToAction("StudentsWithoutThesis", "Student");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> SetAcceptedStatus(int thesisId)
+        {
+            Thesis? thesis = await _context.Theses
+                .Include(t => t.PdfFiles)
+                .Include(t => t.PresentationFile)
+                .FirstOrDefaultAsync(m => m.Id == thesisId);
+
+            if (thesis == null)
+            {
+                return NotFound();
+            } 
+            else 
+            {
+                if (thesis.PdfFiles?.Count > 0)
+                {
+                    PdfFile? originalPdf = thesis.PdfFiles.First(p => p.PdfType == PdfType.original);
+                    PresentationFile? presentationFile = thesis.PresentationFile;
+
+                    if (originalPdf.FileStatus == FileStatus.Accepted && (presentationFile == null || presentationFile.FileStatus == FileStatus.Accepted))
+                    {
+                        thesis.Status = ThesisStatus.Accepted;
+                        _context.Update(thesis);
+                        await _context.SaveChangesAsync();
+                        _notificationService.AddNotification($"StatusChanged_{User.Identity.Name}", _htmlLocalizer["thesis_status_changed"]);
+                    }
+                }
+            }
+
+            return RedirectToAction("ManageActiveThesis", new { id = thesisId });
         }
 
         private bool ThesisExists(int id)

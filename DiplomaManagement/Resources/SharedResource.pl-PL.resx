@@ -609,4 +609,7 @@
   <data name="accepted-status" xml:space="preserve">
     <value>Zaakceptowano</value>
   </data>
+  <data name="thesis_status_changed" xml:space="preserve">
+    <value>Status pracy dyplomowej został pomyślnie zmieniony na Zaakceptowany</value>
+  </data>
 </root>

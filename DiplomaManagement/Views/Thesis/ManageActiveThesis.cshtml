@@ -9,6 +9,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var successMessage = NotificationService.GetNotification($"StatusChanged_{User.Identity.Name}");
     var antiforgeryToken = _antiforgery.GetTokens(HttpContextAccessor.HttpContext).RequestToken;
     var comment = Model.Comment ?? string.Empty;
     var thesisSophistication = Model.ThesisSophistication ?? string.Empty;
@@ -19,6 +20,20 @@
 }
 
 <h1>@Localizer["thesis-details"]</h1>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = successMessage,
+        Class = "bg-success"
+    };
+
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
+}
 
 <div>
     <h4>@Localizer["thesis"]</h4>
@@ -35,6 +50,12 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["status"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ThesisStatus)
         </dd>
     </dl>
 
@@ -110,16 +131,27 @@
 
         <div id="textarea-form" style="display:none;">
             <form id="conclusionForm" method="post" action="/Thesis/SetThesisConclusion">
+                @Html.AntiForgeryToken()
                 <div class="form-floating">
                     <textarea name="conclusion" class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px"></textarea>
                     <label for="floatingTextarea" id="textareaLabel"></label>
                 </div>
                 <input type="hidden" name="id" id="fileId" value="@Model.Id">
-                <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                <button type="submit" class="btn btn-primary mt-2">@Localizer["submit"]</button>
             </form>
         </div>
     }
 </div>
+
+<div id="status-form" class="my-3" style="display: none;">
+    <p>@Localizer["change-thesis-status-message"]</p>
+    <form method="post" action="/Thesis/SetAcceptedStatus">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="thesisId" value="@Model.Id">
+        <button type="submit" class="btn btn-outline-success" mt-2">@Localizer["accept-thesis-button"]</button>
+    </form>
+</div>
+
 <div>
     <a asp-action="ActiveTheses">@Localizer["back-to-list"]</a>
 </div>
@@ -160,17 +192,11 @@
                         $('#textareaLabel').text('Enter degree of advancement of the thesis:');
                         $('#floatingTextarea').text(thesisSophistication);
                         $('#textarea-form').show();
-
-                        const thesisStatusMessage = `
-                            <div id="thesisStatusMessage" class="my-3">
-                                <p>${'@Localizer["change-thesis-status-message"]'}</p>
-                                <a href="/Thesis/ChangeStatus" id="changeStatusLink" class="btn btn-outline-success">${'@Localizer["accept-thesis-button"]'}</a>
-                            </div>`;
-    
-                        $('#textarea-form').append(thesisStatusMessage);
+                        $('#status-form').show();
                     }
                     else {
                         $('#textarea-form').hide();
+                        $('#status-form').hide();
                         $('#thesisStatusMessage').remove();
                     }
                 }
@@ -233,7 +259,6 @@
                 var form = $(this);
                 var actionUrl = form.attr('action');
                 var formData = form.serializeArray();
-                formData.push({ name: "__RequestVerificationToken", value: token });
                 formData.push({ name: "conclusionType", value: conclusionAction });
 
                 $.ajax({

@@ -561,4 +561,7 @@
   <data name="accepted-status" xml:space="preserve">
     <value>Accepted</value>
   </data>
+  <data name="thesis_status_changed" xml:space="preserve">
+    <value>Thesis status has been successfully changed to Accepted</value>
+  </data>
 </root>
