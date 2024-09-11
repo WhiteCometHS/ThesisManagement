@@ -654,4 +654,7 @@
   <data name="sign-up-student" xml:space="preserve">
     <value>Zapisz studenta na wybraną pracę dyplomową</value>
   </data>
+  <data name="institute-statistics" xml:space="preserve">
+    <value>Statystyki instytutu</value>
+  </data>
 </root>

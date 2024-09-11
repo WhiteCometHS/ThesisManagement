@@ -321,6 +321,12 @@ namespace DiplomaManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Director")]
+        public async Task<IActionResult> Statistics()
+        {
+            return View();
+        }
+
         private bool InstituteExists(int id)
         {
             return _context.Institutes.Any(e => e.Id == id);

@@ -606,4 +606,7 @@
   <data name="sign-up-student" xml:space="preserve">
     <value>Sign up student for selected thesis</value>
   </data>
+  <data name="institute-statistics" xml:space="preserve">
+    <value>Institute statistics</value>
+  </data>
 </root>
