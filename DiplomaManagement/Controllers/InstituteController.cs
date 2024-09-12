@@ -369,11 +369,21 @@ namespace DiplomaManagement.Controllers
                 foreach (var promoter in director.Promoters)
                 {
                     int thesisCount = theses.Count(t => t.Promoter == promoter);
-                    promotersData.Add(promoter.User.FirstName + " " + promoter.User.LastName, thesisCount);
+                    promotersData.Add(promoter.User!.FirstName + " " + promoter.User.LastName, thesisCount);
                 }
 
                 ViewBag.ThesesData = thesesData;
                 ViewBag.PromotersData = promotersData;
+
+                var promotersAcceptedTheses = new Dictionary<string, int>();
+
+                foreach (var promoter in director.Promoters)
+                {
+                    int thesisCount = theses.Count(t => t.Promoter == promoter && t.Status == ThesisStatus.Accepted);
+                    promotersAcceptedTheses.Add(promoter.User!.FirstName + " " + promoter.User.LastName, thesisCount);
+                }
+
+                ViewBag.PromotersAcceptedTheses = promotersAcceptedTheses;
 
                 return View();
             }

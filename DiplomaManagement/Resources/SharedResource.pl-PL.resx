@@ -663,4 +663,7 @@
   <data name="all-theses" xml:space="preserve">
     <value>Wszystkie pracy</value>
   </data>
+  <data name="accepted-theses" xml:space="preserve">
+    <value>Zaakceptowane prace</value>
+  </data>
 </root>

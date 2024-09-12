@@ -39,7 +39,12 @@ new Chart(promoters, {
         datasets: [{
             label: barLabel,
             data: barCounts,
-            backgroundColor: backgroundColors,
+            backgroundColor: 'rgba(129, 132, 148, 1)',
+        },
+        {
+            label: barLabelAccepted,
+            data: barCountsAccepted,
+            backgroundColor: 'rgba(47, 70, 247, 1)',
         }]
     },
     options: {

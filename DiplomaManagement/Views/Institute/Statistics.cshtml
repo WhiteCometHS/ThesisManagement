@@ -21,6 +21,11 @@
         var barNames = Object.keys(promotersData);
         var barCounts = Object.values(promotersData);
         var barLabel = '@Localizer["all-theses"]';
+
+        var promotersAcceptedTheses = @Html.Raw(Json.Serialize(ViewBag.PromotersAcceptedTheses));
+        var barNamesAccepted = Object.keys(promotersAcceptedTheses);
+        var barCountsAccepted = Object.values(promotersAcceptedTheses);
+        var barLabelAccepted = '@Localizer["accepted-theses"]';
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/polar_area_chart.js"></script>

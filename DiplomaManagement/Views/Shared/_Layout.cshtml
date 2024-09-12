@@ -73,6 +73,24 @@
             </div>
         </nav>
     </header>
+
+    <div id="parallax">
+        <div class="layer" data-depth="0.6">
+            <div class="some-space">
+                <div id="test"><img src="/img/abstract.png" height="200" /</div>
+            </div>
+        </div>
+
+        <div class="layer" data-depth="0.4">
+            <div id="particles-js"></div>
+        </div>
+
+        <div class="layer" data-depth="0.3">
+            <div class="some-more-space">
+                <a href="https://codepen.io/dominickolbe" target="_blank">is it cool ?</a>
+            </div>
+        </div>
+    </div>
     
     <div class="container">
         <main role="main" class="pb-3">
@@ -92,8 +110,11 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://matthew.wagerfield.com/parallax/deploy/jquery.parallax.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/parallax.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
