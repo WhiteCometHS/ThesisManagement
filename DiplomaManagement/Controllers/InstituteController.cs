@@ -324,7 +324,63 @@ namespace DiplomaManagement.Controllers
         [Authorize(Roles = "Director")]
         public async Task<IActionResult> Statistics()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+
+            Director? director = await _context.Directors
+                .Include(d => d.Promoters!)
+                    .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(d => d.DirectorUserId == user.Id);
+
+            if (director != null) 
+            {
+                List<Thesis> theses = await _context.Theses
+                    .Where(t => director.Promoters!.Contains(t.Promoter))
+                    .ToListAsync();
+
+                var thesesData = new Dictionary<string, int>();
+
+                int availableCount = theses.Count(t => t.Status == ThesisStatus.Available);
+                int requestedCount = theses.Count(t => t.Status == ThesisStatus.Requested);
+                int inProgressCount = theses.Count(t => t.Status == ThesisStatus.InProgress);
+                int acceptedCount = theses.Count(t => t.Status == ThesisStatus.Accepted);
+
+                if (availableCount > 0)
+                {
+                    thesesData.Add("Available", availableCount);
+                }
+
+                if (requestedCount > 0)
+                {
+                    thesesData.Add("Requested", requestedCount);
+                }
+
+                if (inProgressCount > 0)
+                {
+                    thesesData.Add("In Progress", inProgressCount);
+                }
+
+                if (acceptedCount > 0)
+                {
+                    thesesData.Add("Accepted", acceptedCount);
+                }
+
+                var promotersData = new Dictionary<string, int>();
+
+                foreach (var promoter in director.Promoters)
+                {
+                    int thesisCount = theses.Count(t => t.Promoter == promoter);
+                    promotersData.Add(promoter.User.FirstName + " " + promoter.User.LastName, thesisCount);
+                }
+
+                ViewBag.ThesesData = thesesData;
+                ViewBag.PromotersData = promotersData;
+
+                return View();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         private bool InstituteExists(int id)

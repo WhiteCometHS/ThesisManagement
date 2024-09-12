@@ -609,4 +609,10 @@
   <data name="institute-statistics" xml:space="preserve">
     <value>Institute statistics</value>
   </data>
+  <data name="thesis-statuses" xml:space="preserve">
+    <value>Thesis statuses</value>
+  </data>
+  <data name="all-theses" xml:space="preserve">
+    <value>All theses</value>
+  </data>
 </root>

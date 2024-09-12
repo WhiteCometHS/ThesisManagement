@@ -657,4 +657,10 @@
   <data name="institute-statistics" xml:space="preserve">
     <value>Statystyki instytutu</value>
   </data>
+  <data name="thesis-statuses" xml:space="preserve">
+    <value>Statusy prac</value>
+  </data>
+  <data name="all-theses" xml:space="preserve">
+    <value>Wszystkie pracy</value>
+  </data>
 </root>

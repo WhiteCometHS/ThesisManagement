@@ -1,13 +1,25 @@
-﻿const ctx = document.getElementById('thesisStatus');
+﻿function getRandomColor() {
+    var r = Math.floor(Math.random() * 255);
+    var g = Math.floor(Math.random() * 255);
+    var b = Math.floor(Math.random() * 255);
+    return `rgba(${r}, ${g}, ${b}, 1)`;
+}
+
+var backgroundColors = [];
+for (var i = 0; i < barCounts.length; i++) {
+    backgroundColors.push(getRandomColor());
+}
+
+const ctx = document.getElementById('thesisStatus');
 const promoters = document.getElementById('promoters');
 
 new Chart(ctx, {
     type: 'polarArea',
     data: {
-        labels: ['Red', 'Blue', 'Yellow'],
+        labels: polarAreaStatuses,
         datasets: [{
-            label: '# of Votes',
-            data: [5, 12, 3],
+            label: polarAreaLabel,
+            data: polarAreaCounts,
             backgroundColor: [
                 'rgba(255, 99, 132, 1)',
                 'rgba(54, 162, 235, 1)',
@@ -23,27 +35,11 @@ new Chart(ctx, {
 new Chart(promoters, {
     type: 'bar',
     data: {
-        labels: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'],
+        labels: barNames,
         datasets: [{
-            label: 'Promoters',
-            data: [65, 59, 80, 81, 56, 55, 40, 33, 47, 56, 23, 32, 15, 44, 57],
-            backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 159, 64,1)',
-                'rgba(255, 205, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 159, 64,1)',
-                'rgba(255, 205, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 159, 64,1)',
-                'rgba(255, 205, 86, 1)',
-            ],
+            label: barLabel,
+            data: barCounts,
+            backgroundColor: backgroundColors,
         }]
     },
     options: {

@@ -10,8 +10,18 @@
 </div>
 
 @section Scripts {
+    <script>
+        // set global js variables to pass data to chart.js
+        var thesesData = @Html.Raw(Json.Serialize(ViewBag.ThesesData));
+        var polarAreaStatuses = Object.keys(thesesData);
+        var polarAreaCounts = Object.values(thesesData);
+        var polarAreaLabel = '@Localizer["thesis-statuses"]';
+
+        var promotersData = @Html.Raw(Json.Serialize(ViewBag.PromotersData));
+        var barNames = Object.keys(promotersData);
+        var barCounts = Object.values(promotersData);
+        var barLabel = '@Localizer["all-theses"]';
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@*     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
- *@    
     <script src="~/js/polar_area_chart.js"></script>
 }
