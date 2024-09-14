@@ -1,13 +1,18 @@
-body {
-    background: #2980b9;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* body {
     overflow: hidden;
     height: 100%;
     width: 100%;
     -webkit-font-smoothing: antialiased;
     user-select: none;
-}
+} */
 
-#particles-js,
+/* #particles-js,
 #parallax,
 .layer,
 .some-space,
@@ -17,7 +22,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Behind the main content */
+    z-index: -1;
     overflow: hidden;
 }
 
@@ -30,9 +35,9 @@ body {
     top: 50%;
     left: 50%;
     transform: translate3d(-50%, -50%, 0);
-}
+} */
 
-/*a {
+/* a {
     color: white;
     border: 1px solid white;
     display: table;
@@ -49,7 +54,7 @@ body {
     a:hover {
         background: white;
         color: black;
-    }*/
+    } */
 
 .some-space {
     animation: rotate 18s 0.5s infinite linear reverse;
@@ -98,3 +103,52 @@ body {
     height: 25px;
     object-fit: contain;
 }
+
+.banner {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container1 {
+    position: absolute;
+    left: -10%;
+    width: 120%;
+    height: 100vh;
+    background: #f9f9f9;
+}
+
+.container1 #scene .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.container1 #scene .layer img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* #scene {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#scene .layer img {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+} */

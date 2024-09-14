@@ -74,7 +74,7 @@
         </nav>
     </header>
 
-    <div id="parallax">
+    @* <div id="parallax">
         <div class="layer" data-depth="0.6">
             <div class="some-space">
                 <div id="test"><img src="/img/abstract.png" height="200" /</div>
@@ -90,8 +90,25 @@
                 <a href="https://codepen.io/dominickolbe" target="_blank">is it cool ?</a>
             </div>
         </div>
-    </div>
-    
+    </div> *@
+
+
+    <section class="banner">
+        <div class="container1">
+            <div id="scene">
+                <h2 id="text">Parallax website</h2>
+                <div class="layer" data-depth-x="0.1" data-depth-y="0.1"><img src="/img/background/hill1.png" id="hill1"></div>
+                <div class="layer" data-depth-x="0.2" data-depth-y="0.2"><img src="/img/background/hill2.png" id="hill2"></div>
+                <div class="layer" data-depth-x="0.4" data-depth-y="0.3"><img src="/img/background/hill3.png" id="hill3"></div>
+                <div class="layer" data-depth-x="0.6" data-depth-y="0.4"><img src="/img/background/hill4.png" id="hill4"></div>
+                <div class="layer" data-depth-x="0.8" data-depth-y="0.5"><img src="/img/background/hill5.png" id="hill5"></div>
+                <div class="layer"><img src="/img/background/tree.png" id="tree"></div>
+                <div class="layer"><img src="/img/background/leaf.png" id="leaf"></div>
+                <div class="layer"><img src="/img/background/plant.png" id="plant"></div>
+            </div>
+        </div>
+    </section>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -110,11 +127,19 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://matthew.wagerfield.com/parallax/deploy/jquery.parallax.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/parallax.js"></script>
+    <script>
+        // Ensure the script runs after the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            var scene = document.getElementById('scene');
+            var parallaxInstance = new Parallax(scene, {
+                relativeInput: true // Or remove if not needed
+            });
+        });
+    </script>
+    @* <script src="~/js/parallax.js"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
