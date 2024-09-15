@@ -29,7 +29,7 @@
             .ToList();
     }
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-transparent-header">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/img/diploma.svg" height="45"/>DiplomaManagement</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -74,40 +74,46 @@
         </nav>
     </header>
 
-    @* <div id="parallax">
-        <div class="layer" data-depth="0.6">
-            <div class="some-space">
-                <div id="test"><img src="/img/abstract.png" height="200" /</div>
-            </div>
-        </div>
-
+     <div id="parallax">
         <div class="layer" data-depth="0.4">
             <div id="particles-js"></div>
         </div>
 
+         <div class="layer" data-depth="0.6">
+             <div class="some-space">
+                <div id="center" class="position-absolute"><img src="/img/background/circle6.png" /></div>
+             </div>
+         </div>
+
+        <div class="layer" data-depth="0.45">
+            <div class="some-space">
+                <div id="center" class="position-absolute"><img src="/img/background/circle5.png" /></div>
+            </div>
+        </div>
+
+        <div class="layer" data-depth="0.5">
+            <div class="some-space">
+                <div id="rounded-dots" class="position-absolute"><img src="/img/background/rounded-dots.png" /></div>
+            </div>
+        </div>
+
+        <div class="layer" data-depth="0.8">
+            <div class="some-space">
+                <div id="center" class="position-absolute"><img src="/img/background/circle-logo2.png" /></div>
+            </div>
+        </div>
+
         <div class="layer" data-depth="0.3">
-            <div class="some-more-space">
-                <a href="https://codepen.io/dominickolbe" target="_blank">is it cool ?</a>
+            <div class="some-space" >
+                <div id="left-top" class="position-absolute"><img src="/img/background/circle4.png" /></div>
+                <div id="right-top" class="position-absolute"><img src="/img/background/circle3.png" /></div>
+                <div id="vertical-dots" class="position-absolute"><img src="/img/background/vertical-dots.png" /></div>
+                <div id="splitted-sircle" class="position-absolute"><img src="/img/background/splitted-sircle.png" /></div>
+                <div id="circle2" class="position-absolute"><img src="/img/background/circle2.png" /></div>
+                <div id="right-bottom" class="position-absolute"><img src="/img/background/circle7.png" /></div>
             </div>
         </div>
-    </div> *@
-
-
-    <section class="banner">
-        <div class="container1">
-            <div id="scene">
-                <h2 id="text">Parallax website</h2>
-                <div class="layer" data-depth-x="0.1" data-depth-y="0.1"><img src="/img/background/hill1.png" id="hill1"></div>
-                <div class="layer" data-depth-x="0.2" data-depth-y="0.2"><img src="/img/background/hill2.png" id="hill2"></div>
-                <div class="layer" data-depth-x="0.4" data-depth-y="0.3"><img src="/img/background/hill3.png" id="hill3"></div>
-                <div class="layer" data-depth-x="0.6" data-depth-y="0.4"><img src="/img/background/hill4.png" id="hill4"></div>
-                <div class="layer" data-depth-x="0.8" data-depth-y="0.5"><img src="/img/background/hill5.png" id="hill5"></div>
-                <div class="layer"><img src="/img/background/tree.png" id="tree"></div>
-                <div class="layer"><img src="/img/background/leaf.png" id="leaf"></div>
-                <div class="layer"><img src="/img/background/plant.png" id="plant"></div>
-            </div>
-        </div>
-    </section>
+     </div>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -121,25 +127,17 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-white">
         <div class="container">
             &copy; 2024 - DiplomaManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["privacy"]</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://matthew.wagerfield.com/parallax/deploy/jquery.parallax.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        // Ensure the script runs after the DOM is fully loaded
-        document.addEventListener("DOMContentLoaded", function() {
-            var scene = document.getElementById('scene');
-            var parallaxInstance = new Parallax(scene, {
-                relativeInput: true // Or remove if not needed
-            });
-        });
-    </script>
-    @* <script src="~/js/parallax.js"></script> *@
+    <script src="~/js/parallax.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
