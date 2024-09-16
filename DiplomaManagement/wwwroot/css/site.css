@@ -22,7 +22,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Behind the main content */
+    z-index: -1;
     overflow: visible;
 }
 
@@ -144,3 +144,84 @@ body {
     height: 25px;
     object-fit: contain;
 }
+
+.table-wrapper {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 20px solid rgba(255, 255, 255, 0.7);
+}
+
+.data-table {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+
+/*.table-filter {
+    position: relative;
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    color: #a0a0a0;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    padding: 0 10px;
+}
+
+    .table-filter:before,
+    .table-filter:after {
+        content: "";
+        position: absolute;
+        height: 3px;
+        width: 0;
+        background-color: #eabe81;
+        transition: 0.5s;
+    }
+
+.table-filter:after {
+    left: 0;
+    bottom: -10px;
+}
+
+.table-filter:before {
+    right: 0;
+    top: -10px;
+}
+
+.table-filter:hover {
+    color: black;
+}
+
+.table-filter:hover:after,
+.table-filter:hover:before {
+    width: 100%;
+}*/
+
+.table-filter {
+    color: #081535;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+    .table-filter:hover,
+    .table-filter.active {
+        color: #eabe81;
+        text-shadow: 1px 1px 0px #081535;
+    }
+
+    .table-filter:after {
+        background: none repeat scroll 0 0 transparent;
+        bottom: -2px;
+        content: "";
+        display: block;
+        height: 2px;
+        left: 50%;
+        position: absolute;
+        background: #081535;
+        transition: width 0.2s ease 0s, left 0.2s ease 0s;
+        width: 0;
+    }
+
+    .table-filter:hover:after,
+    .table-filter.active:after {
+        width: 100%;
+        left: 0;
+    }
