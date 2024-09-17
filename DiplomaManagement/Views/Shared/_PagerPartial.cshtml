@@ -6,8 +6,8 @@
         <ul class="pagination justify-content-end">
             @if (Model.Pager.CurrentPage > 1)
             {
-                <li class="page-item">
-                    <a class="page-link" 
+                <li>
+                    <a class="btn btn-outline-light" 
                         asp-controller="@Model.ControllerName" 
                         asp-action="@Model.ActionName" 
                         asp-route-sortOrder="@ViewBag.CurrentSort"
@@ -15,8 +15,8 @@
                         asp-route-page="1"
                     >@Localizer["pager-first"]</a>
                 </li>
-                <li class="page-item">
-                    <a class="page-link" 
+                <li>
+                    <a class="btn btn-outline-light" 
                         asp-controller="@Model.ControllerName" 
                         asp-action="@Model.ActionName" 
                         asp-route-sortOrder="@ViewBag.CurrentSort" 
@@ -28,8 +28,8 @@
 
             @for (var pageNumber = Model.Pager.StartPage; pageNumber <= Model.Pager.EndPage; pageNumber++)
             {
-                <li class="page-item @(pageNumber == Model.Pager.CurrentPage ? "active" : "")">
-                    <a class="page-link" 
+                <li>
+                    <a class="btn btn-outline-light @(pageNumber == Model.Pager.CurrentPage ? "active" : "")" 
                         asp-asp-controller="@Model.ControllerName" 
                         asp-action="@Model.ActionName" 
                         asp-route-sortOrder="@ViewBag.CurrentSort" 
@@ -41,8 +41,8 @@
 
             @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
             {
-                <li class="page-item">
-                    <a class="page-link" 
+                <li>
+                    <a class="btn btn-outline-light" 
                         asp-controller="@Model.ControllerName" 
                         asp-action="@Model.ActionName" 
                         asp-route-sortOrder="@ViewBag.CurrentSort" 
@@ -50,8 +50,8 @@
                         asp-route-page="@(Model.Pager.CurrentPage + 1)"
                     >@Localizer["pager-next"]</a>
                 </li>
-                <li class="page-item">
-                    <a class="page-link" 
+                <li>
+                    <a class="btn btn-outline-light" 
                         asp-controller="@Model.ControllerName" 
                         asp-action="@Model.ActionName" 
                         asp-route-sortOrder="@ViewBag.CurrentSort" 

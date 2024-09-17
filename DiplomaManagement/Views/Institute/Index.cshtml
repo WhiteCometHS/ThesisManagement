@@ -70,11 +70,11 @@
     </div>
 </form>
 
-<div class="table-wrapper">
+<div class="table-wrapper mb-3">
     <table class="table table-hover data-table mb-0">
         <thead>
             <tr>
-                <th>
+                <th style="width: 25%;">
                     <a class="pb-1 table-filter @(string.IsNullOrEmpty(ViewBag.CurrentSort) ? "active" : "")"
                         asp-action="Index" 
                         asp-route-sortOrder="@ViewBag.NameSortParam"
@@ -148,6 +148,8 @@
     </table>
 </div>
 
+<partial name="_PagerPartial" model="@pagerViewModel" />
+
 <!-- Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -167,8 +169,6 @@
     </div>
 </div>
 <form id="hiddenDeleteForm" method="post" style="display:none;"></form>
-
-<partial name="_PagerPartial" model="@pagerViewModel" />
 
 @section Scripts {
     <script>
