@@ -4,7 +4,6 @@ body {
     height: 100%;
     width: 100%;
     -webkit-font-smoothing: antialiased;
-    user-select: none;
 }
 
 .bg-transparent-header {
@@ -144,7 +143,6 @@ body {
     height: 25px;
     object-fit: contain;
 }
-
 .table-wrapper {
     border-radius: 20px;
     overflow: hidden;
