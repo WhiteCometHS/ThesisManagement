@@ -84,7 +84,7 @@
                 </th>
                 <th>
                     <a class="pb-1 table-filter @(ViewBag.CurrentSort == "site" ? "active" : "")"
-                       asp-action="Index" 
+                        asp-action="Index" 
                         asp-route-sortOrder="@ViewBag.SiteSortParam" 
                         asp-route-currentFilter="@ViewBag.currentFilter">
                         @Localizer["site-address"]

@@ -26,41 +26,43 @@
 
 @if (Model != null && Model.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Localizer["thesis-title"]
-                </th>
-                <th>
-                    @Localizer["student-name-surname"]
-                </th>
-                <th>
-                    @Localizer["student-email"]
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="table-wrapper mb-3">
+        <table class="table table-hover data-table mb-0">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Thesis.Title)
-                    </td>
-                    <td>
-                        @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Student.User.Email)
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-submit" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["submit"]</button>
-                    </td>
+                    <th>
+                        @Localizer["thesis-title"]
+                    </th>
+                    <th>
+                        @Localizer["student-name-surname"]
+                    </th>
+                    <th>
+                        @Localizer["student-email"]
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Thesis.Title)
+                        </td>
+                        <td>
+                            @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Student.User.Email)
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-submit" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["submit"]</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 else
 {

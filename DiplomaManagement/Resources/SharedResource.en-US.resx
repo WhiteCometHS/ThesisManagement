@@ -618,4 +618,14 @@
   <data name="accepted-theses" xml:space="preserve">
     <value>Accepted theses</value>
   </data>
+  <data name="no-students-in-institute" xml:space="preserve">
+    <value>Institute does not yet have students assigned</value>
+  </data>
+  <data name="not-logged-in" xml:space="preserve">
+    <value>Not logged in</value>
+  </data>
+  <data name="your-files" xml:space="preserve">
+    <value>Your files:</value>
+  </data>
 </root>
+

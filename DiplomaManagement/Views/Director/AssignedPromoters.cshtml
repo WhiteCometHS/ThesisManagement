@@ -1,7 +1,7 @@
 ﻿@using DiplomaManagement.Services;
 @using DiplomaManagement.Interfaces;
 
-@model DiplomaManagement.Entities.Director
+@model IEnumerable<DiplomaManagement.Entities.Promoter>
 @inject INotificationService NotificationService
 
 @{
@@ -43,66 +43,96 @@
 
 <h3>@Localizer["change-thesis-limit-globaly"]</h3>
 
-<form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
-    <input type="hidden" value="@Model.Id" name="directorId" />
-    <div class="col-3">
-        <div class="row mb-3">
-            <label for="thesisLimit" class="col-sm-4 col-form-label">@Localizer["thesis-limit"]:</label>
-            <div class="col-sm-8">
-                <input class="form-control" id="thesisLimit" name="thesisLimit" onkeypress="return isNumberKey(event)">
-            </div>
+<div class="d-flex justify-content-between align-items-center">
+    <form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
+        <div class="form-actions no-color">
+            <p>
+                <input type="hidden" value="@ViewBag.DirectorId" name="directorId" />
+                @Localizer["thesis-limit"]: <input id="thesisLimit" name="thesisLimit" onkeypress="return isNumberKey(event)">
+                <button type="submit" class="btn btn-outline-light">@Localizer["submit"]</button>
+            </p>
         </div>
-    </div>
-    <div class="col-3">
-        <button type="submit" class="btn btn-primary mb-3">@Localizer["submit"]</button>
-    </div>
-</form>
+    </form>
+    <form asp-action="AssignedPromoters" method="get">
+        <div class="form-actions no-color">
+            <p>
+                @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+                <input type="submit" value="@Localizer["search"]" class="btn btn-outline-light" /> |
+                <a asp-action="AssignedPromoters" class="btn btn-outline-light">@Localizer["back-to-full-list"]</a>
+            </p>
+        </div>
+    </form>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Id
-            </th>
-            <th>
-                @Localizer["name-and-surname"]
-            </th>
-            <th>
-                @Localizer["email-address"]
-            </th>
-            <th>
-                @Localizer["thesis-limit"]
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Promoters!)
-        {
+<div class="table-wrapper mb-3">
+    <table class="table table-hover data-table mb-0">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @($"{item.User.FirstName} {item.User.LastName}")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Email)
-                </td>
-                <td>
-                    <form asp-action="UpdatePromoterThesisLimit" asp-controller="Director" method="post">
-                        <input type="hidden" name="promoterId" value="@item.Id" />
-                        <input name="thesisLimit" value="@item.ThesisLimit" class="form-control" style="width: 80px;" onkeypress="return isNumberKey(event)"/>
-                        <button type="submit" class="btn btn-primary btn-sm">@Localizer["save"]</button>
-                    </form>
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a>
-                </td>
+                <th>
+                    <a class="pb-1 table-filter @(string.IsNullOrEmpty(ViewBag.CurrentSort) ? "active" : "")"
+                        asp-action="AssignedPromoters"
+                        asp-route-sortOrder="@ViewBag.IdSortParam"
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        Id
+                    </a>
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "promoter" ? "active" : "")"
+                        asp-action="AssignedPromoters"
+                        asp-route-sortOrder="@ViewBag.PromoterSortParam"
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["name-and-surname"]
+                    </a>  
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "email" ? "active" : "")"
+                       asp-action="AssignedPromoters"
+                       asp-route-sortOrder="@ViewBag.EmailSortParam"
+                       asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["email-address"]
+                    </a>
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "thesis_limit" ? "active" : "")"
+                       asp-action="AssignedPromoters"
+                       asp-route-sortOrder="@ViewBag.ThesisLimitSortParam"
+                       asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["thesis-limit"]
+                    </a>
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @($"{item.User.FirstName} {item.User.LastName}")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User.Email)
+                    </td>
+                    <td>
+                        <form asp-action="UpdatePromoterThesisLimit" asp-controller="Director" method="post">
+                            <div class="input-group" style="width: 60%;">
+                                <input type="hidden" name="promoterId" value="@item.Id" />
+                                <input type="text" name="thesisLimit" value="@item.ThesisLimit" class="form-control p-0" onkeypress="return isNumberKey(event)" />
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">@Localizer["save"]</button>
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <partial name="_PagerPartial" model="@pagerViewModel" />
 

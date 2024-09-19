@@ -66,8 +66,8 @@
     <div class="form-actions no-color">
         <p>
             @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
-            <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
-            <a asp-action="Index">@Localizer["back-to-full-list"]</a>
+            <input type="submit" value="@Localizer["search"]" class="btn btn-outline-light" /> |
+            <a asp-action="Index" class="btn btn-outline-light">@Localizer["back-to-full-list"]</a>
         </p>
     </div>
 </form>
@@ -77,16 +77,36 @@
         <thead>
             <tr>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["first-name"]</a>
+                    <a class="pb-1 table-filter @(string.IsNullOrEmpty(ViewBag.CurrentSort) ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.NameSortParam"
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["first-name"]
+                    </a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewBag.SurnameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["last-name"]</a>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "surname" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.SurnameSortParam"
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["last-name"]
+                    </a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["email-address"]</a>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "email" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.EmailSortParam"
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["email-address"]
+                    </a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewBag.InstituteSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["institute"]</a>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "institute" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.InstituteSortParam" 
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["institute"]
+                    </a>
                 </th>
                 <th></th>
             </tr>

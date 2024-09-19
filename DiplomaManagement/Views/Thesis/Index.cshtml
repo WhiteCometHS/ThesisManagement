@@ -34,46 +34,48 @@
 
 @if (Model != null && Model.Any()) 
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Localizer["title"]
-                </th>
-                <th>
-                    @Localizer["description"]
-                </th>
-                <th>
-                    @Localizer["uploaded-example"]
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @{
-                        var firstPdfFile = item.PdfFiles.FirstOrDefault();
+    <div class="table-wrapper mb-3">
+        <table class="table table-hover data-table mb-0">
+            <thead>
+                <tr>
+                    <th>
+                        @Localizer["title"]
+                    </th>
+                    <th>
+                        @Localizer["description"]
+                    </th>
+                    <th>
+                        @Localizer["uploaded-example"]
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @{
+                            var firstPdfFile = item.PdfFiles.FirstOrDefault();
                             var truncatedString = firstPdfFile?.FileName.Truncate(20);
-                    }
-                    @truncatedString
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
-                    <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>
+                        }
+                        @truncatedString
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
+                        <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 }
 else 
 {

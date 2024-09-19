@@ -118,9 +118,17 @@ body {
 html {
   font-size: 14px;
 }
+.modal {
+    --bs-text-opacity: 1;
+    color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
+}
+
+.alert {
+    position: unset;
+}
 
 @media (min-width: 768px) {
-  html {
+    html {
     font-size: 16px;
   }
 }

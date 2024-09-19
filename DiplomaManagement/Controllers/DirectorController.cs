@@ -370,20 +370,98 @@ namespace DiplomaManagement.Controllers
         }
 
         [Authorize(Roles = "Director")]
-        public async Task<IActionResult> AssignedPromoters()
+        public async Task<IActionResult> AssignedPromoters(string? currentFilter, string? searchString, int? page, string sortOrder)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.IdSortParam = string.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
+            ViewBag.PromoterSortParam = sortOrder == "promoter" ? "promoter_desc" : "promoter";
+            ViewBag.EmailSortParam = sortOrder == "email" ? "email_desc" : "email";
+            ViewBag.ThesisLimitSortParam = sortOrder == "thesis_limit" ? "thesis_limit_desc" : "thesis_limit";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
-            Director? director = await _context.Directors
-                .Include(d => d.Promoters)
-                    .ThenInclude(u => u.User)
-                .FirstOrDefaultAsync(d => d.DirectorUserId == user.Id);
+            int directorId = await _context.Directors
+                .Where(d => d.User.Id == user.Id)
+                .Select(d => d.Id)
+                .FirstOrDefaultAsync();
 
-            return View(director);
+            IQueryable<Promoter> promotersQuery = _context.Promoters
+                .Include(p => p.User)
+                .Where(p => p.DirectorId == directorId);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                promotersQuery = promotersQuery.Where(t =>
+                    t.Id.ToString().Contains(searchString) ||
+                    t.User.FirstName.Contains(searchString) ||
+                    t.User.LastName.Contains(searchString) ||
+                    t.User.Email.Contains(searchString) ||
+                    t.ThesisLimit.ToString().Contains(searchString));
+            }
+
+            List<Promoter> promoters = await promotersQuery.ToListAsync();
+
+            var sortMapping = new Dictionary<string, Func<IEnumerable<Promoter>, IOrderedEnumerable<Promoter>>>
+            {
+                { "id_desc", theses => theses.OrderByDescending(t => t.Id) },
+                { "name_desc", theses => theses.OrderByDescending(t => t.User.FirstName) },
+                { "name", theses => theses.OrderBy(t => t.User.FirstName) },
+                { "surname_desc", theses => theses.OrderByDescending(t => t.User.LastName) },
+                { "surname", theses => theses.OrderBy(t => t.User.LastName) },
+                { "email", theses => theses.OrderBy(t => t.User.Email) },
+                { "email_desc", theses => theses.OrderByDescending(t => t.User.Email) },
+                { "thesis_limit", theses => theses.OrderBy(t => t.ThesisLimit) },
+                { "thesis_limit_desc", theses => theses.OrderByDescending(t => t.ThesisLimit) }
+            };
+
+            if (sortMapping.TryGetValue(sortOrder ?? "", out var sortFunc))
+            {
+                promoters = sortFunc(promoters).ToList();
+            }
+            else
+            {
+                promoters = promoters.OrderBy(t => t.Id).ToList();
+            }
+
+            int pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recordsCount = promoters.Count();
+            int pageNumber = page ?? 1;
+
+            PagingService pager = new PagingService(recordsCount, pageNumber, pageSize);
+            ViewBag.Pager = pager;
+
+            int itemsToSkip = (pageNumber - 1) * pageSize;
+
+            List<Promoter> items = promoters
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.DirectorId = directorId;
+
+            return View(items);
         }
 
         [HttpPost]

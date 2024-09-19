@@ -666,4 +666,13 @@
   <data name="accepted-theses" xml:space="preserve">
     <value>Zaakceptowane prace</value>
   </data>
+  <data name="no-students-in-institute" xml:space="preserve">
+    <value>Instytut jeszcze nie ma przypisanych studentów</value>
+  </data>
+  <data name="not-logged-in" xml:space="preserve">
+    <value>Niezalogowany</value>
+  </data>
+  <data name="your-files" xml:space="preserve">
+    <value>Twoje pliki:</value>
+  </data>
 </root>

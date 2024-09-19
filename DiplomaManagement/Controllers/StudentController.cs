@@ -28,6 +28,7 @@ namespace DiplomaManagement.Controllers
             ViewBag.NameSortParam = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.SurnameSortParam = sortOrder == "surname" ? "surname_desc" : "surname";
             ViewBag.EmailSortParam = sortOrder == "email" ? "email_desc" : "email";
+            ViewBag.InstituteSortParam = sortOrder == "institute" ? "institute_desc" : "institute";
             ViewBag.ThesisSortParam = sortOrder == "thesis" ? "thesis_desc" : "thesis";
 
             if (searchString != null)
@@ -54,6 +55,7 @@ namespace DiplomaManagement.Controllers
                     s.User.FirstName.Contains(searchString) ||
                     s.User.LastName.Contains(searchString) ||
                     s.User.Email.Contains(searchString) ||
+                    s.User.Institute.Name.Contains(searchString) ||
                     s.Thesis.Title.Contains(searchString));
             }
 
@@ -66,6 +68,8 @@ namespace DiplomaManagement.Controllers
                 { "surname", list => list.OrderBy(l => l.User.LastName) },
                 { "email", list => list.OrderBy(l => l.User.Email) },
                 { "email_desc", list => list.OrderByDescending(l => l.User.Email) },
+                { "institute", list => list.OrderBy(l => l.User.Institute.Name) },
+                { "institute_desc", list => list.OrderByDescending(l => l.User.Institute.Name) },
                 { "thesis", list => list.OrderBy(l => l.Thesis?.Title  ?? string.Empty) },
                 { "thesis_desc", list => list.OrderByDescending(l => l.Thesis?.Title  ?? string.Empty) }
             };

@@ -64,66 +64,93 @@
     <div class="form-actions no-color">
         <p>
             @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
-            <input type="submit" value="@Localizer["search"]" class="btn btn-default" /> |
-            <a asp-action="Index">@Localizer["back-to-full-list"]</a>
+            <input type="submit" value="@Localizer["search"]" class="btn btn-outline-light" /> |
+            <a asp-action="Index" class="btn btn-outline-light">@Localizer["back-to-full-list"]</a>
         </p>
     </div>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Id
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["first-name"]</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.SurnameSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["last-name"]</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.EmailSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["email-address"]</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.ThesisLimitSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["thesis-limit"]</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.DirectorSortParam" asp-route-currentFilter="@ViewBag.currentFilter">@Localizer["assigned-director"]</a>
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThesisLimit)
-            </td>
-            <td>
-                @($"{item.Director.User.FirstName} {item.Director.User.LastName}")
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
-                <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="table-wrapper mb-3">
+    <table class="table table-hover data-table mb-0">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(string.IsNullOrEmpty(ViewBag.CurrentSort) ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.NameSortParam"
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["first-name"]
+                    </a>
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "surname" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.SurnameSortParam" 
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["last-name"]
+                    </a>
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "email" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.EmailSortParam" 
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["email-address"]
+                    </a>
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "thesis_limit" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.ThesisLimitSortParam" 
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["thesis-limit"]
+                    </a>
+                </th>
+                <th>
+                    <a class="pb-1 table-filter @(ViewBag.CurrentSort == "director" ? "active" : "")"
+                        asp-action="Index" 
+                        asp-route-sortOrder="@ViewBag.DirectorSortParam" 
+                        asp-route-currentFilter="@ViewBag.currentFilter">
+                        @Localizer["assigned-director"]
+                    </a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ThesisLimit)
+                </td>
+                <td>
+                    @($"{item.Director.User.FirstName} {item.Director.User.LastName}")
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">@Localizer["edit-button"]</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a> |
+                    <a class="btn-delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-id="@item.Id">@Localizer["delete-button"]</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
