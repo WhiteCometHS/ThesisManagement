@@ -10,7 +10,7 @@ namespace DiplomaManagement.Interfaces
         public string Extension { get; set; }
         string FilePath { get; set; }
         public FileStatus FileStatus { get; set; }
-        public int ThesisId { get; set; }
+        public int? ThesisId { get; set; }
         public Thesis? Thesis { get; set; }
     }
 }

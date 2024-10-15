@@ -627,5 +627,11 @@
   <data name="your-files" xml:space="preserve">
     <value>Your files:</value>
   </data>
+  <data name="create-thesis-proposition" xml:space="preserve">
+    <value>Create thesis proposition</value>
+  </data>
+    <data name="new-thesis-proposition" xml:space="preserve">
+    <value>New proposal for thesis</value>
+  </data>
 </root>
 

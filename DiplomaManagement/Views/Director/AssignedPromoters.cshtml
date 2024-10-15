@@ -43,26 +43,24 @@
 
 <h3>@Localizer["change-thesis-limit-globaly"]</h3>
 
-<div class="d-flex justify-content-between align-items-center">
-    <form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
-        <div class="form-actions no-color">
-            <p>
+<p>
+    <div class="d-flex justify-content-between align-items-center">
+        <form class="row g-3" asp-action="GlobalUpdateThesisLimit" method="post">
+            <div class="form-actions no-color">
                 <input type="hidden" value="@ViewBag.DirectorId" name="directorId" />
                 @Localizer["thesis-limit"]: <input id="thesisLimit" name="thesisLimit" onkeypress="return isNumberKey(event)">
                 <button type="submit" class="btn btn-outline-light">@Localizer["submit"]</button>
-            </p>
-        </div>
-    </form>
-    <form asp-action="AssignedPromoters" method="get">
-        <div class="form-actions no-color">
-            <p>
+            </div>
+        </form>
+        <form asp-action="AssignedPromoters" method="get">
+            <div class="form-actions no-color">
                 @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
                 <input type="submit" value="@Localizer["search"]" class="btn btn-outline-light" /> |
                 <a asp-action="AssignedPromoters" class="btn btn-outline-light">@Localizer["back-to-full-list"]</a>
-            </p>
-        </div>
-    </form>
-</div>
+            </div>
+        </form>
+    </div>
+</p>
 
 <div class="table-wrapper mb-3">
     <table class="table table-hover data-table mb-0">

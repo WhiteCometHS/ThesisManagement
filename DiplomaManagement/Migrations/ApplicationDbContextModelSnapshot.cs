@@ -218,7 +218,10 @@ namespace DiplomaManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(24)");
 
-                    b.Property<int>("ThesisId")
+                    b.Property<int?>("ThesisId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ThesisPropositionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Uploaded")
@@ -227,6 +230,8 @@ namespace DiplomaManagement.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ThesisId");
+
+                    b.HasIndex("ThesisPropositionId");
 
                     b.ToTable("PdfFiles");
                 });
@@ -259,7 +264,7 @@ namespace DiplomaManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ThesisId")
+                    b.Property<int?>("ThesisId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Uploaded")
@@ -268,7 +273,8 @@ namespace DiplomaManagement.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ThesisId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ThesisId] IS NOT NULL");
 
                     b.ToTable("PresentationFiles");
                 });
@@ -362,6 +368,38 @@ namespace DiplomaManagement.Migrations
                         .HasFilter("[StudentId] IS NOT NULL");
 
                     b.ToTable("Theses");
+                });
+
+            modelBuilder.Entity("DiplomaManagement.Entities.ThesisProposition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PromoterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PromoterId");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
+
+                    b.ToTable("ThesisPropositions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -546,10 +584,15 @@ namespace DiplomaManagement.Migrations
                     b.HasOne("DiplomaManagement.Entities.Thesis", "Thesis")
                         .WithMany("PdfFiles")
                         .HasForeignKey("ThesisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DiplomaManagement.Entities.ThesisProposition", "ThesisProposition")
+                        .WithMany("PdfFiles")
+                        .HasForeignKey("ThesisPropositionId");
 
                     b.Navigation("Thesis");
+
+                    b.Navigation("ThesisProposition");
                 });
 
             modelBuilder.Entity("DiplomaManagement.Entities.PresentationFile", b =>
@@ -557,8 +600,7 @@ namespace DiplomaManagement.Migrations
                     b.HasOne("DiplomaManagement.Entities.Thesis", "Thesis")
                         .WithOne("PresentationFile")
                         .HasForeignKey("DiplomaManagement.Entities.PresentationFile", "ThesisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Thesis");
                 });
@@ -604,6 +646,25 @@ namespace DiplomaManagement.Migrations
                     b.HasOne("DiplomaManagement.Entities.Student", "Student")
                         .WithOne("Thesis")
                         .HasForeignKey("DiplomaManagement.Entities.Thesis", "StudentId");
+
+                    b.Navigation("Promoter");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("DiplomaManagement.Entities.ThesisProposition", b =>
+                {
+                    b.HasOne("DiplomaManagement.Entities.Promoter", "Promoter")
+                        .WithMany()
+                        .HasForeignKey("PromoterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaManagement.Entities.Student", "Student")
+                        .WithOne("ThesisProposition")
+                        .HasForeignKey("DiplomaManagement.Entities.ThesisProposition", "StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Promoter");
 
@@ -690,6 +751,8 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("Thesis");
+
+                    b.Navigation("ThesisProposition");
                 });
 
             modelBuilder.Entity("DiplomaManagement.Entities.Thesis", b =>
@@ -699,6 +762,11 @@ namespace DiplomaManagement.Migrations
                     b.Navigation("PdfFiles");
 
                     b.Navigation("PresentationFile");
+                });
+
+            modelBuilder.Entity("DiplomaManagement.Entities.ThesisProposition", b =>
+                {
+                    b.Navigation("PdfFiles");
                 });
 #pragma warning restore 612, 618
         }

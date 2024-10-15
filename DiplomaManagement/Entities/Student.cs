@@ -13,5 +13,6 @@ namespace DiplomaManagement.Entities
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
 
         public virtual Thesis? Thesis { get; set; }
+        public virtual ThesisProposition? ThesisProposition { get; set; }
     }
 }

@@ -279,6 +279,33 @@ namespace DiplomaManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ThesisPropositions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PromoterId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ThesisPropositions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ThesisPropositions_Promoters_PromoterId",
+                        column: x => x.PromoterId,
+                        principalTable: "Promoters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ThesisPropositions_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Enrollments",
                 columns: table => new
                 {
@@ -304,32 +331,6 @@ namespace DiplomaManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PdfFiles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PdfType = table.Column<string>(type: "nvarchar(24)", nullable: false),
-                    ThesisId = table.Column<int>(type: "int", nullable: false),
-                    FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PdfFiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PdfFiles_Theses_ThesisId",
-                        column: x => x.ThesisId,
-                        principalTable: "Theses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PresentationFiles",
                 columns: table => new
                 {
@@ -340,7 +341,7 @@ namespace DiplomaManagement.Migrations
                     Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ThesisId = table.Column<int>(type: "int", nullable: false),
+                    ThesisId = table.Column<int>(type: "int", nullable: true),
                     FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: false)
                 },
                 constraints: table =>
@@ -352,6 +353,38 @@ namespace DiplomaManagement.Migrations
                         principalTable: "Theses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PdfFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Uploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PdfType = table.Column<string>(type: "nvarchar(24)", nullable: false),
+                    ThesisId = table.Column<int>(type: "int", nullable: true),
+                    ThesisPropositionId = table.Column<int>(type: "int", nullable: true),
+                    FileStatus = table.Column<string>(type: "nvarchar(24)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PdfFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PdfFiles_Theses_ThesisId",
+                        column: x => x.ThesisId,
+                        principalTable: "Theses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PdfFiles_ThesisPropositions_ThesisPropositionId",
+                        column: x => x.ThesisPropositionId,
+                        principalTable: "ThesisPropositions",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -420,10 +453,16 @@ namespace DiplomaManagement.Migrations
                 column: "ThesisId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PdfFiles_ThesisPropositionId",
+                table: "PdfFiles",
+                column: "ThesisPropositionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PresentationFiles_ThesisId",
                 table: "PresentationFiles",
                 column: "ThesisId",
-                unique: true);
+                unique: true,
+                filter: "[ThesisId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Promoters_DirectorId",
@@ -453,6 +492,17 @@ namespace DiplomaManagement.Migrations
                 column: "StudentId",
                 unique: true,
                 filter: "[StudentId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ThesisPropositions_PromoterId",
+                table: "ThesisPropositions",
+                column: "PromoterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ThesisPropositions_StudentId",
+                table: "ThesisPropositions",
+                column: "StudentId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -484,6 +534,9 @@ namespace DiplomaManagement.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "ThesisPropositions");
 
             migrationBuilder.DropTable(
                 name: "Theses");

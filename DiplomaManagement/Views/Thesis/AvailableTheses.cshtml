@@ -63,15 +63,18 @@ else if (!string.IsNullOrEmpty(enrollmentCreationError))
 
 @if (Model != null && Model.Any()) 
 {
-    <form asp-action="AvailableTheses" method="get">
-        <div class="form-actions no-color">
-            <p>
-                @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
-                <input type="submit" value="@Localizer["search"]" class="btn btn-outline-light" /> |
-                <a asp-action="AvailableTheses" class="btn btn-outline-light">@Localizer["back-to-full-list"]</a>
-            </p>
+    <p>
+        <div class="d-flex justify-content-between align-items-center">
+            <form asp-action="AvailableTheses" method="get">
+                <div class="form-actions no-color">
+                    @Localizer["search-by-phrase"] <input type="text" name="searchString" value="@ViewBag.CurrentFilter" />
+                    <input type="submit" value="@Localizer["search"]" class="btn btn-outline-light" /> |
+                    <a asp-action="AvailableTheses" class="btn btn-outline-light">@Localizer["back-to-full-list"]</a>
+                </div>
+            </form>
+            <a asp-controller="ThesisProposition" asp-action="Create" class="btn btn-outline-light mx-3">@Localizer["create-thesis-proposition"]</a>
         </div>
-    </form>
+    </p>
 
     <div class="table-wrapper mb-3">
         <table class="table table-hover data-table mb-0">

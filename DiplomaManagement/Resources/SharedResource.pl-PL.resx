@@ -675,4 +675,10 @@
   <data name="your-files" xml:space="preserve">
     <value>Twoje pliki:</value>
   </data>
+  <data name="create-thesis-proposition" xml:space="preserve">
+    <value>Utwórz propozycję pracy dyplomowej</value>
+  </data>
+  <data name="new-thesis-proposition" xml:space="preserve">
+    <value>Nowa propozycja pracy dyplomowej</value>
+  </data>
 </root>

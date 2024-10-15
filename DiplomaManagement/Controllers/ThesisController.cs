@@ -518,8 +518,8 @@ namespace DiplomaManagement.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             var promoter = await _context.Promoters
-            .Include(p => p.Theses)
-            .FirstOrDefaultAsync(p => p.PromoterUserId == user.Id);
+                .Include(p => p.Theses)
+                .FirstOrDefaultAsync(p => p.PromoterUserId == user.Id);
 
             if (promoter != null)
             {
@@ -845,7 +845,7 @@ namespace DiplomaManagement.Controllers
             }
 
             var filePath =  file.FilePath;
-            int thesisId = file.ThesisId;
+            int? thesisId = file.ThesisId;
 
             if (System.IO.File.Exists(filePath))
             {

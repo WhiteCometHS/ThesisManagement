@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DiplomaManagement.Data
 {
@@ -31,12 +30,12 @@ namespace DiplomaManagement.Data
         public DbSet<Promoter> Promoters { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Thesis> Theses { get; set; }
+        public DbSet<ThesisProposition> ThesisPropositions { get; set; }
         public DbSet<PdfFile> PdfFiles { get; set; }
         public DbSet<PresentationFile> PresentationFiles { get; set; }
 
         public DbSet<Enrollment> Enrollments { get; set; }
 
-        // TODO check if this is neccessary
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationUser>()
@@ -63,16 +62,10 @@ namespace DiplomaManagement.Data
                 .HasForeignKey<Student>(p => p.StudentUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /*           modelBuilder.Entity<Director>()
-                            .HasOne(p => p.Institute)
-                            .WithOne(u => u.Director)
-                            .HasForeignKey<Director>(p => p.InstituteId)
-                            .OnDelete(DeleteBehavior.Restrict);*/
-
             modelBuilder.Entity<Promoter>()
                 .HasOne(p => p.Director)
-                .WithMany(d => d.Promoters) // Указываем, что у Директора может быть много Промоутеров
-                .HasForeignKey(p => p.DirectorId) // Устанавливаем внешний ключ в таблице Промоутеров
+                .WithMany(d => d.Promoters)
+                .HasForeignKey(p => p.DirectorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Promoter>()
@@ -86,27 +79,28 @@ namespace DiplomaManagement.Data
                 .HasForeignKey(t => t.ThesisId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<ThesisProposition>()
+                .HasOne(p => p.Student)
+                .WithOne(u => u.ThesisProposition)
+                .HasForeignKey<ThesisProposition>(p => p.StudentId)
+                .OnDelete(DeleteBehavior.NoAction); // needs to be explicitly defined to bypass multiple cascade paths
+
+            modelBuilder.Entity<PdfFile>()
+                .HasOne(p => p.ThesisProposition)
+                .WithMany(t => t.PdfFiles)
+                .HasForeignKey(t => t.ThesisPropositionId);
+
             modelBuilder.Entity<PresentationFile>()
                 .HasOne(p => p.Thesis)
                 .WithOne(t => t.PresentationFile)
                 .HasForeignKey<PresentationFile>(p => p.ThesisId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-
-
             modelBuilder.Entity<Thesis>()
                 .HasMany(p => p.Enrollments)
                 .WithOne(t => t.Thesis)
                 .HasForeignKey(t => t.ThesisId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Enrollment>()
-                .HasOne(e => e.Thesis)
-                .WithMany(t => t.Enrollments)
-                .HasForeignKey(e => e.ThesisId)
-                .OnDelete(DeleteBehavior.NoAction);
-
+                .OnDelete(DeleteBehavior.NoAction); // needs to be explicitly defined to bypass multiple cascade paths
 
             base.OnModelCreating(modelBuilder);
         }

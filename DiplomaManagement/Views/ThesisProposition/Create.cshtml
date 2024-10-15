@@ -1,0 +1,44 @@
+@model DiplomaManagement.Models.ThesisPropositionViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>@Localizer["creation"]</h1>
+
+<h4>@Localizer["new-thesis-proposition"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="PromoterId" value="@ViewData["StudentId"]" />
+            
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">@Localizer["title"]</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">@Localizer["description"]</label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PdfFile" class="control-label">@Localizer["upload-example-file-optional"]</label>
+                <input asp-for="PdfFile" type="file" class="form-control" accept=".pdf" />
+            </div>
+            <div class="form-group my-3">
+                <input type="submit" value="@Localizer["submit"]" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
+
+<div>
+    <a asp-controller="Thesis" asp-action="AvailableTheses">@Localizer["back-to-list"]</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
