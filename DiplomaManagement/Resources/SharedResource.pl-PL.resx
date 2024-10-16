@@ -681,4 +681,19 @@
   <data name="new-thesis-proposition" xml:space="preserve">
     <value>Nowa propozycja pracy dyplomowej</value>
   </data>
+  <data name="add-files-optional" xml:space="preserve">
+    <value>Dodaj pliki (opcjonalnie)</value>
+  </data>
+  <data name="drop-zone-tip" xml:space="preserve">
+    <value>Przeciągnij i upuść lub wybierz pliki z dysku:</value>
+  </data>
+  <data name="drop-zone-info" xml:space="preserve">
+    <value>Maksymalnie 3 pliki w formacie .pdf lub .docx w rozmiarze do 5MB każdy.</value>
+  </data>
+  <data name="select-from-files" xml:space="preserve">
+    <value>Wybierz z plików</value>
+  </data>
+  <data name="leave-description-here" xml:space="preserve">
+    <value>Podaj opis tutaj</value>
+  </data>
 </root>

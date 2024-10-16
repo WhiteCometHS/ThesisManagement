@@ -633,5 +633,20 @@
     <data name="new-thesis-proposition" xml:space="preserve">
     <value>New proposal for thesis</value>
   </data>
+  <data name="add-files-optional" xml:space="preserve">
+    <value>Add files (optional)</value>
+  </data>
+  <data name="drop-zone-tip" xml:space="preserve">
+    <value>Drag and drop or select a files from a disk:</value>
+  </data>
+  <data name="drop-zone-info" xml:space="preserve">
+    <value>A maximum of 3 files in .pdf or .docx format up to 5MB each.</value>
+  </data>
+  <data name="select-from-files" xml:space="preserve">
+    <value>Select from files</value>
+  </data>
+  <data name="leave-description-here" xml:space="preserve">
+    <value>Leave a description here</value>
+  </data>
 </root>
 

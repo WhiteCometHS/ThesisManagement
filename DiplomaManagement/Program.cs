@@ -54,6 +54,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 // repositories/services registration
 builder.Services.AddScoped<InstituteRepository>();
 builder.Services.AddScoped<IThesisRepository, ThesisRepository>();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
 
 var app = builder.Build();
 

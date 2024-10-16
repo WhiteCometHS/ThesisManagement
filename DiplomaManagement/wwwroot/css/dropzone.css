@@ -1,0 +1,61 @@
+.dropzoneSection {
+    color: #fff;
+}
+
+.listSection {
+    color: #fff;
+    line-height: 24px;
+}
+
+.customList {
+    padding: 0;
+    margin: 0;
+    list-style-position: inside;
+}
+
+.uploadedFiles {
+    font-weight: 400;
+    color: #18a841;
+    white-space: nowrap;
+}
+
+.removeButton {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.deleteIcon {
+    width: 24px;
+    height: 24px;
+}
+
+.oddItem {
+    border-right: 1px solid #F1F0F0;
+}
+
+.file-upload-button:hover {
+    background-color: #f0f0f0;
+}
+
+#dropzone {
+    border: 2px dashed #fff;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    width: 100%;
+    max-width: 500px;
+
+    .dropzoneButton{
+        background-color: white;
+        padding: 10px 20px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        border: 1px solid black;
+        font-weight: 600;
+        cursor: pointer;
+    }
+}

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiplomaManagement.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace DiplomaManagement.Controllers
 {
@@ -28,13 +29,13 @@ namespace DiplomaManagement.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Models.LoginModel loginModel)
+        public async Task<IActionResult> Login(LoginModel loginModel)
         {
             loginModel.LoginInValid = "true";
 
             if (ModelState.IsValid)
             {
-                ApplicationUser signedUser = await _userManager.FindByEmailAsync(loginModel.Email);
+                ApplicationUser? signedUser = await _userManager.FindByEmailAsync(loginModel.Email);
 
                 if (signedUser != null)
                 {
@@ -42,7 +43,7 @@ namespace DiplomaManagement.Controllers
 
                     if (signedUser.UserName != signedUser.Email)
                     {
-                        result = await _signInManager.PasswordSignInAsync(signedUser.UserName, loginModel.Password, loginModel.RememberMe, lockoutOnFailure: false);
+                        result = await _signInManager.PasswordSignInAsync(signedUser.UserName!, loginModel.Password, loginModel.RememberMe, lockoutOnFailure: false);
                     }
                     else
                     {
@@ -139,7 +140,7 @@ namespace DiplomaManagement.Controllers
         [HttpGet]
         public async Task<bool> UserNameOrEmailExists(string userName, string email)
         {
-            bool userNameExists = await _context.Users.AnyAsync(u => u.UserName.ToUpper() == userName.ToUpper() || u.Email.ToUpper() == email.ToUpper());
+            bool userNameExists = await _context.Users.AnyAsync(u => u.UserName!.ToUpper() == userName.ToUpper() || u.Email!.ToUpper() == email.ToUpper());
 
             if (userNameExists)
                 return true;
