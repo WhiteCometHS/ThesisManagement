@@ -1,0 +1,126 @@
+@using DiplomaManagement.Entities
+@using DiplomaManagement.Interfaces
+@model DiplomaManagement.Entities.ThesisProposition
+
+@inject INotificationService NotificationService
+
+@{
+    ViewData["Title"] = @Localizer["details-button"];
+    var notificationMessage = NotificationService.GetNotification($"FilesAdded_{User.Identity.Name}");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/thesis.css" />
+}
+
+<h1>@Localizer["thesis-details"]</h1>
+
+@if (!string.IsNullOrEmpty(notificationMessage))
+{
+    var toastModel = new DiplomaManagement.Models.ToastNotificationViewModel
+    {
+        Title = "Success",
+        Message = notificationMessage,
+        Class = "bg-success"
+    };
+
+    @section ToastNotification {
+        @await Html.PartialAsync("_ToastNotificationPartial", toastModel)
+    }
+}
+
+<div>
+    <h4>@Localizer["thesis"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Localizer["title"]
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Localizer["description"]
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Localizer["promoter"]
+        </dt>
+        <dd class = "col-sm-10">
+            @($"{Model.Student.User.FirstName} {Model.Student.User.LastName}")
+        </dd>
+    </dl>
+
+    @if (Model.PdfFiles != null && Model.PdfFiles.Count > 0)
+    {
+        var index = 1;
+        <div class="additional-materials text-center">
+            <h2 class="mb-4">@Localizer["attached-files"]:</h2>
+        </div>
+        <table class="table table-bordered text-light">
+            <thead>
+                <tr>
+                    <th>Nr.</th>
+                    <th>@Localizer["file-name"]</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var file in Model.PdfFiles)
+                {
+                    <tr>
+                        <th>@index</th>
+                        <th>
+                            @file.FileName
+                        </th>
+                        <td>
+                            <a asp-action="DownloadDocument" asp-route-id="@file.Id" class="btn btn-primary">@Localizer["download-button"]</a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <partial name="Icons/_WarningIconPartial" />
+            <div>@Localizer["thesis-dont-have-additional-materials"]</div>
+        </div>
+    }
+    <div class="row d-flex justify-content-center">
+        <div class="form-group col-12 text-center">
+        <p class="mb-3">
+            @Localizer["aus-reject-proposition", "Reject", "Submit"]
+        </p>
+        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+        <input type="submit" value="@Localizer["submit"]" class="btn btn-primary"/>
+    </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to reject this thesis proposition? This action cannot be undone, and the proposition will be deleted.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["cancel"]</button>
+                <a asp-action="Reject" class="btn btn-primary">@Localizer["submit"]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+</script>

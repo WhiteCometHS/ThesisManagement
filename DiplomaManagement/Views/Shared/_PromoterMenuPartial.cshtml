@@ -5,12 +5,20 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IThesisRepository _thesisRepository
+@inject IThesisPropositionRepository _thesisPropositionRepository
+@inject IUserService _userService
 
 @{
     ApplicationUser? user = null;
+    int propositionsCount = 0;
     if (User.Identity != null && User.Identity.IsAuthenticated)
     {
         user = await UserManager.GetUserAsync(User);
+    }
+    var promoterId = _userService.getPromoterId(User);
+    if (promoterId != null)
+    {
+        propositionsCount = await _thesisPropositionRepository.isPromoterHasThesisPropositionsAsync((int)promoterId);
     }
 }
 
@@ -32,6 +40,12 @@
     {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Thesis" asp-action="SeminarLeaderTheses">@Localizer["theses-management"]</a>
+        </li>
+    }
+    @if (propositionsCount > 0) 
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="ThesisProposition" asp-action="Index">@Localizer["thesis-propositions"] <span class="badge bg-danger">@propositionsCount</span></a>
         </li>
     }
 }

@@ -648,5 +648,15 @@
   <data name="leave-description-here" xml:space="preserve">
     <value>Leave a description here</value>
   </data>
+  <data name="thesis-propositions" xml:space="preserve">
+    <value>Thesis propositions</value>
+  </data>
+  <data name="attached-files" xml:space="preserve">
+    <value>Attached files</value>
+  </data>
+  <data name="aus-reject-proposition" xml:space="preserve">
+    <value>You have two options regarding this thesis proposition: <strong>{0}</strong> the proposition if it does not meet the required standards, 
+            or submit it by clicking <strong>{1}</strong> for further approval and evaluation.</value>
+  </data>
 </root>
 

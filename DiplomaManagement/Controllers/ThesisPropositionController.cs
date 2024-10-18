@@ -19,8 +19,9 @@ namespace DiplomaManagement.Controllers
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
         private readonly IStringLocalizer<SharedResource> _htmlLocalizer;
+        private readonly IUserService _userService;
 
-        public ThesisPropositionController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer)
+        public ThesisPropositionController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, IConfiguration configuration, INotificationService notificationService, IStringLocalizer<SharedResource> htmlLocalizer, IUserService userService)
         {
             _context = context;
             _userManager = userManager;
@@ -28,21 +29,17 @@ namespace DiplomaManagement.Controllers
             _configuration = configuration;
             _notificationService = notificationService;
             _htmlLocalizer = htmlLocalizer;
+            _userService = userService;
         }
 
         [Authorize(Roles = "Promoter")]
         public async Task<IActionResult> Index()
         {
-            var userClaims = User.Claims;
-            var promoterIdClaim = userClaims.FirstOrDefault(c => c.Type == "PromoterId");
-
-            if (promoterIdClaim == null)
-            {
-                return NotFound("User not found.");
-            }
-            int promoterId = int.Parse(promoterIdClaim.Value);
+            int? promoterId = _userService.getPromoterId(User);
 
             List<ThesisProposition> propositions = await _context.ThesisPropositions
+                .Include(p => p.Student)
+                    .ThenInclude(s => s.User)
                 .Where(p => p.PromoterId == promoterId)
                 .ToListAsync();
 
@@ -60,29 +57,28 @@ namespace DiplomaManagement.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var student = await _context.Students
-                .FirstOrDefaultAsync(p => p.StudentUserId == user.Id);
+            int? studentId = _userService.getStudentId(User);
 
-            if (student == null)
+            if (studentId == null || user == null)
             {
-                return Forbid();
+                return NotFound();
             }
 
-            List<Promoter> directorUsers = _context.Promoters
+            List<Promoter> promoters = _context.Promoters
                 .Include(d => d.User!)
                     .ThenInclude(u => u.Institute)
-                .Where(d => d.User!.Institute!.Id == user!.InstituteId)
+                .Where(d => d.User!.Institute!.Id == user.InstituteId)
                 .ToList();
 
 
-            List<SelectListItem> directorsSelectList = directorUsers.Select(u => new SelectListItem
+            List<SelectListItem> directorsSelectList = promoters.Select(u => new SelectListItem
             {
                 Value = u.Id.ToString(),
                 Text = $"{u.User.FirstName} {u.User.LastName}"
             }).ToList();
 
             ViewBag.Promoters = new SelectList(directorsSelectList, "Value", "Text");
-            ViewBag.StudentId = student.Id;
+            ViewBag.StudentId = studentId;
             return View();
         }
 
@@ -133,6 +129,25 @@ namespace DiplomaManagement.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("AvailableTheses", "Thesis");
+        }
+
+        [Authorize(Roles = "Promoter")]
+        public async Task<IActionResult> Details(int id)
+        {
+            ThesisProposition? proposition = await _context.ThesisPropositions
+                .Include(t => t.PdfFiles)
+                .Include(t => t.Student!)
+                    .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (proposition == null)
+            {
+                return NotFound();
+            }
+            else 
+            {
+                return View(proposition);
+            }
         }
     }
 }

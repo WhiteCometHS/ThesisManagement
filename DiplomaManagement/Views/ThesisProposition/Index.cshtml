@@ -1,0 +1,54 @@
+@using DiplomaManagement.Interfaces
+@model IEnumerable<DiplomaManagement.Entities.ThesisProposition>
+
+@inject INotificationService NotificationService
+
+@{
+    ViewData["Title"] = @Localizer["list-of-all-theses"];
+}
+
+<h1>@Localizer["list-of-all-active-theses"]</h1>
+
+<div class="table-wrapper mb-3">
+    <table class="table table-hover data-table mb-0">
+        <thead>
+            <tr>
+                <th>
+                    @Localizer["title"]
+                </th>
+                <th>
+                    @Localizer["description"]
+                </th>
+                <th>
+                    @Localizer["student-name-surname"]
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @($"{item.Student.User.FirstName} {item.Student.User.LastName}")
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">@Localizer["details-button"]</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

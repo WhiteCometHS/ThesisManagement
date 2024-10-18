@@ -1,8 +1,6 @@
-using DiplomaManagement;
 using DiplomaManagement.Data;
 using DiplomaManagement.Interfaces;
 using DiplomaManagement.Repositories;
-using DiplomaManagement.Resources;
 using DiplomaManagement.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -54,7 +52,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 // repositories/services registration
 builder.Services.AddScoped<InstituteRepository>();
 builder.Services.AddScoped<IThesisRepository, ThesisRepository>();
+builder.Services.AddScoped<IThesisPropositionRepository, ThesisPropositionRepository>();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
+builder.Services.AddScoped<IUserService, UserClaimsService>();
 
 var app = builder.Build();
 

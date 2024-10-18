@@ -696,4 +696,7 @@
   <data name="leave-description-here" xml:space="preserve">
     <value>Podaj opis tutaj</value>
   </data>
+  <data name="thesis-propositions" xml:space="preserve">
+    <value>Propozycje tematów</value>
+  </data>
 </root>
