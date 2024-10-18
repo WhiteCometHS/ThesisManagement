@@ -699,4 +699,11 @@
   <data name="thesis-propositions" xml:space="preserve">
     <value>Propozycje tematów</value>
   </data>
+    <data name="attached-files" xml:space="preserve">
+    <value>Załączone pliki</value>
+  </data>
+  <data name="aus-reject-proposition" xml:space="preserve">
+    <value>Masz dwie opcje dotyczące tej propozycji pracy dyplomowej: "Odrzuć" propozycję, jeśli nie spełnia ona wymaganych standardów, 
+            lub przesłać ją, klikając przycisk "Zatwierdź" w celu dalszego zatwierdzenia i oceny.</value>
+  </data>
 </root>
